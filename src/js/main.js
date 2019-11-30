@@ -7,12 +7,11 @@ var CANVAS = document.getElementById("canvas");
 var CTX = CANVAS.getContext("2d");
 
 var PI_2 = Math.PI * 2;
-var RADIUS = 9;
-var LOWER = CANVAS.height / 4;
+var RADIUS = 7;
+var LOWER = CANVAS.height / 5;
 var UPPER = CANVAS.height - LOWER;
-var DRAG = 20;
-var CLOCK = 75;
-var TOLERANCE = 0.1;
+var DRAG = 20;  /* higher is slower */
+var CLOCK = 75; /* duration of move loop (# frames) */
 
 function createCircle(x) {
     return {
@@ -20,7 +19,7 @@ function createCircle(x) {
         yTo: randomBetween(LOWER, UPPER),
         yFrom: randomBetween(LOWER, UPPER),
         radius: RADIUS,
-        lineWidth: 0.5,
+        lineWidth: 0.45,
         fillStyle: "hsla(200, 20%, 35%, 0.35)",
         strokeStyle: "hsla(0, 0%, 25%, 0.75)",
         clock: 0,
