@@ -1,11 +1,13 @@
 body {
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    background-color: gray;
+    background-color: hsl(0, 0%, 65%);
 }
 
 canvas {
+    margin-top: 200px;
+    display: block;
+    padding-left: 0;
+    padding-right: 0;
+    margin-left: auto;
+    margin-right: auto;
     background-color: white;
 }
