@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+
+export WD=$PWD
+
+if [ "$(uname -s)" = "Darwin" ]; then
+    alias ls="ls --color=auto"
+    alias ll="ls -l"
+else
+    alias open="xdg-open"
+fi
+
+if [ ! -f "$WD/.jsinit" ]; then
+    npm install --save-dev jshint
+    touch "$WD/.jsinit"
+fi
+
+fmt () {
+    printf "$ tidy %s\n" "$WD/src/index.html"
+    tidy -config "$WD/.tidyrc" -q -m "$WD/src/index.html"
+    sed -i 's/[ \t]\+$//' "$WD/src/index.html"
+    for x in "$WD"/src/js/*.js; do
+        printf "\n$ jshint %s\n" "$x"
+        "$WD/node_modules/jshint/bin/jshint" -c "$WD/.jshintrc" "$x"
+        printf "\n$ clang-format %s\n" "$x"
+        clang-format -i "$x"
+    done
+}
+
+export -f fmt
