@@ -1,6 +1,8 @@
 "use strict";
 
-/* global randomBetween */
+function randomBetween(a, b) {
+    return a + (Math.random() * (b - a));
+}
 
 var CANVAS = document.getElementById("canvas");
 var CTX = CANVAS.getContext("2d");
