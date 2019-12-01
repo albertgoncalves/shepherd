@@ -4,7 +4,7 @@ var CANVAS = document.getElementById("canvas");
 var CTX = CANVAS.getContext("2d");
 
 var PI_2 = Math.PI * 2;
-var RADIUS = 0.05;
+var RADIUS = 0.5;
 var HALF_HEIGHT = CANVAS.height / 2;
 
 function createCircle(x) {
@@ -32,7 +32,7 @@ var MAGNITUDE = 0.1;
 var CENTER = MAGNITUDE / 2;
 var K;
 
-var RELOAD = 400;
+var RELOAD = 60 * 5;
 var L = 0;
 
 function loop() {
