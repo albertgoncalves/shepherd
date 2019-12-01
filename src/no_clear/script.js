@@ -14,7 +14,7 @@ function createCircle(x) {
         radius: RADIUS,
         speedRegular: 0,
         speedSpecial: 0,
-        color: "hsla(0, 0%, 35%, 0.2)",
+        color: "hsla(0, 0%, 85%, 0.2)",
     };
 }
 

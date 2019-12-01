@@ -20,7 +20,7 @@ function createCircle(x) {
         yFrom: randomBetween(LOWER, UPPER),
         radius: RADIUS,
         lineWidth: 0.85,
-        color: "hsla(0, 0%, 25%, 0.45)",
+        color: "hsl(0, 0%, 90%)",
         clock: 0,
         delta: 0,
     };
