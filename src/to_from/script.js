@@ -63,4 +63,4 @@ function loop() {
     requestAnimationFrame(loop);
 }
 
-requestAnimationFrame(loop);
+loop();
