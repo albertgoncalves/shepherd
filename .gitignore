@@ -8,6 +8,7 @@
 !src/
 !to_from/
 !velocity/
+!no_clear/
 !*.html
 !*.css
 !js/

@@ -20,12 +20,12 @@ fmt () {
         tidy -config "$WD/.tidyrc" -q -m "$x"
         sed -i 's/[ \t]\+$//' "$x"
     done
-    for x in "$WD"/src/js/*.js; do
-        printf "$ jshint %s\n" "$x"
-        "$WD/node_modules/jshint/bin/jshint" -c "$WD/.jshintrc" "$x"
-        printf "$ clang-format %s\n" "$x"
-        clang-format -i "$x"
-    done
+    find "$WD/src" -type f -name '*.js' -exec bash -c '
+        printf "$ jshint %s\n" "$1"
+        "$WD/node_modules/jshint/bin/jshint" -c "$WD/.jshintrc" "$1"
+        printf "$ clang-format %s\n" "$1"
+        clang-format -i "$1"
+    ' bash {} \;
 }
 
 export -f fmt
