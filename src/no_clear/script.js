@@ -14,7 +14,7 @@ function createCircle(x) {
         radius: RADIUS,
         speedRegular: 0,
         speedSpecial: 0,
-        color: "hsla(0, 0%, 35%, 0.1)",
+        color: "hsla(0, 0%, 35%, 0.2)",
     };
 }
 
@@ -28,11 +28,18 @@ for (var i = 0; i < N; i++) {
 
 var LOWER = CANVAS.height / 10;
 var UPPER = CANVAS.height - LOWER;
-var MAGNITUDE = 0.05;
+var MAGNITUDE = 0.1;
 var CENTER = MAGNITUDE / 2;
 var K;
 
+var RELOAD = 400;
+var L = 0;
+
 function loop() {
+    L += 1;
+    if (RELOAD < L) {
+        location.reload();
+    }
     for (var i = 0; i < N; i++) {
         CIRCLES[i].speedRegular += (Math.random() * MAGNITUDE) - CENTER;
         K = 0;
