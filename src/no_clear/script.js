@@ -2,13 +2,13 @@
 
 var CANVAS = document.getElementById("canvas");
 var CTX = CANVAS.getContext("2d");
-CTX.fillStyle = "hsla(0, 0%, 85%, 0.2)";
+CTX.fillStyle = "hsla(0, 0%, 85%, 0.4)";
 
 var PI_2 = Math.PI * 2;
 var RADIUS = 0.5;
 var HALF_HEIGHT = CANVAS.height / 2;
 
-function createCircle(x) {
+function createPixel(x) {
     return {
         x: x,
         y: HALF_HEIGHT,
@@ -20,9 +20,9 @@ function createCircle(x) {
 var N = CANVAS.width;
 var HIDDEN = 20;
 var M = N - HIDDEN;
-var CIRCLES = new Array(N);
+var PIXELS = new Array(N);
 for (var i = 0; i < N; i++) {
-    CIRCLES[i] = createCircle(CANVAS.width * ((i + 0.5) / N));
+    PIXELS[i] = createPixel(CANVAS.width * ((i + 0.5) / N));
 }
 
 var LOWER = CANVAS.height / 10;
@@ -31,7 +31,7 @@ var MAGNITUDE = 0.1;
 var CENTER = MAGNITUDE / 2;
 var K;
 
-var RELOAD = 60 * 5;
+var RELOAD = 60 * 10;
 var L = 0;
 
 function loop() {
@@ -40,29 +40,33 @@ function loop() {
         location.reload();
     }
     for (var i = 0; i < N; i++) {
-        CIRCLES[i].speedRegular += (Math.random() * MAGNITUDE) - CENTER;
+        PIXELS[i].speedRegular += (Math.random() * MAGNITUDE) - CENTER;
         K = 0;
-        if (CIRCLES[i].speedSpecial < 0) {
+        if (PIXELS[i].speedSpecial < 0) {
             for (var j = 0; j < i; j++) {
-                CIRCLES[i].speedSpecial += CIRCLES[j].speedRegular;
+                PIXELS[i].speedSpecial += PIXELS[j].speedRegular;
                 K += 1;
             }
         } else {
             for (var k = i + 1; k < N; k++) {
-                CIRCLES[i].speedSpecial += CIRCLES[k].speedRegular;
+                PIXELS[i].speedSpecial += PIXELS[k].speedRegular;
                 K += 1;
             }
         }
-        CIRCLES[i].y += CIRCLES[i].speedSpecial / K;
-        if (CIRCLES[i].y < LOWER) {
-            CIRCLES[i].y = LOWER;
-        } else if (UPPER < CIRCLES[i].y) {
-            CIRCLES[i].y = UPPER;
+        PIXELS[i].y += PIXELS[i].speedSpecial / K;
+        if (PIXELS[i].y < LOWER) {
+            PIXELS[i].y = LOWER;
+            PIXELS[i].speedRegular = (Math.random() * MAGNITUDE) - CENTER;
+            PIXELS[i].speedSpecial = 0;
+        } else if (UPPER < PIXELS[i].y) {
+            PIXELS[i].y = UPPER;
+            PIXELS[i].speedRegular = (Math.random() * MAGNITUDE) - CENTER;
+            PIXELS[i].speedSpecial = 0;
         }
     }
     for (var l = HIDDEN; l < M; l++) {
         CTX.beginPath();
-        CTX.arc(CIRCLES[l].x, CIRCLES[l].y, RADIUS, 0, PI_2);
+        CTX.arc(PIXELS[l].x, PIXELS[l].y, RADIUS, 0, PI_2);
         CTX.fill();
     }
     requestAnimationFrame(loop);

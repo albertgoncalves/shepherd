@@ -19,7 +19,7 @@ function createCircle(x) {
     };
 }
 
-var N = 250;
+var N = 300;
 var M = N - 1;
 var CIRCLES = new Array(N);
 for (var i = 0; i < N; i++) {
@@ -28,35 +28,36 @@ for (var i = 0; i < N; i++) {
 
 var LOWER = CANVAS.height / 7;
 var UPPER = CANVAS.height - LOWER;
-var SCALE = 10;
-var MAX_SPEED = 0.05;
-var MIN_SPEED = MAX_SPEED * -1;
-var MAGNITUDE = 1 / (N * 3);
+var SCALE = 20;
+var MAGNITUDE = 0.5;
 var CENTER = MAGNITUDE / 2;
+var K;
 
 function loop() {
     CTX.clearRect(0, 0, CANVAS.width, CANVAS.height);
     for (var i = 0; i < N; i++) {
         CIRCLES[i].speedRegular += (Math.random() * MAGNITUDE) - CENTER;
-        if (CIRCLES[i].speedRegular < MIN_SPEED) {
-            CIRCLES[i].speedRegular = MIN_SPEED;
-        } else if (MAX_SPEED < CIRCLES[i].speedRegular) {
-            CIRCLES[i].speedRegular = MAX_SPEED;
-        }
+        K = 0;
         if (CIRCLES[i].speedSpecial < 0) {
             for (var j = 0; j < i; j++) {
                 CIRCLES[i].speedSpecial += CIRCLES[j].speedRegular;
+                K += 1;
             }
         } else {
             for (var k = i + 1; k < N; k++) {
                 CIRCLES[i].speedSpecial += CIRCLES[k].speedRegular;
+                K += 1;
             }
         }
-        CIRCLES[i].y += CIRCLES[i].speedSpecial;
+        CIRCLES[i].y += CIRCLES[i].speedSpecial / K;
         if (CIRCLES[i].y < LOWER) {
             CIRCLES[i].y = LOWER;
+            CIRCLES[i].speedRegular = (Math.random() * MAGNITUDE) - CENTER;
+            CIRCLES[i].speedSpecial = 0;
         } else if (UPPER < CIRCLES[i].y) {
             CIRCLES[i].y = UPPER;
+            CIRCLES[i].speedRegular = (Math.random() * MAGNITUDE) - CENTER;
+            CIRCLES[i].speedSpecial = 0;
         }
     }
     for (var l = 1; l < M; l++) {
@@ -66,7 +67,7 @@ function loop() {
         CTX.beginPath();
         CTX.moveTo(CIRCLES[l].x, CIRCLES[l].y);
         CTX.lineTo(CIRCLES[l].x,
-                   CIRCLES[l].y + (CIRCLES[l].speedSpecial * SCALE));
+                   CIRCLES[l].y + (CIRCLES[l].speedRegular * SCALE));
         CTX.stroke();
     }
     requestAnimationFrame(loop);
