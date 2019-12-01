@@ -15,14 +15,12 @@ var PI_2 = Math.PI * 2;
 var RADIUS = 6;
 var LOWER = CANVAS.height / 5;
 var UPPER = CANVAS.height - LOWER;
-var DISTANCE = UPPER - LOWER;
 
 function createCircle(x) {
     return {
         x: x,
         yTo: randomBetween(LOWER, UPPER),
         yFrom: randomBetween(LOWER, UPPER),
-        clock: 0,
         delta: 0,
     };
 }
@@ -48,10 +46,8 @@ function loop() {
     }
     for (var j = 0; j < N; j++) {
         CIRCLES[j].yFrom += CIRCLES[j].delta / DRAG;
-        CIRCLES[j].clock += 1;
         if (RESET) {
             CIRCLES[j].yTo = randomBetween(LOWER, UPPER);
-            CIRCLES[j].clock = 0;
         }
         CTX.beginPath();
         CTX.arc(CIRCLES[j].x, CIRCLES[j].yTo, RADIUS, 0, PI_2);
