@@ -6,6 +6,10 @@ function randomBetween(a, b) {
 
 var CANVAS = document.getElementById("canvas");
 var CTX = CANVAS.getContext("2d");
+var COLOR = "hsl(0, 0%, 90%)";
+CTX.strokeStyle = COLOR;
+CTX.fillStyle = COLOR;
+CTX.lineWidth = 0.85;
 
 var PI_2 = Math.PI * 2;
 var RADIUS = 6;
@@ -18,9 +22,6 @@ function createCircle(x) {
         x: x,
         yTo: randomBetween(LOWER, UPPER),
         yFrom: randomBetween(LOWER, UPPER),
-        radius: RADIUS,
-        lineWidth: 0.85,
-        color: "hsl(0, 0%, 90%)",
         clock: 0,
         delta: 0,
     };
@@ -53,13 +54,10 @@ function loop() {
             CIRCLES[j].clock = 0;
         }
         CTX.beginPath();
-        CTX.arc(CIRCLES[j].x, CIRCLES[j].yTo, CIRCLES[j].radius, 0, PI_2);
-        CTX.strokeStyle = CIRCLES[j].color;
-        CTX.lineWidth = CIRCLES[j].lineWidth;
+        CTX.arc(CIRCLES[j].x, CIRCLES[j].yTo, RADIUS, 0, PI_2);
         CTX.stroke();
         CTX.beginPath();
-        CTX.arc(CIRCLES[j].x, CIRCLES[j].yFrom, CIRCLES[j].radius, 0, PI_2);
-        CTX.fillStyle = CIRCLES[j].color;
+        CTX.arc(CIRCLES[j].x, CIRCLES[j].yFrom, RADIUS, 0, PI_2);
         CTX.fill();
     }
     requestAnimationFrame(loop);

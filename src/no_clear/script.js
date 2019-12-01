@@ -2,6 +2,7 @@
 
 var CANVAS = document.getElementById("canvas");
 var CTX = CANVAS.getContext("2d");
+CTX.fillStyle = "hsla(0, 0%, 85%, 0.2)";
 
 var PI_2 = Math.PI * 2;
 var RADIUS = 0.5;
@@ -11,10 +12,8 @@ function createCircle(x) {
     return {
         x: x,
         y: HALF_HEIGHT,
-        radius: RADIUS,
         speedRegular: 0,
         speedSpecial: 0,
-        color: "hsla(0, 0%, 85%, 0.2)",
     };
 }
 
@@ -63,8 +62,7 @@ function loop() {
     }
     for (var l = HIDDEN; l < M; l++) {
         CTX.beginPath();
-        CTX.arc(CIRCLES[l].x, CIRCLES[l].y, CIRCLES[l].radius, 0, PI_2);
-        CTX.fillStyle = CIRCLES[l].color;
+        CTX.arc(CIRCLES[l].x, CIRCLES[l].y, RADIUS, 0, PI_2);
         CTX.fill();
     }
     requestAnimationFrame(loop);
