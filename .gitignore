@@ -2,11 +2,13 @@
 !.gitignore
 !shell.nix
 !.shellhook
+!.tidyrc
+!.clang-format
+!.jshintrc
 !src/
+!to_from/
+!velocity/
 !*.html
 !*.css
 !js/
 !*.js
-!.tidyrc
-!.clang-format
-!.jshintrc
