@@ -9,11 +9,11 @@ var CTX = CANVAS.getContext("2d");
 var COLOR = "hsl(0, 0%, 90%)";
 CTX.strokeStyle = COLOR;
 CTX.fillStyle = COLOR;
-CTX.lineWidth = 0.85;
+CTX.lineWidth = 0.65;
 
 var PI_2 = Math.PI * 2;
-var RADIUS = 6;
-var LOWER = CANVAS.height / 5;
+var RADIUS = 5;
+var LOWER = CANVAS.height / 10;
 var UPPER = CANVAS.height - LOWER;
 
 function createCircle(x) {
@@ -25,14 +25,14 @@ function createCircle(x) {
     };
 }
 
-var N = 35;
+var N = 50;
 var CIRCLES = new Array(N);
 for (var i = 0; i < N; i++) {
     CIRCLES[i] = createCircle(CANVAS.width * ((i + 0.5) / N));
 }
 
 var DRAG = 40;
-var THRESHOLD = 3;
+var THRESHOLD = 1;
 var RESET;
 
 function loop() {
