@@ -2,10 +2,8 @@
 
 var CANVAS = document.getElementById("canvas");
 var CTX = CANVAS.getContext("2d");
-CTX.fillStyle = "hsla(0, 0%, 85%, 0.4)";
+CTX.fillStyle = "hsla(0, 0%, 85%, 0.35)";
 
-var PI_2 = Math.PI * 2;
-var RADIUS = 0.5;
 var HALF_HEIGHT = CANVAS.height / 2;
 
 function createPixel(x) {
@@ -27,11 +25,11 @@ for (var i = 0; i < N; i++) {
 
 var LOWER = CANVAS.height / 10;
 var UPPER = CANVAS.height - LOWER;
-var MAGNITUDE = 0.1;
+var MAGNITUDE = 0.65;
 var CENTER = MAGNITUDE / 2;
 var K;
 
-var RELOAD = 60 * 10;
+var RELOAD = 60 * 12;
 var L = 0;
 
 function loop() {
@@ -66,7 +64,7 @@ function loop() {
     }
     for (var l = HIDDEN; l < M; l++) {
         CTX.beginPath();
-        CTX.arc(PIXELS[l].x, PIXELS[l].y, RADIUS, 0, PI_2);
+        CTX.fillRect(PIXELS[l].x, PIXELS[l].y, 1, 1);
         CTX.fill();
     }
     requestAnimationFrame(loop);
