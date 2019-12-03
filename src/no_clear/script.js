@@ -6,21 +6,17 @@ CTX.fillStyle = "hsla(0, 0%, 85%, 0.35)";
 
 var HALF_HEIGHT = CANVAS.height / 2;
 
-function createPixel(x) {
-    return {
-        x: x,
-        y: HALF_HEIGHT,
-        speedRegular: 0,
-        speedSpecial: 0,
-    };
-}
-
 var N = CANVAS.width;
 var HIDDEN = 20;
 var M = N - HIDDEN;
 var PIXELS = new Array(N);
 for (var i = 0; i < N; i++) {
-    PIXELS[i] = createPixel(CANVAS.width * ((i + 0.5) / N));
+    PIXELS[i] = {
+        x: CANVAS.width * ((i + 0.5) / N),
+        y: HALF_HEIGHT,
+        speedRegular: 0,
+        speedSpecial: 0,
+    };
 }
 
 var LOWER = CANVAS.height / 10;

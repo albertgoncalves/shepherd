@@ -16,19 +16,15 @@ var RADIUS = 5;
 var LOWER = CANVAS.height / 10;
 var UPPER = CANVAS.height - LOWER;
 
-function createCircle(x) {
-    return {
-        x: x,
+var N = 50;
+var CIRCLES = new Array(N);
+for (var i = 0; i < N; i++) {
+    CIRCLES[i] = {
+        x: CANVAS.width * ((i + 0.5) / N),
         yTo: randomBetween(LOWER, UPPER),
         yFrom: randomBetween(LOWER, UPPER),
         delta: 0,
     };
-}
-
-var N = 50;
-var CIRCLES = new Array(N);
-for (var i = 0; i < N; i++) {
-    CIRCLES[i] = createCircle(CANVAS.width * ((i + 0.5) / N));
 }
 
 var DRAG = 40;

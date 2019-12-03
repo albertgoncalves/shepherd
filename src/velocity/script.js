@@ -10,20 +10,16 @@ var PI_2 = Math.PI * 2;
 var RADIUS = 3;
 var HALF_HEIGHT = CANVAS.height / 2;
 
-function createCircle(x) {
-    return {
-        x: x,
-        y: HALF_HEIGHT,
-        speedRegular: 0,
-        speedSpecial: 0,
-    };
-}
-
 var N = 300;
 var M = N - 1;
 var CIRCLES = new Array(N);
 for (var i = 0; i < N; i++) {
-    CIRCLES[i] = createCircle(CANVAS.width * ((i + 0.5) / N));
+    CIRCLES[i] = {
+        x: CANVAS.width * ((i + 0.5) / N),
+        y: HALF_HEIGHT,
+        speedRegular: 0,
+        speedSpecial: 0,
+    };
 }
 
 var LOWER = CANVAS.height / 7;
