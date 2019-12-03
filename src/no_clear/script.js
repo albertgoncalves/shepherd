@@ -10,28 +10,34 @@ var N = CANVAS.width;
 var HIDDEN = 20;
 var M = N - HIDDEN;
 var PIXELS = new Array(N);
-for (var i = 0; i < N; i++) {
-    PIXELS[i] = {
-        x: CANVAS.width * ((i + 0.5) / N),
-        y: HALF_HEIGHT,
-        speedRegular: 0,
-        speedSpecial: 0,
-    };
+
+function init() {
+    for (var i = 0; i < N; i++) {
+        PIXELS[i] = {
+            x: CANVAS.width * ((i + 0.5) / N),
+            y: HALF_HEIGHT,
+            speedRegular: 0,
+            speedSpecial: 0,
+        };
+    }
 }
 
 var LOWER = CANVAS.height / 10;
 var UPPER = CANVAS.height - LOWER;
-var MAGNITUDE = 0.65;
+var MAGNITUDE = 0.25;
 var CENTER = MAGNITUDE / 2;
 var K;
 
 var RELOAD = 60 * 12;
-var L = 0;
+var L = RELOAD + 1;
 
 function loop() {
-    L += 1;
     if (RELOAD < L) {
-        location.reload();
+        CTX.clearRect(0, 0, CANVAS.width, CANVAS.height);
+        init();
+        L = 0;
+    } else {
+        L += 1;
     }
     for (var i = 0; i < N; i++) {
         PIXELS[i].speedRegular += (Math.random() * MAGNITUDE) - CENTER;
