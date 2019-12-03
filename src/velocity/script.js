@@ -24,8 +24,8 @@ for (var i = 0; i < N; i++) {
 
 var LOWER = CANVAS.height / 7;
 var UPPER = CANVAS.height - LOWER;
-var SCALE = 20;
-var MAGNITUDE = 0.75;
+var SCALE = 15;
+var MAGNITUDE = 1.1;
 var CENTER = MAGNITUDE / 2;
 var K;
 
