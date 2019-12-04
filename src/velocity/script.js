@@ -24,11 +24,10 @@ for (var i = 0; i < N; i++) {
 
 var LOWER = CANVAS.height / 7;
 var UPPER = CANVAS.height - LOWER;
-var SCALE = 15;
+var SCALE = 5;
 var MAGNITUDE = 1.1;
 var CENTER = MAGNITUDE / 2;
 var K;
-var Z = 1.75;
 
 function loop() {
     CTX.clearRect(0, 0, CANVAS.width, CANVAS.height);
@@ -49,13 +48,9 @@ function loop() {
         CIRCLES[i].y += CIRCLES[i].speedSpecial / K;
         if (CIRCLES[i].y < LOWER) {
             CIRCLES[i].y = LOWER;
-            CIRCLES[i].speedRegular =
-                Z * ((Math.random() * MAGNITUDE) - CENTER);
             CIRCLES[i].speedSpecial = 0;
         } else if (UPPER < CIRCLES[i].y) {
             CIRCLES[i].y = UPPER;
-            CIRCLES[i].speedRegular =
-                Z * ((Math.random() * MAGNITUDE) - CENTER);
             CIRCLES[i].speedSpecial = 0;
         }
     }
