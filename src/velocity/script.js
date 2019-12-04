@@ -27,7 +27,7 @@ var UPPER = CANVAS.height - LOWER;
 var SCALE = 15;
 var MAGNITUDE = 1.1;
 var CENTER = MAGNITUDE / 2;
-var OFFSET = 0.15;
+var OFFSET = 0.2;
 var OFFSET_LOWER = CENTER * (1 - OFFSET);
 var OFFSET_UPPER = CENTER * (1 + OFFSET);
 var K;
