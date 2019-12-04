@@ -47,11 +47,9 @@ function loop() {
         PIXELS[i].y += PIXELS[i].speedSpecial / K;
         if (PIXELS[i].y < LOWER) {
             PIXELS[i].y = LOWER;
-            PIXELS[i].speedRegular = (Math.random() * MAGNITUDE) - CENTER;
             PIXELS[i].speedSpecial = 0;
         } else if (UPPER < PIXELS[i].y) {
             PIXELS[i].y = UPPER;
-            PIXELS[i].speedRegular = (Math.random() * MAGNITUDE) - CENTER;
             PIXELS[i].speedSpecial = 0;
         }
     }
