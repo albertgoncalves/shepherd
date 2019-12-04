@@ -22,11 +22,14 @@ for (var i = 0; i < N; i++) {
     };
 }
 
-var LOWER = CANVAS.height / 7;
+var LOWER = CANVAS.height / 10;
 var UPPER = CANVAS.height - LOWER;
-var SCALE = 5;
+var SCALE = 15;
 var MAGNITUDE = 1.1;
 var CENTER = MAGNITUDE / 2;
+var OFFSET = 0.15;
+var OFFSET_LOWER = CENTER * (1 - OFFSET);
+var OFFSET_UPPER = CENTER * (1 + OFFSET);
 var K;
 
 function loop() {
@@ -48,9 +51,13 @@ function loop() {
         CIRCLES[i].y += CIRCLES[i].speedSpecial / K;
         if (CIRCLES[i].y < LOWER) {
             CIRCLES[i].y = LOWER;
+            CIRCLES[i].speedRegular =
+                (Math.random() * MAGNITUDE) - OFFSET_LOWER;
             CIRCLES[i].speedSpecial = 0;
         } else if (UPPER < CIRCLES[i].y) {
             CIRCLES[i].y = UPPER;
+            CIRCLES[i].speedRegular =
+                (Math.random() * MAGNITUDE) - OFFSET_UPPER;
             CIRCLES[i].speedSpecial = 0;
         }
     }
