@@ -2,14 +2,14 @@
 
 var CANVAS = document.getElementById("canvas");
 var CTX = CANVAS.getContext("2d");
-var COLOR = "hsl(0, 0%, 90%)";
+var COLOR = "hsl(0, 0%, 25%)";
 CTX.imageSmoothingEnabled = false;
 CTX.strokeStyle = COLOR;
 CTX.fillStyle = COLOR;
 CTX.lineWidth = 1;
 
 var PI_2 = Math.PI * 2;
-var RADIUS = 5;
+var RADIUS = 2.5;
 
 var SHORT_SIDE;
 var DELTA;
@@ -25,7 +25,6 @@ if (CANVAS.width < CANVAS.height) {
 var N = 9;
 var M = N * N;
 var CIRCLES = new Array(M);
-var DRAG;
 
 function init() {
     for (var i = 0; i < N; i++) {
@@ -54,6 +53,7 @@ function init() {
     }
 }
 
+var DRAG;
 var X;
 var Y;
 var NORM;
