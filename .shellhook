@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 
 export WD=$PWD
+export JSPATH="$WD/client"
+export GOPATH="$WD/server"
 
 if [ "$(uname -s)" = "Darwin" ]; then
     alias ls="ls --color=auto"
@@ -9,23 +11,72 @@ else
     alias open="xdg-open"
 fi
 
-if [ ! -f "$WD/.jsinit" ]; then
-    npm install --save-dev jshint
-    touch "$WD/.jsinit"
+if [ ! -d "$GOPATH/bin" ]; then
+    mkdir "$GOPATH/bin"
 fi
 
-fmt () {
-    for x in "$WD"/src/*.html; do
+if [ ! -f "$GOPATH/.goinit" ]; then
+    go get -v golang.org/x/lint/golint
+    touch "$GOPATH/.goinit"
+fi
+
+gofmts() {
+    if gofmt -w -s -e "$1"; then
+        awk '{ gsub(/\t/, "    "); print }' < "$1" > tmp
+        cat tmp > "$1"
+        rm tmp
+    fi
+}
+
+golint() {
+    "$GOPATH/bin/golint" "$1" \
+        | sed -n -e '/exported .* should have comment.* or be unexported/!p' \
+        | sed -n -e '/struct field Id should be ID/!p' \
+        | sed -n -e "/don't use ALL_CAPS in Go names; use CamelCase/!p"
+}
+
+goall() {
+    wd=$(pwd)
+    cd "$GOPATH" || exit
+    find . -type f -name '*.go' \
+        -not -path "*golang.org*" \
+        -exec bash -c 'echo "$0"; golint "$0"; gofmts "$0"' {} \;
+    cd "$wd" || exit
+}
+
+govets() {
+    wd=$(pwd)
+    cd "$GOPATH/src" || exit
+    src=$(
+        find -- * -prune -type d \
+            -not -name "*golang.org*" \
+            | tr '\r\n' ' '
+    )
+    eval "go vet -v $src"
+    cd "$wd" || exit
+}
+
+if [ ! -f "$JSPATH/.jsinit" ]; then
+    npm install --save-dev jshint
+    touch "$JSPATH/.jsinit"
+fi
+
+jsfmts () {
+    for x in "$JSPATH"/src/*.html; do
         printf "$ tidy %s\n" "$x"
-        tidy -config "$WD/.tidyrc" -q -m "$x"
+        tidy -config "$JSPATH/.tidyrc" -q -m "$x"
         sed -i 's/[ \t]\+$//' "$x"
     done
-    find "$WD/src" -type f -name '*.js' -exec bash -c '
+    find "$JSPATH/src" -type f -name '*.js' -exec bash -c '
         printf "$ jshint %s\n" "$1"
-        "$WD/node_modules/jshint/bin/jshint" -c "$WD/.jshintrc" "$1"
+        "$JSPATH/node_modules/jshint/bin/jshint" -c "$JSPATH/.jshintrc" "$1"
         printf "$ clang-format %s\n" "$1"
         clang-format -i "$1"
     ' bash {} \;
 }
 
-export -f fmt
+export -f gofmts
+export -f golint
+export -f goall
+export -f govets
+export -f jsfmts

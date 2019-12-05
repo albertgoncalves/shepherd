@@ -2,10 +2,11 @@
 !.gitignore
 !shell.nix
 !.shellhook
+!src/
+!client/
 !.tidyrc
 !.clang-format
 !.jshintrc
-!src/
 !to_from/
 !velocity/
 !no_clear/
@@ -13,3 +14,4 @@
 !*.css
 !js/
 !*.js
+!server/
