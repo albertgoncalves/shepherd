@@ -53,7 +53,7 @@ if [ ! -f "$JSPATH/.jsinit" ]; then
     touch "$JSPATH/.jsinit"
 fi
 
-jsfmts () {
+jsall () {
     for x in "$JSPATH"/src/*.html; do
         printf "$ tidy %s\n" "$x"
         tidy -config "$JSPATH/.tidyrc" -q -m "$x"
@@ -70,4 +70,4 @@ jsfmts () {
 export -f gofmts
 export -f golint
 export -f goall
-export -f jsfmts
+export -f jsall
