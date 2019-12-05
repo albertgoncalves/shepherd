@@ -3,6 +3,7 @@
 var CANVAS = document.getElementById("canvas");
 var CTX = CANVAS.getContext("2d");
 var COLOR = "hsl(0, 0%, 90%)";
+CTX.imageSmoothingEnabled = false;
 CTX.fillStyle = COLOR;
 CTX.strokeStyle = COLOR;
 

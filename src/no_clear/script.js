@@ -2,6 +2,7 @@
 
 var CANVAS = document.getElementById("canvas");
 var CTX = CANVAS.getContext("2d");
+CTX.imageSmoothingEnabled = false;
 CTX.fillStyle = "hsla(0, 0%, 85%, 0.35)";
 
 var HALF_HEIGHT = CANVAS.height / 2;

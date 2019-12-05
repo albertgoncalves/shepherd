@@ -7,6 +7,7 @@ function randomBetween(a, b) {
 var CANVAS = document.getElementById("canvas");
 var CTX = CANVAS.getContext("2d");
 var COLOR = "hsl(0, 0%, 90%)";
+CTX.imageSmoothingEnabled = false;
 CTX.strokeStyle = COLOR;
 CTX.fillStyle = COLOR;
 CTX.lineWidth = 0.65;
