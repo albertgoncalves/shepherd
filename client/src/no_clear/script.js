@@ -28,15 +28,15 @@ var CENTER = MAGNITUDE / 2;
 var K;
 
 var RELOAD = 60 * 12;
-var L = RELOAD + 1;
+var ELAPSED = RELOAD + 1;
 
 function loop() {
-    if (RELOAD < L) {
+    if (RELOAD < ELAPSED) {
         CTX.clearRect(0, 0, CANVAS.width, CANVAS.height);
         init();
-        L = 0;
+        ELAPSED = 0;
     } else {
-        L += 1;
+        ELAPSED += 1;
     }
     for (var i = 0; i < N; i++) {
         PIXELS[i].speedRegular += (Math.random() * MAGNITUDE) - CENTER;
