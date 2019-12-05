@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+set -e
+
+cd "$GOPATH" || exit
+go build -o ./bin/main ./main.go
+./bin/main

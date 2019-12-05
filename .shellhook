@@ -3,12 +3,16 @@
 export WD=$PWD
 export JSPATH="$WD/client"
 export GOPATH="$WD/server"
+export HOST
+export PORT="8080"
 
 if [ "$(uname -s)" = "Darwin" ]; then
     alias ls="ls --color=auto"
     alias ll="ls -l"
+    HOST=$(ipconfig getifaddr en0 || ipconfig getifaddr en1)
 else
     alias open="xdg-open"
+    HOST=$(hostname -I | cut -d " " -f 1)
 fi
 
 if [ ! -d "$GOPATH/bin" ]; then
@@ -44,18 +48,6 @@ goall() {
     cd "$wd" || exit
 }
 
-govets() {
-    wd=$(pwd)
-    cd "$GOPATH/src" || exit
-    src=$(
-        find -- * -prune -type d \
-            -not -name "*golang.org*" \
-            | tr '\r\n' ' '
-    )
-    eval "go vet -v $src"
-    cd "$wd" || exit
-}
-
 if [ ! -f "$JSPATH/.jsinit" ]; then
     npm install --save-dev jshint
     touch "$JSPATH/.jsinit"
@@ -78,5 +70,4 @@ jsfmts () {
 export -f gofmts
 export -f golint
 export -f goall
-export -f govets
 export -f jsfmts
