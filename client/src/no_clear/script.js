@@ -6,7 +6,6 @@ CTX.imageSmoothingEnabled = false;
 CTX.fillStyle = "hsla(0, 0%, 85%, 0.35)";
 
 var HALF_HEIGHT = CANVAS.height / 2;
-
 var N = CANVAS.width;
 var PIXELS = new Array(N);
 
@@ -26,7 +25,6 @@ var UPPER = CANVAS.height - LOWER;
 var MAGNITUDE = 0.1;
 var CENTER = MAGNITUDE / 2;
 var K;
-
 var RELOAD = 60 * 12;
 var ELAPSED = RELOAD + 1;
 

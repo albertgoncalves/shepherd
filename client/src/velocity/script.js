@@ -10,10 +10,10 @@ CTX.strokeStyle = COLOR;
 var PI_2 = Math.PI * 2;
 var RADIUS = 3;
 var HALF_HEIGHT = CANVAS.height / 2;
-
 var N = 300;
 var M = N - 1;
 var CIRCLES = new Array(N);
+
 for (var i = 0; i < N; i++) {
     CIRCLES[i] = {
         x: CANVAS.width * ((i + 0.5) / N),

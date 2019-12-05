@@ -40,15 +40,14 @@ golint() {
 }
 
 goall() {
-    wd=$(pwd)
     cd "$GOPATH" || exit
     find . -type f -name '*.go' \
         -not -path "*golang.org*" \
         -exec bash -c 'echo "$0"; golint "$0"; gofmts "$0"' {} \;
-    cd "$wd" || exit
 }
 
 if [ ! -f "$JSPATH/.jsinit" ]; then
+    cd "$JSPATH" || exit
     npm install --save-dev jshint
     touch "$JSPATH/.jsinit"
 fi

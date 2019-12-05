@@ -10,9 +10,7 @@ CTX.lineWidth = 1;
 
 var PI_2 = Math.PI * 2;
 var RADIUS = 2.5;
-
-var SHORT_SIDE;
-var DELTA;
+var SHORT_SIDE, DELTA;
 
 if (CANVAS.width < CANVAS.height) {
     SHORT_SIDE = CANVAS.width;
@@ -25,42 +23,46 @@ if (CANVAS.width < CANVAS.height) {
 var N = 9;
 var M = N * N;
 var CIRCLES = new Array(M);
+var NEIGHBORS, INDEX;
+
+for (var i = 0; i < N; i++) {
+    for (var j = 0; j < N; j++) {
+        NEIGHBORS = [];
+        if (j !== 0) {
+            NEIGHBORS.push(j - 1 + (i * N));
+        }
+        if (j !== (N - 1)) {
+            NEIGHBORS.push(j + 1 + (i * N));
+        }
+        if (i !== 0) {
+            NEIGHBORS.push(j + ((i - 1) * N));
+        }
+        if (i !== (N - 1)) {
+            NEIGHBORS.push(j + ((i + 1) * N));
+        }
+        CIRCLES[j + (i * N)] = {
+            neighbors: NEIGHBORS,
+            x: 0,
+            y: 0,
+            weight: 0,
+            polarity: true,
+        };
+    }
+}
 
 function init() {
     for (var i = 0; i < N; i++) {
         for (var j = 0; j < N; j++) {
-            var neighbors = [];
-            if (j !== 0) {
-                neighbors.push(j - 1 + (i * N));
-            }
-            if (j !== (N - 1)) {
-                neighbors.push(j + 1 + (i * N));
-            }
-            if (i !== 0) {
-                neighbors.push(j + ((i - 1) * N));
-            }
-            if (i !== (N - 1)) {
-                neighbors.push(j + ((i + 1) * N));
-            }
-            CIRCLES[j + (i * N)] = {
-                x: DELTA + (SHORT_SIDE * ((i + 0.5) / N)),
-                y: SHORT_SIDE * ((j + 0.5) / N),
-                neighbors: neighbors,
-                weight: Math.random(),
-                polarity: Math.random() < 0.5 ? true : false,
-            };
+            INDEX = j + (i * N);
+            CIRCLES[INDEX].x = DELTA + (SHORT_SIDE * ((i + 0.5) / N));
+            CIRCLES[INDEX].y = SHORT_SIDE * ((j + 0.5) / N);
+            CIRCLES[INDEX].weight = Math.random();
+            CIRCLES[INDEX].polarity = Math.random() < 0.5 ? true : false;
         }
     }
 }
 
-var DRAG;
-var X;
-var Y;
-var NORM;
-var INDEX;
-var X_MOVE;
-var Y_MOVE;
-
+var DRAG, X, Y, NORM, X_MOVE, Y_MOVE;
 var RELOAD = 60 * 15;
 var ELAPSED = RELOAD + 1;
 
