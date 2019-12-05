@@ -4,7 +4,7 @@ export WD=$PWD
 export JSPATH="$WD/client"
 export GOPATH="$WD/server"
 export HOST
-export PORT="8080"
+export PORT="8085"
 
 if [ "$(uname -s)" = "Darwin" ]; then
     alias ls="ls --color=auto"
