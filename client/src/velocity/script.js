@@ -12,6 +12,7 @@ var PI_2 = Math.PI * 2;
 var RADIUS = 3;
 var HALF_HEIGHT = CANVAS.height / 2;
 var N = 300;
+var M = N - 1;
 var XS = new Array(N);
 var YS = new Array(N);
 var SPEEDS_IND = new Array(N);
@@ -62,7 +63,7 @@ function loop() {
         }
     }
     CTX.beginPath();
-    for (var l = 1; l < N; l++) {
+    for (var l = 1; l < M; l++) {
         CTX.moveTo(XS[l], YS[l]);
         CTX.arc(XS[l], YS[l], RADIUS, 0, PI_2);
         CTX.moveTo(XS[l], YS[l]);
