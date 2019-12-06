@@ -4,8 +4,9 @@ var CANVAS = document.getElementById("canvas");
 var CTX = CANVAS.getContext("2d");
 var COLOR = "hsl(0, 0%, 90%)";
 CTX.imageSmoothingEnabled = false;
-CTX.fillStyle = COLOR;
 CTX.strokeStyle = COLOR;
+CTX.fillStyle = COLOR;
+CTX.lineWidth = 1;
 
 var PI_2 = Math.PI * 2;
 var RADIUS = 3;
