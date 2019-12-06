@@ -53,14 +53,10 @@ function loop() {
         YS[i] += (Math.random() * MAGNITUDE) - CENTER;
         XS[i] += (((XS[INDEX_LEFT] + XS[INDEX_RIGHT]) / 2) - XS[i]) / DRAG;
         YS[i] += (((YS[INDEX_LEFT] + YS[INDEX_RIGHT]) / 2) - YS[i]) / DRAG;
-        {
-            CTX.moveTo(XS[INDEX_LEFT], YS[INDEX_LEFT]);
-            CTX.lineTo(XS[i], YS[i]);
-        }
-        {
-            CTX.moveTo(XS[i], YS[i]);
-            CTX.arc(XS[i], YS[i], RADIUS, 0, PI_2);
-        }
+        CTX.moveTo(XS[INDEX_LEFT], YS[INDEX_LEFT]);
+        CTX.lineTo(XS[i], YS[i]);
+        CTX.moveTo(XS[i], YS[i]);
+        CTX.arc(XS[i], YS[i], RADIUS, 0, PI_2);
     }
     CTX.stroke();
     CTX.fill();
