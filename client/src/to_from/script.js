@@ -18,15 +18,16 @@ function randomBetween() {
 }
 
 var N = 50;
-var CIRCLES = new Array(N);
+var XS = new Array(N);
+var YS_TO = new Array(N);
+var YS_FROM = new Array(N);
+var DELTAS = new Array(N);
 
 for (var i = 0; i < N; i++) {
-    CIRCLES[i] = {
-        x: CANVAS.width * ((i + 0.5) / N),
-        yTo: randomBetween(),
-        yFrom: randomBetween(),
-        delta: 0,
-    };
+    XS[i] = CANVAS.width * ((i + 0.5) / N);
+    YS_TO[i] = randomBetween();
+    YS_FROM[i] = randomBetween();
+    DELTAS[i] = 0;
 }
 
 var DRAG = 50;
@@ -37,21 +38,21 @@ function loop() {
     CTX.clearRect(0, 0, CANVAS.width, CANVAS.height);
     RESET = true;
     for (var i = 0; i < N; i++) {
-        CIRCLES[i].delta = (CIRCLES[i].yTo - CIRCLES[i].yFrom);
-        if (RESET && (THRESHOLD < CIRCLES[i].delta)) {
+        DELTAS[i] = (YS_TO[i] - YS_FROM[i]);
+        if (RESET && (THRESHOLD < DELTAS[i])) {
             RESET = false;
         }
     }
     for (var j = 0; j < N; j++) {
-        CIRCLES[j].yFrom += CIRCLES[j].delta / DRAG;
+        YS_FROM[j] += DELTAS[j] / DRAG;
         if (RESET) {
-            CIRCLES[j].yTo = randomBetween();
+            YS_TO[j] = randomBetween();
         }
         CTX.beginPath();
-        CTX.arc(CIRCLES[j].x, CIRCLES[j].yTo, RADIUS, 0, PI_2);
+        CTX.arc(XS[j], YS_TO[j], RADIUS, 0, PI_2);
         CTX.stroke();
         CTX.beginPath();
-        CTX.arc(CIRCLES[j].x, CIRCLES[j].yFrom, RADIUS, 0, PI_2);
+        CTX.arc(XS[j], YS_FROM[j], RADIUS, 0, PI_2);
         CTX.fill();
     }
     requestAnimationFrame(loop);

@@ -7,16 +7,17 @@ CTX.fillStyle = "hsla(0, 0%, 85%, 0.35)";
 
 var HALF_HEIGHT = CANVAS.height / 2;
 var N = CANVAS.width;
-var PIXELS = new Array(N);
+var XS = new Array(N);
+var YS = new Array(N);
+var SPEEDS_IND = new Array(N);
+var SPEEDS_AGG = new Array(N);
 
 function init() {
     for (var i = 0; i < N; i++) {
-        PIXELS[i] = {
-            x: CANVAS.width * ((i + 0.5) / N),
-            y: HALF_HEIGHT,
-            speedRegular: 0,
-            speedSpecial: 0,
-        };
+        XS[i] = CANVAS.width * ((i + 0.5) / N);
+        YS[i] = HALF_HEIGHT;
+        SPEEDS_IND[i] = 0;
+        SPEEDS_AGG[i] = 0;
     }
 }
 
@@ -37,24 +38,24 @@ function loop() {
         ELAPSED += 1;
     }
     for (var i = 0; i < N; i++) {
-        PIXELS[i].speedRegular += (Math.random() * MAGNITUDE) - CENTER;
+        SPEEDS_IND[i] += (Math.random() * MAGNITUDE) - CENTER;
         K = 0;
         for (var j = 0; j <= i; j++) {
-            PIXELS[i].speedSpecial += PIXELS[j].speedRegular;
+            SPEEDS_AGG[i] += SPEEDS_IND[j];
             K += 1;
         }
-        PIXELS[i].y += PIXELS[i].speedSpecial / K;
-        if (PIXELS[i].y < LOWER) {
-            PIXELS[i].y = LOWER;
-            PIXELS[i].speedSpecial = 0;
-        } else if (UPPER < PIXELS[i].y) {
-            PIXELS[i].y = UPPER;
-            PIXELS[i].speedSpecial = 0;
+        YS[i] += SPEEDS_AGG[i] / K;
+        if (YS[i] < LOWER) {
+            YS[i] = LOWER;
+            SPEEDS_AGG[i] = 0;
+        } else if (UPPER < YS[i]) {
+            YS[i] = UPPER;
+            SPEEDS_AGG[i] = 0;
         }
     }
     for (var k = 0; k < N; k++) {
         CTX.beginPath();
-        CTX.fillRect(PIXELS[k].x, PIXELS[k].y, 1, 1);
+        CTX.fillRect(XS[k], YS[k], 1, 1);
         CTX.fill();
     }
     requestAnimationFrame(loop);
