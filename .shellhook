@@ -50,6 +50,7 @@ if [ ! -f "$JSPATH/.jsinit" ]; then
     cd "$JSPATH" || exit
     npm install --save-dev jshint
     touch "$JSPATH/.jsinit"
+    cd "$WD" || exit
 fi
 
 jsall () {

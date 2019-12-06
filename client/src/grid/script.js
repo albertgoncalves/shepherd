@@ -2,14 +2,14 @@
 
 var CANVAS = document.getElementById("canvas");
 var CTX = CANVAS.getContext("2d");
-var COLOR = "hsl(0, 0%, 25%)";
+var COLOR = "hsl(0, 0%, 40%)";
 CTX.imageSmoothingEnabled = false;
 CTX.strokeStyle = COLOR;
 CTX.fillStyle = COLOR;
-CTX.lineWidth = 1;
+CTX.lineWidth = 4;
 
 var PI_2 = Math.PI * 2;
-var RADIUS = 2.5;
+var RADIUS = 7;
 var SHORT_SIDE, DELTA;
 
 if (CANVAS.width < CANVAS.height) {
