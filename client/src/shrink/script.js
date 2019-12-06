@@ -10,8 +10,8 @@ CTX.imageSmoothingEnabled = false;
 
 var PI_2 = Math.PI * 2;
 var RADIUS = 5;
-var N = 30;
-var OFFSET = 250;
+var N = 25;
+var SPREAD = 275;
 var HALF_WIDTH = CANVAS.width / 2;
 var HALF_HEIGHT = CANVAS.height / 2;
 var ANGLES = new Array(N);
@@ -24,17 +24,19 @@ function init() {
     }
     ANGLES.sort();
     for (i = 0; i < N; i++) {
-        XS[i] = (Math.cos(ANGLES[i]) * OFFSET) + HALF_WIDTH;
-        YS[i] = (Math.sin(ANGLES[i]) * OFFSET) + HALF_HEIGHT;
+        XS[i] = (Math.cos(ANGLES[i]) * SPREAD) + HALF_WIDTH;
+        YS[i] = (Math.sin(ANGLES[i]) * SPREAD) + HALF_HEIGHT;
     }
 }
 
-var DRAG = 50;
-var RESET = 60 * 8;
+var DRAG = 15;
+var RESET = 60 * 4;
 var ELAPSED = RESET + 1;
-var LEFT, RIGHT;
+var INDEX_LEFT, INDEX_RIGHT;
+var MAGNITUDE = 2;
+var CENTER = MAGNITUDE / 2;
 
-function reset() {
+function loop() {
     CTX.clearRect(0, 0, CANVAS.width, CANVAS.height);
     if (RESET < ELAPSED) {
         init();
@@ -42,39 +44,25 @@ function reset() {
     } else {
         ELAPSED += 1;
     }
-}
-
-function update() {
     for (var i = 0; i < N; i++) {
-        LEFT = (N + i - 1) % N;
-        RIGHT = (N + i + 1) % N;
-        XS[i] += (((XS[LEFT] + XS[RIGHT]) / 2) - XS[i]) / DRAG;
-        YS[i] += (((YS[LEFT] + YS[RIGHT]) / 2) - YS[i]) / DRAG;
+        INDEX_LEFT = (N + i - 1) % N;
+        INDEX_RIGHT = (N + i + 1) % N;
+        XS[i] += (Math.random() * MAGNITUDE) - CENTER;
+        YS[i] += (Math.random() * MAGNITUDE) - CENTER;
+        XS[i] += (((XS[INDEX_LEFT] + XS[INDEX_RIGHT]) / 2) - XS[i]) / DRAG;
+        YS[i] += (((YS[INDEX_LEFT] + YS[INDEX_RIGHT]) / 2) - YS[i]) / DRAG;
     }
-}
-
-function drawPoints() {
-    for (var i = 0; i < N; i++) {
+    for (i = 0; i < N; i++) {
         CTX.beginPath();
         CTX.arc(XS[i], YS[i], RADIUS, 0, PI_2);
         CTX.fill();
     }
-}
-
-function drawLines() {
     CTX.beginPath();
-    for (var i = 0; i < N; i++) {
+    for (i = 0; i < N; i++) {
         CTX.lineTo(XS[i], YS[i]);
     }
     CTX.lineTo(XS[0], YS[0]);
     CTX.stroke();
-}
-
-function loop() {
-    reset();
-    update();
-    drawPoints();
-    drawLines();
     requestAnimationFrame(loop);
 }
 
