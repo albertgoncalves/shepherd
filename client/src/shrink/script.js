@@ -33,9 +33,7 @@ function init() {
 var DRAG = 10;
 var RESET = 60 * 3;
 var ELAPSED = RESET + 1;
-var INDEX_LEFT, INDEX_RIGHT;
-var MAGNITUDE = 1.75;
-var CENTER = MAGNITUDE / 2;
+var LEFT, RIGHT;
 
 function loop() {
     CTX.clearRect(0, 0, CANVAS.width, CANVAS.height);
@@ -47,13 +45,11 @@ function loop() {
     }
     CTX.beginPath();
     for (var i = 0; i < N; i++) {
-        INDEX_LEFT = i === 0 ? M : i - 1;
-        INDEX_RIGHT = i === M ? 0 : i + 1;
-        XS[i] += (Math.random() * MAGNITUDE) - CENTER;
-        YS[i] += (Math.random() * MAGNITUDE) - CENTER;
-        XS[i] += (((XS[INDEX_LEFT] + XS[INDEX_RIGHT]) / 2) - XS[i]) / DRAG;
-        YS[i] += (((YS[INDEX_LEFT] + YS[INDEX_RIGHT]) / 2) - YS[i]) / DRAG;
-        CTX.moveTo(XS[INDEX_LEFT], YS[INDEX_LEFT]);
+        LEFT = i === 0 ? M : i - 1;
+        RIGHT = i === M ? 0 : i + 1;
+        XS[i] += (((XS[LEFT] + XS[RIGHT]) / 2) - XS[i]) / DRAG;
+        YS[i] += (((YS[LEFT] + YS[RIGHT]) / 2) - YS[i]) / DRAG;
+        CTX.moveTo(XS[LEFT], YS[LEFT]);
         CTX.lineTo(XS[i], YS[i]);
         CTX.moveTo(XS[i], YS[i]);
         CTX.arc(XS[i], YS[i], RADIUS, 0, PI_2);
