@@ -56,7 +56,6 @@ function loop() {
     for (var k = 0; k < N; k++) {
         CTX.fillRect(XS[k], YS[k], 1, 1);
     }
-    CTX.fill();
     requestAnimationFrame(loop);
 }
 
