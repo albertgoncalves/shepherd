@@ -11,6 +11,7 @@
 !velocity/
 !no_clear/
 !grid/
+!expand/
 !*.html
 !*.css
 !js/
