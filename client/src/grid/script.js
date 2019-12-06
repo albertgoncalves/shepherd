@@ -2,14 +2,14 @@
 
 var CANVAS = document.getElementById("canvas");
 var CTX = CANVAS.getContext("2d");
-var COLOR = "hsl(0, 0%, 40%)";
+var COLOR = "hsl(0, 0%, 35%)";
 CTX.imageSmoothingEnabled = false;
 CTX.strokeStyle = COLOR;
 CTX.fillStyle = COLOR;
 CTX.lineWidth = 4;
 
 var PI_2 = Math.PI * 2;
-var RADIUS = 7;
+var RADIUS = 6;
 var SHORT_SIDE, DELTA;
 
 if (CANVAS.width < CANVAS.height) {
@@ -62,7 +62,7 @@ function init() {
     }
 }
 
-var DRAG, X, Y, NORM, X_MOVE, Y_MOVE;
+var DRAG, X, Y, NORM, X_MOVE, Y_MOVE, LEFT, RIGHT;
 var RELOAD = 60 * 15;
 var ELAPSED = RELOAD + 1;
 
@@ -76,6 +76,7 @@ function loop() {
         DRAG += 1;
         ELAPSED += 1;
     }
+    CTX.beginPath();
     for (var i = 0; i < M; i++) {
         X = 0;
         Y = 0;
@@ -95,24 +96,26 @@ function loop() {
             CIRCLES[i].x -= X_MOVE;
             CIRCLES[i].y -= Y_MOVE;
         }
-        CTX.beginPath();
+        CTX.moveTo(CIRCLES[i].x, CIRCLES[i].y);
         CTX.arc(CIRCLES[i].x, CIRCLES[i].y, RADIUS, 0, PI_2);
-        CTX.fill();
     }
+    CTX.fill();
+    CTX.beginPath();
     for (var k = 0; k < N; k++) {
-        CTX.beginPath();
-        for (var l = 0; l < N; l++) {
-            INDEX = k + (l * N);
-            CTX.lineTo(CIRCLES[INDEX].x, CIRCLES[INDEX].y);
+        for (var l = 1; l < N; l++) {
+            LEFT = k + ((l - 1) * N);
+            RIGHT = k + (l * N);
+            CTX.moveTo(CIRCLES[LEFT].x, CIRCLES[LEFT].y);
+            CTX.lineTo(CIRCLES[RIGHT].x, CIRCLES[RIGHT].y);
         }
-        CTX.stroke();
-        CTX.beginPath();
-        for (var m = 0; m < N; m++) {
-            INDEX = m + (k * N);
-            CTX.lineTo(CIRCLES[INDEX].x, CIRCLES[INDEX].y);
+        for (var m = 1; m < N; m++) {
+            LEFT = (m - 1) + (k * N);
+            RIGHT = m + (k * N);
+            CTX.moveTo(CIRCLES[LEFT].x, CIRCLES[LEFT].y);
+            CTX.lineTo(CIRCLES[RIGHT].x, CIRCLES[RIGHT].y);
         }
-        CTX.stroke();
     }
+    CTX.stroke();
     requestAnimationFrame(loop);
 }
 

@@ -45,6 +45,7 @@ function loop() {
     } else {
         ELAPSED += 1;
     }
+    CTX.beginPath();
     for (var i = 0; i < N; i++) {
         INDEX_LEFT = i === 0 ? M : i - 1;
         INDEX_RIGHT = i === M ? 0 : i + 1;
@@ -53,17 +54,16 @@ function loop() {
         XS[i] += (((XS[INDEX_LEFT] + XS[INDEX_RIGHT]) / 2) - XS[i]) / DRAG;
         YS[i] += (((YS[INDEX_LEFT] + YS[INDEX_RIGHT]) / 2) - YS[i]) / DRAG;
         {
-            CTX.beginPath();
-            CTX.lineTo(XS[INDEX_LEFT], YS[INDEX_LEFT]);
+            CTX.moveTo(XS[INDEX_LEFT], YS[INDEX_LEFT]);
             CTX.lineTo(XS[i], YS[i]);
-            CTX.stroke();
         }
         {
-            CTX.beginPath();
+            CTX.moveTo(XS[i], YS[i]);
             CTX.arc(XS[i], YS[i], RADIUS, 0, PI_2);
-            CTX.fill();
         }
     }
+    CTX.stroke();
+    CTX.fill();
     requestAnimationFrame(loop);
 }
 
