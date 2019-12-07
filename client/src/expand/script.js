@@ -36,18 +36,18 @@ function init() {
     }
 }
 
-var DRAG = 45;
-var RESET = 60 * 5;
-var ELAPSED = RESET + 1;
-var PROXIMITY = 100;
-var MAGNITUDE = 1.25;
-var CENTER = MAGNITUDE / 2;
-
 function distance(i, j) {
     var x = XS[i] - XS[j];
     var y = YS[i] - YS[j];
     return Math.sqrt((x * x) + (y * y));
 }
+
+var RESET = 60 * 5;
+var ELAPSED = RESET + 1;
+var DRAG = 45;
+var PROXIMITY = 100;
+var MAGNITUDE = 1.25;
+var CENTER = MAGNITUDE / 2;
 
 function loop() {
     var i, j, x, y;
