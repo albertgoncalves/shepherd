@@ -19,6 +19,7 @@ var N = 3;
 var M = N - 1;
 var LIMIT = 15;
 var NODES = new Array(LIMIT);
+
 for (var i = 0; i < N; i++) {
     NODES[i] = {
         x: randomBetween(0, CANVAS.width),
