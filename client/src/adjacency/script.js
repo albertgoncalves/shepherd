@@ -15,26 +15,37 @@ function randomBetween(a, b) {
     return a + (Math.random() * (b - a));
 }
 
-var N = 3;
-var M = N - 1;
 var LIMIT = 15;
-var NODES = new Array(LIMIT);
+var NODES, N, M;
 
-for (var i = 0; i < N; i++) {
-    NODES[i] = {
-        x: randomBetween(0, CANVAS.width),
-        y: randomBetween(0, CANVAS.height),
-        left: i === 0 ? M : i - 1,
-        right: i === M ? 0 : i + 1,
-    };
+function init() {
+    N = 3;
+    M = N - 1;
+    NODES = new Array(LIMIT);
+    for (var i = 0; i < N; i++) {
+        NODES[i] = {
+            x: randomBetween(0, CANVAS.width),
+            y: randomBetween(0, CANVAS.height),
+            left: i === 0 ? M : i - 1,
+            right: i === M ? 0 : i + 1,
+        };
+    }
 }
 
+var RESET = 60 * 5;
+var ELAPSED = RESET + 1;
 var MAGNITUDE = 1;
 var CENTER = MAGNITUDE / 2;
 
 function loop() {
     var i, index, x, y, left, right, w1, w2, w3, w4;
     CTX.clearRect(0, 0, CANVAS.width, CANVAS.height);
+    if (RESET < ELAPSED) {
+        init();
+        ELAPSED = 0;
+    } else {
+        ELAPSED += 1;
+    }
     if (N < LIMIT) {
         left = Math.floor(Math.random() * N);
         right = NODES[left].right;
