@@ -35,6 +35,7 @@ var RESET = 60 * 3;
 var ELAPSED = RESET + 1;
 
 function loop() {
+    var i, x, y, left, right;
     CTX.clearRect(0, 0, CANVAS.width, CANVAS.height);
     if (RESET < ELAPSED) {
         init();
@@ -43,10 +44,9 @@ function loop() {
         ELAPSED += 1;
     }
     CTX.beginPath();
-    var i;
     for (i = 0; i < N; i++) {
-        var left = i === 0 ? M : i - 1;
-        var right = i === M ? 0 : i + 1;
+        left = i === 0 ? M : i - 1;
+        right = i === M ? 0 : i + 1;
         XS[i] += (((XS[left] + XS[right]) / 2) - XS[i]) / DRAG;
         YS[i] += (((YS[left] + YS[right]) / 2) - YS[i]) / DRAG;
         CTX.moveTo(XS[left], YS[left]);
@@ -55,8 +55,10 @@ function loop() {
     CTX.stroke();
     CTX.beginPath();
     for (i = 0; i < N; i++) {
-        CTX.moveTo(XS[i], YS[i]);
-        CTX.arc(XS[i], YS[i], RADIUS, 0, PI_2);
+        x = XS[i];
+        y = YS[i];
+        CTX.moveTo(x, y);
+        CTX.arc(x, y, RADIUS, 0, PI_2);
     }
     CTX.fill();
     requestAnimationFrame(loop);

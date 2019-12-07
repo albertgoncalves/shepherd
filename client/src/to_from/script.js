@@ -35,9 +35,9 @@ var THRESHOLD = 1;
 var RESET;
 
 function loop() {
+    var i, x, y;
     CTX.clearRect(0, 0, CANVAS.width, CANVAS.height);
     RESET = true;
-    var i;
     for (i = 0; i < N; i++) {
         DELTAS[i] = (YS_TO[i] - YS_FROM[i]);
         if (RESET && (THRESHOLD < DELTAS[i])) {
@@ -55,8 +55,10 @@ function loop() {
     CTX.beginPath();
     for (i = 0; i < N; i++) {
         YS_FROM[i] += DELTAS[i] / DRAG;
-        CTX.moveTo(XS[i], YS_FROM[i]);
-        CTX.arc(XS[i], YS_FROM[i], RADIUS, 0, PI_2);
+        x = XS[i];
+        y = YS_FROM[i];
+        CTX.moveTo(x, y);
+        CTX.arc(x, y, RADIUS, 0, PI_2);
     }
     CTX.fill();
     requestAnimationFrame(loop);

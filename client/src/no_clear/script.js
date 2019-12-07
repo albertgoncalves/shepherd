@@ -29,6 +29,7 @@ var RELOAD = 60 * 12;
 var ELAPSED = RELOAD + 1;
 
 function loop() {
+    var i, j, norm;
     if (RELOAD < ELAPSED) {
         CTX.clearRect(0, 0, CANVAS.width, CANVAS.height);
         init();
@@ -36,10 +37,9 @@ function loop() {
     } else {
         ELAPSED += 1;
     }
-    var i, j;
     for (i = 0; i < N; i++) {
         SPEEDS_IND[i] += (Math.random() * MAGNITUDE) - CENTER;
-        var norm = 0;
+        norm = 0;
         for (j = 0; j <= i; j++) {
             SPEEDS_AGG[i] += SPEEDS_IND[j];
             norm += 1;

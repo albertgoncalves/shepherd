@@ -35,11 +35,11 @@ var OFFSET_LOWER = CENTER * (1 - OFFSET);
 var OFFSET_UPPER = CENTER * (1 + OFFSET);
 
 function loop() {
+    var i, j, x, y, norm;
     CTX.clearRect(0, 0, CANVAS.width, CANVAS.height);
-    var i, j;
     for (i = 0; i < N; i++) {
         SPEEDS_IND[i] += (Math.random() * MAGNITUDE) - CENTER;
-        var norm = 0;
+        norm = 0;
         if (SPEEDS_AGG[i] < 0) {
             for (j = 0; j < i; j++) {
                 SPEEDS_AGG[i] += SPEEDS_IND[j];
@@ -64,14 +64,18 @@ function loop() {
     }
     CTX.beginPath();
     for (i = 1; i < M; i++) {
-        CTX.moveTo(XS[i], YS[i]);
-        CTX.arc(XS[i], YS[i], RADIUS, 0, PI_2);
+        x = XS[i];
+        y = YS[i];
+        CTX.moveTo(x, y);
+        CTX.arc(x, y, RADIUS, 0, PI_2);
     }
     CTX.fill();
     CTX.beginPath();
     for (i = 1; i < M; i++) {
-        CTX.moveTo(XS[i], YS[i]);
-        CTX.lineTo(XS[i], YS[i] + (SPEEDS_IND[i] * SCALE));
+        x = XS[i];
+        y = YS[i];
+        CTX.moveTo(x, y);
+        CTX.lineTo(x, y + (SPEEDS_IND[i] * SCALE));
     }
     CTX.stroke();
     requestAnimationFrame(loop);

@@ -25,8 +25,9 @@ var M = N * N;
 var CIRCLES = new Array(M);
 
 for (var i = 0; i < N; i++) {
+    var neighbors;
     for (var j = 0; j < N; j++) {
-        var neighbors = [];
+        neighbors = [];
         if (j !== 0) {
             neighbors.push(j - 1 + (i * N));
         }
@@ -50,9 +51,10 @@ for (var i = 0; i < N; i++) {
 }
 
 function init() {
+    var index;
     for (var i = 0; i < N; i++) {
         for (var j = 0; j < N; j++) {
-            var index = j + (i * N);
+            index = j + (i * N);
             CIRCLES[index].x = DELTA + (SHORT_SIDE * ((i + 0.5) / N));
             CIRCLES[index].y = SHORT_SIDE * ((j + 0.5) / N);
             CIRCLES[index].weight = Math.random();
@@ -66,6 +68,7 @@ var ELAPSED = RELOAD + 1;
 var DRAG;
 
 function loop() {
+    var i, j, index, x, y, xMove, yMove, norm, left, right;
     CTX.clearRect(0, 0, CANVAS.width, CANVAS.height);
     if (RELOAD < ELAPSED) {
         init();
@@ -76,19 +79,18 @@ function loop() {
         ELAPSED += 1;
     }
     CTX.beginPath();
-    var i, j;
     for (i = 0; i < M; i++) {
-        var x = 0;
-        var y = 0;
-        var norm = 0;
+        xMove = 0;
+        yMove = 0;
+        norm = 0;
         for (j = 0; j < CIRCLES[i].neighbors.length; j++) {
-            var index = CIRCLES[i].neighbors[j];
-            x += CIRCLES[index].x * CIRCLES[index].weight;
-            y += CIRCLES[index].y * CIRCLES[index].weight;
+            index = CIRCLES[i].neighbors[j];
+            xMove += CIRCLES[index].x * CIRCLES[index].weight;
+            yMove += CIRCLES[index].y * CIRCLES[index].weight;
             norm += CIRCLES[index].weight;
         }
-        var xMove = ((x / norm) - CIRCLES[i].x) / DRAG;
-        var yMove = ((y / norm) - CIRCLES[i].y) / DRAG;
+        xMove = ((xMove / norm) - CIRCLES[i].x) / DRAG;
+        yMove = ((yMove / norm) - CIRCLES[i].y) / DRAG;
         if (CIRCLES[i].polarity) {
             CIRCLES[i].x += xMove;
             CIRCLES[i].y += yMove;
@@ -96,13 +98,14 @@ function loop() {
             CIRCLES[i].x -= xMove;
             CIRCLES[i].y -= yMove;
         }
-        CTX.moveTo(CIRCLES[i].x, CIRCLES[i].y);
-        CTX.arc(CIRCLES[i].x, CIRCLES[i].y, RADIUS, 0, PI_2);
+        x = CIRCLES[i].x;
+        y = CIRCLES[i].y;
+        CTX.moveTo(x, y);
+        CTX.arc(x, y, RADIUS, 0, PI_2);
     }
     CTX.fill();
     CTX.beginPath();
     for (i = 0; i < N; i++) {
-        var left, right;
         for (j = 1; j < N; j++) {
             left = i + ((j - 1) * N);
             right = i + (j * N);

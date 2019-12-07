@@ -50,6 +50,7 @@ function distance(i, j) {
 }
 
 function loop() {
+    var i, j, x, y;
     CTX.clearRect(0, 0, CANVAS.width, CANVAS.height);
     if (RESET < ELAPSED) {
         init();
@@ -57,7 +58,6 @@ function loop() {
     } else {
         ELAPSED += 1;
     }
-    var i, j;
     for (i = 0; i < N; i++) {
         XS_NEXT[i] = 0;
         YS_NEXT[i] = 0;
@@ -90,8 +90,10 @@ function loop() {
     CTX.stroke();
     CTX.beginPath();
     for (i = 0; i < N; i++) {
-        CTX.moveTo(XS[i], YS[i]);
-        CTX.arc(XS[i], YS[i], RADIUS, 0, PI_2);
+        x = XS[i];
+        y = YS[i];
+        CTX.moveTo(x, y);
+        CTX.arc(x, y, RADIUS, 0, PI_2);
     }
     CTX.fill();
     requestAnimationFrame(loop);
