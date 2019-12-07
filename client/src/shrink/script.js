@@ -9,7 +9,7 @@ CTX.fillStyle = COLOR;
 CTX.lineWidth = 4;
 
 var PI_2 = Math.PI * 2;
-var RADIUS = 5;
+var RADIUS = 7;
 var N = 20;
 var M = N - 1;
 var SPREAD = 275;
@@ -33,7 +33,6 @@ function init() {
 var DRAG = 10;
 var RESET = 60 * 3;
 var ELAPSED = RESET + 1;
-var LEFT, RIGHT;
 
 function loop() {
     CTX.clearRect(0, 0, CANVAS.width, CANVAS.height);
@@ -44,17 +43,21 @@ function loop() {
         ELAPSED += 1;
     }
     CTX.beginPath();
-    for (var i = 0; i < N; i++) {
-        LEFT = i === 0 ? M : i - 1;
-        RIGHT = i === M ? 0 : i + 1;
-        XS[i] += (((XS[LEFT] + XS[RIGHT]) / 2) - XS[i]) / DRAG;
-        YS[i] += (((YS[LEFT] + YS[RIGHT]) / 2) - YS[i]) / DRAG;
-        CTX.moveTo(XS[LEFT], YS[LEFT]);
+    var i;
+    for (i = 0; i < N; i++) {
+        var left = i === 0 ? M : i - 1;
+        var right = i === M ? 0 : i + 1;
+        XS[i] += (((XS[left] + XS[right]) / 2) - XS[i]) / DRAG;
+        YS[i] += (((YS[left] + YS[right]) / 2) - YS[i]) / DRAG;
+        CTX.moveTo(XS[left], YS[left]);
         CTX.lineTo(XS[i], YS[i]);
+    }
+    CTX.stroke();
+    CTX.beginPath();
+    for (i = 0; i < N; i++) {
         CTX.moveTo(XS[i], YS[i]);
         CTX.arc(XS[i], YS[i], RADIUS, 0, PI_2);
     }
-    CTX.stroke();
     CTX.fill();
     requestAnimationFrame(loop);
 }

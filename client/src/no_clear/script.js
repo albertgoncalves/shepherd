@@ -25,7 +25,6 @@ var LOWER = CANVAS.height / 10;
 var UPPER = CANVAS.height - LOWER;
 var MAGNITUDE = 0.1;
 var CENTER = MAGNITUDE / 2;
-var K;
 var RELOAD = 60 * 12;
 var ELAPSED = RELOAD + 1;
 
@@ -37,14 +36,15 @@ function loop() {
     } else {
         ELAPSED += 1;
     }
-    for (var i = 0; i < N; i++) {
+    var i, j;
+    for (i = 0; i < N; i++) {
         SPEEDS_IND[i] += (Math.random() * MAGNITUDE) - CENTER;
-        K = 0;
-        for (var j = 0; j <= i; j++) {
+        var norm = 0;
+        for (j = 0; j <= i; j++) {
             SPEEDS_AGG[i] += SPEEDS_IND[j];
-            K += 1;
+            norm += 1;
         }
-        YS[i] += SPEEDS_AGG[i] / K;
+        YS[i] += SPEEDS_AGG[i] / norm;
         if (YS[i] < LOWER) {
             YS[i] = LOWER;
             SPEEDS_AGG[i] = 0;
@@ -53,8 +53,8 @@ function loop() {
             SPEEDS_AGG[i] = 0;
         }
     }
-    for (var k = 0; k < N; k++) {
-        CTX.fillRect(XS[k], YS[k], 1, 1);
+    for (i = 0; i < N; i++) {
+        CTX.fillRect(XS[i], YS[i], 1, 1);
     }
     requestAnimationFrame(loop);
 }

@@ -9,7 +9,7 @@ CTX.fillStyle = COLOR;
 CTX.lineWidth = 4;
 
 var PI_2 = Math.PI * 2;
-var RADIUS = 6;
+var RADIUS = 7;
 var SHORT_SIDE, DELTA;
 
 if (CANVAS.width < CANVAS.height) {
@@ -23,25 +23,24 @@ if (CANVAS.width < CANVAS.height) {
 var N = 9;
 var M = N * N;
 var CIRCLES = new Array(M);
-var NEIGHBORS, INDEX;
 
 for (var i = 0; i < N; i++) {
     for (var j = 0; j < N; j++) {
-        NEIGHBORS = [];
+        var neighbors = [];
         if (j !== 0) {
-            NEIGHBORS.push(j - 1 + (i * N));
+            neighbors.push(j - 1 + (i * N));
         }
         if (j !== (N - 1)) {
-            NEIGHBORS.push(j + 1 + (i * N));
+            neighbors.push(j + 1 + (i * N));
         }
         if (i !== 0) {
-            NEIGHBORS.push(j + ((i - 1) * N));
+            neighbors.push(j + ((i - 1) * N));
         }
         if (i !== (N - 1)) {
-            NEIGHBORS.push(j + ((i + 1) * N));
+            neighbors.push(j + ((i + 1) * N));
         }
         CIRCLES[j + (i * N)] = {
-            neighbors: NEIGHBORS,
+            neighbors: neighbors,
             x: 0,
             y: 0,
             weight: 0,
@@ -53,18 +52,18 @@ for (var i = 0; i < N; i++) {
 function init() {
     for (var i = 0; i < N; i++) {
         for (var j = 0; j < N; j++) {
-            INDEX = j + (i * N);
-            CIRCLES[INDEX].x = DELTA + (SHORT_SIDE * ((i + 0.5) / N));
-            CIRCLES[INDEX].y = SHORT_SIDE * ((j + 0.5) / N);
-            CIRCLES[INDEX].weight = Math.random();
-            CIRCLES[INDEX].polarity = Math.random() < 0.5 ? true : false;
+            var index = j + (i * N);
+            CIRCLES[index].x = DELTA + (SHORT_SIDE * ((i + 0.5) / N));
+            CIRCLES[index].y = SHORT_SIDE * ((j + 0.5) / N);
+            CIRCLES[index].weight = Math.random();
+            CIRCLES[index].polarity = Math.random() < 0.5 ? true : false;
         }
     }
 }
 
-var DRAG, X, Y, NORM, X_MOVE, Y_MOVE, LEFT, RIGHT;
 var RELOAD = 60 * 15;
 var ELAPSED = RELOAD + 1;
+var DRAG;
 
 function loop() {
     CTX.clearRect(0, 0, CANVAS.width, CANVAS.height);
@@ -77,42 +76,44 @@ function loop() {
         ELAPSED += 1;
     }
     CTX.beginPath();
-    for (var i = 0; i < M; i++) {
-        X = 0;
-        Y = 0;
-        NORM = 0;
-        for (var j = 0; j < CIRCLES[i].neighbors.length; j++) {
-            INDEX = CIRCLES[i].neighbors[j];
-            X += CIRCLES[INDEX].x * CIRCLES[INDEX].weight;
-            Y += CIRCLES[INDEX].y * CIRCLES[INDEX].weight;
-            NORM += CIRCLES[INDEX].weight;
+    var i, j;
+    for (i = 0; i < M; i++) {
+        var x = 0;
+        var y = 0;
+        var norm = 0;
+        for (j = 0; j < CIRCLES[i].neighbors.length; j++) {
+            var index = CIRCLES[i].neighbors[j];
+            x += CIRCLES[index].x * CIRCLES[index].weight;
+            y += CIRCLES[index].y * CIRCLES[index].weight;
+            norm += CIRCLES[index].weight;
         }
-        X_MOVE = ((X / NORM) - CIRCLES[i].x) / DRAG;
-        Y_MOVE = ((Y / NORM) - CIRCLES[i].y) / DRAG;
+        var xMove = ((x / norm) - CIRCLES[i].x) / DRAG;
+        var yMove = ((y / norm) - CIRCLES[i].y) / DRAG;
         if (CIRCLES[i].polarity) {
-            CIRCLES[i].x += X_MOVE;
-            CIRCLES[i].y += Y_MOVE;
+            CIRCLES[i].x += xMove;
+            CIRCLES[i].y += yMove;
         } else {
-            CIRCLES[i].x -= X_MOVE;
-            CIRCLES[i].y -= Y_MOVE;
+            CIRCLES[i].x -= xMove;
+            CIRCLES[i].y -= yMove;
         }
         CTX.moveTo(CIRCLES[i].x, CIRCLES[i].y);
         CTX.arc(CIRCLES[i].x, CIRCLES[i].y, RADIUS, 0, PI_2);
     }
     CTX.fill();
     CTX.beginPath();
-    for (var k = 0; k < N; k++) {
-        for (var l = 1; l < N; l++) {
-            LEFT = k + ((l - 1) * N);
-            RIGHT = k + (l * N);
-            CTX.moveTo(CIRCLES[LEFT].x, CIRCLES[LEFT].y);
-            CTX.lineTo(CIRCLES[RIGHT].x, CIRCLES[RIGHT].y);
+    for (i = 0; i < N; i++) {
+        var left, right;
+        for (j = 1; j < N; j++) {
+            left = i + ((j - 1) * N);
+            right = i + (j * N);
+            CTX.moveTo(CIRCLES[left].x, CIRCLES[left].y);
+            CTX.lineTo(CIRCLES[right].x, CIRCLES[right].y);
         }
-        for (var m = 1; m < N; m++) {
-            LEFT = (m - 1) + (k * N);
-            RIGHT = m + (k * N);
-            CTX.moveTo(CIRCLES[LEFT].x, CIRCLES[LEFT].y);
-            CTX.lineTo(CIRCLES[RIGHT].x, CIRCLES[RIGHT].y);
+        for (j = 1; j < N; j++) {
+            left = (j - 1) + (i * N);
+            right = j + (i * N);
+            CTX.moveTo(CIRCLES[left].x, CIRCLES[left].y);
+            CTX.lineTo(CIRCLES[right].x, CIRCLES[right].y);
         }
     }
     CTX.stroke();

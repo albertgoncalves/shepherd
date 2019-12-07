@@ -37,24 +37,28 @@ var RESET;
 function loop() {
     CTX.clearRect(0, 0, CANVAS.width, CANVAS.height);
     RESET = true;
-    for (var i = 0; i < N; i++) {
+    var i;
+    for (i = 0; i < N; i++) {
         DELTAS[i] = (YS_TO[i] - YS_FROM[i]);
         if (RESET && (THRESHOLD < DELTAS[i])) {
             RESET = false;
         }
     }
-    for (var j = 0; j < N; j++) {
-        YS_FROM[j] += DELTAS[j] / DRAG;
+    for (i = 0; i < N; i++) {
         if (RESET) {
-            YS_TO[j] = randomBetween();
+            YS_TO[i] = randomBetween();
         }
         CTX.beginPath();
-        CTX.arc(XS[j], YS_TO[j], RADIUS, 0, PI_2);
+        CTX.arc(XS[i], YS_TO[i], RADIUS, 0, PI_2);
         CTX.stroke();
-        CTX.beginPath();
-        CTX.arc(XS[j], YS_FROM[j], RADIUS, 0, PI_2);
-        CTX.fill();
     }
+    CTX.beginPath();
+    for (i = 0; i < N; i++) {
+        YS_FROM[i] += DELTAS[i] / DRAG;
+        CTX.moveTo(XS[i], YS_FROM[i]);
+        CTX.arc(XS[i], YS_FROM[i], RADIUS, 0, PI_2);
+    }
+    CTX.fill();
     requestAnimationFrame(loop);
 }
 

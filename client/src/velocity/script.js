@@ -33,25 +33,25 @@ var CENTER = MAGNITUDE / 2;
 var OFFSET = 0.3;
 var OFFSET_LOWER = CENTER * (1 - OFFSET);
 var OFFSET_UPPER = CENTER * (1 + OFFSET);
-var K;
 
 function loop() {
     CTX.clearRect(0, 0, CANVAS.width, CANVAS.height);
-    for (var i = 0; i < N; i++) {
+    var i, j;
+    for (i = 0; i < N; i++) {
         SPEEDS_IND[i] += (Math.random() * MAGNITUDE) - CENTER;
-        K = 0;
+        var norm = 0;
         if (SPEEDS_AGG[i] < 0) {
-            for (var j = 0; j < i; j++) {
+            for (j = 0; j < i; j++) {
                 SPEEDS_AGG[i] += SPEEDS_IND[j];
-                K += 1;
+                norm += 1;
             }
         } else {
-            for (var k = i + 1; k < N; k++) {
-                SPEEDS_AGG[i] += SPEEDS_IND[k];
-                K += 1;
+            for (j = i + 1; j < N; j++) {
+                SPEEDS_AGG[i] += SPEEDS_IND[j];
+                norm += 1;
             }
         }
-        YS[i] += SPEEDS_AGG[i] / K;
+        YS[i] += SPEEDS_AGG[i] / norm;
         if (YS[i] < LOWER) {
             YS[i] = LOWER;
             SPEEDS_IND[i] = (Math.random() * MAGNITUDE) - OFFSET_LOWER;
@@ -63,13 +63,16 @@ function loop() {
         }
     }
     CTX.beginPath();
-    for (var l = 1; l < M; l++) {
-        CTX.moveTo(XS[l], YS[l]);
-        CTX.arc(XS[l], YS[l], RADIUS, 0, PI_2);
-        CTX.moveTo(XS[l], YS[l]);
-        CTX.lineTo(XS[l], YS[l] + (SPEEDS_IND[l] * SCALE));
+    for (i = 1; i < M; i++) {
+        CTX.moveTo(XS[i], YS[i]);
+        CTX.arc(XS[i], YS[i], RADIUS, 0, PI_2);
     }
     CTX.fill();
+    CTX.beginPath();
+    for (i = 1; i < M; i++) {
+        CTX.moveTo(XS[i], YS[i]);
+        CTX.lineTo(XS[i], YS[i] + (SPEEDS_IND[i] * SCALE));
+    }
     CTX.stroke();
     requestAnimationFrame(loop);
 }
