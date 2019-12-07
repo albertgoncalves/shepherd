@@ -12,6 +12,7 @@
 !no_clear/
 !grid/
 !shrink/
+!expand/
 !*.html
 !*.css
 !js/
