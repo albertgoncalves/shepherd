@@ -1,6 +1,7 @@
 body {
-    background-color: hsl(0, 0%, 85%);
-    font-family: Tahoma, Geneva, sans-serif;
+    background-color: hsl(0, 0%, 80%);
+    font-family: "Courier New", Courier, monospace;
+    font-size: 19px;
 }
 
 canvas {
@@ -10,4 +11,14 @@ canvas {
     padding-right: 0;
     margin-left: auto;
     margin-right: auto;
+}
+
+div.left {
+    float: left;
+    width: 20%;
+}
+
+div.right {
+    float: right;
+    width: 80%;
 }
