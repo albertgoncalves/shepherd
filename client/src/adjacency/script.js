@@ -52,7 +52,8 @@ function insert(left) {
     N += 1;
 }
 
-var RESET = 60 * (STOP - SEED + 1);
+var FRAMES = 60;
+var RESET = FRAMES * (STOP - SEED + 1);
 var ELAPSED = RESET + 1;
 var MAGNITUDE = 0.5;
 var CENTER = MAGNITUDE / 2;
@@ -65,7 +66,7 @@ function loop() {
         ELAPSED = 0;
     } else {
         ELAPSED += 1;
-        if ((ELAPSED % 60 === 0) && (N < STOP)) {
+        if ((ELAPSED % FRAMES === 0) && (N < STOP)) {
             insert(Math.floor(Math.random() * N));
         }
     }
