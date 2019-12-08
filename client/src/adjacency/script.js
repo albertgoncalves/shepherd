@@ -52,6 +52,14 @@ function insert(left) {
     N += 1;
 }
 
+function distance(i, j) {
+    var left = NODES[i];
+    var right = NODES[j];
+    var x = left.x - right.x;
+    var y = left.y - right.y;
+    return Math.sqrt((x * x) + (y * y));
+}
+
 var FRAMES = 60;
 var RESET = FRAMES * (STOP - SEED + 1);
 var ELAPSED = RESET + 1;
@@ -59,7 +67,7 @@ var MAGNITUDE = 0.5;
 var CENTER = MAGNITUDE / 2;
 
 function loop() {
-    var i, x, y;
+    var i, x, y, index, value, candidate;
     CTX.clearRect(0, 0, CANVAS.width, CANVAS.height);
     if (RESET < ELAPSED) {
         init();
@@ -67,7 +75,16 @@ function loop() {
     } else {
         ELAPSED += 1;
         if ((ELAPSED % FRAMES === 0) && (N < STOP)) {
-            insert(Math.floor(Math.random() * N));
+            index = 0;
+            value = 0;
+            for (i = 0; i < N; i++) {
+                candidate = distance(i, NODES[i].right);
+                if (value < candidate) {
+                    index = i;
+                    value = candidate;
+                }
+            }
+            insert(index);
         }
     }
     for (i = 0; i < N; i++) {
