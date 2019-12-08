@@ -100,7 +100,7 @@ function loop() {
         }
         x = CIRCLES[i].x;
         y = CIRCLES[i].y;
-        CTX.moveTo(x, y);
+        CTX.moveTo(x + RADIUS, y);
         CTX.arc(x, y, RADIUS, 0, PI_2);
     }
     CTX.fill();

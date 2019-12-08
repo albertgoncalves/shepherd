@@ -9,7 +9,7 @@ CTX.fillStyle = COLOR;
 CTX.lineWidth = 0.65;
 
 var PI_2 = Math.PI * 2;
-var RADIUS = 5;
+var RADIUS = 6;
 var LOWER = CANVAS.height / 10;
 var DELTA = CANVAS.height - (LOWER * 2);
 
@@ -44,20 +44,23 @@ function loop() {
             RESET = false;
         }
     }
+    CTX.beginPath();
     for (i = 0; i < N; i++) {
         if (RESET) {
             YS_TO[i] = randomBetween();
         }
-        CTX.beginPath();
-        CTX.arc(XS[i], YS_TO[i], RADIUS, 0, PI_2);
-        CTX.stroke();
+        x = XS[i];
+        y = YS_TO[i];
+        CTX.moveTo(x + RADIUS, y);
+        CTX.arc(x, y, RADIUS, 0, PI_2);
     }
+    CTX.stroke();
     CTX.beginPath();
     for (i = 0; i < N; i++) {
         YS_FROM[i] += DELTAS[i] / DRAG;
         x = XS[i];
         y = YS_FROM[i];
-        CTX.moveTo(x, y);
+        CTX.moveTo(x + RADIUS, y);
         CTX.arc(x, y, RADIUS, 0, PI_2);
     }
     CTX.fill();

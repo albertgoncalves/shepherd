@@ -92,7 +92,7 @@ function loop() {
     for (i = 0; i < N; i++) {
         x = XS[i];
         y = YS[i];
-        CTX.moveTo(x, y);
+        CTX.moveTo(x + RADIUS, y);
         CTX.arc(x, y, RADIUS, 0, PI_2);
     }
     CTX.fill();

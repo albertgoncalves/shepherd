@@ -80,18 +80,18 @@ function loop() {
     }
     CTX.beginPath();
     for (i = 0; i < N; i++) {
-        x = NODES[i].x;
-        y = NODES[i].y;
-        CTX.moveTo(x, y);
-        CTX.arc(x, y, RADIUS, 0, PI_2);
-    }
-    CTX.fill();
-    CTX.beginPath();
-    for (i = 0; i < N; i++) {
         CTX.moveTo(NODES[i].x, NODES[i].y);
         CTX.lineTo(NODES[NODES[i].left].x, NODES[NODES[i].left].y);
     }
     CTX.stroke();
+    CTX.beginPath();
+    for (i = 0; i < N; i++) {
+        x = NODES[i].x;
+        y = NODES[i].y;
+        CTX.moveTo(x + RADIUS, y);
+        CTX.arc(x, y, RADIUS, 0, PI_2);
+    }
+    CTX.fill();
     requestAnimationFrame(loop);
 }
 
