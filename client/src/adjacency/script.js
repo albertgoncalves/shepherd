@@ -1,5 +1,16 @@
 "use strict";
 
+function randomBetween(a, b) {
+    return a + (Math.random() * (b - a));
+}
+
+function randomAverage(a, b) {
+    /* https://en.wikipedia.org/wiki/Linear_combination */
+    var wA = Math.random();
+    var wB = Math.random();
+    return ((a * wA) + (b * wB)) / (wA + wB);
+}
+
 var CANVAS = document.getElementById("canvas");
 var CTX = CANVAS.getContext("2d");
 var COLOR = "hsl(0, 0%, 20%)";
@@ -10,12 +21,7 @@ CTX.lineWidth = 4;
 
 var PI_2 = Math.PI * 2;
 var RADIUS = 7;
-
-function randomBetween(a, b) {
-    return a + (Math.random() * (b - a));
-}
-
-var LIMIT = 15;
+var LIMIT = 20;
 var NODES, N, M;
 
 function init() {
@@ -32,13 +38,26 @@ function init() {
     }
 }
 
+function insertNode(left) {
+    var right = NODES[left].right;
+    NODES[left].right = N;
+    NODES[right].left = N;
+    NODES[N] = {
+        x: randomAverage(NODES[left].x, NODES[right].x),
+        y: randomAverage(NODES[left].y, NODES[right].y),
+        left: left,
+        right: right,
+    };
+    N += 1;
+}
+
 var RESET = 60 * 5;
 var ELAPSED = RESET + 1;
 var MAGNITUDE = 1;
 var CENTER = MAGNITUDE / 2;
 
 function loop() {
-    var i, index, x, y, left, right, w1, w2, w3, w4;
+    var i, index, x, y, w1, w2, w3, w4;
     CTX.clearRect(0, 0, CANVAS.width, CANVAS.height);
     if (RESET < ELAPSED) {
         init();
@@ -47,21 +66,7 @@ function loop() {
         ELAPSED += 1;
     }
     if (N < LIMIT) {
-        left = Math.floor(Math.random() * N);
-        right = NODES[left].right;
-        w1 = Math.random();
-        w2 = Math.random();
-        w3 = Math.random();
-        w4 = Math.random();
-        NODES[left].right = N;
-        NODES[right].left = N;
-        NODES[N] = {
-            x: ((w1 * NODES[left].x) + (w2 * NODES[right].x)) / (w1 + w2),
-            y: ((w3 * NODES[left].y) + (w4 * NODES[right].y)) / (w3 + w4),
-            left: left,
-            right: right,
-        };
-        N += 1;
+        insertNode(Math.floor(Math.random() * N));
     }
     for (i = 0; i < N; i++) {
         NODES[i].x += (Math.random() * MAGNITUDE) - CENTER;
