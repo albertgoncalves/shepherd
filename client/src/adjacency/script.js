@@ -13,7 +13,7 @@ function randomAverage(a, b) {
 
 var CANVAS = document.getElementById("canvas");
 var CTX = CANVAS.getContext("2d");
-var COLOR = "hsl(0, 0%, 20%)";
+var COLOR = "hsl(0, 0%, 35%)";
 CTX.imageSmoothingEnabled = false;
 CTX.strokeStyle = COLOR;
 CTX.fillStyle = COLOR;
@@ -38,7 +38,7 @@ function init() {
     }
 }
 
-function insertNode(left) {
+function insert(left) {
     var right = NODES[left].right;
     NODES[left].right = N;
     NODES[right].left = N;
@@ -53,11 +53,11 @@ function insertNode(left) {
 
 var RESET = 60 * 5;
 var ELAPSED = RESET + 1;
-var MAGNITUDE = 1;
+var MAGNITUDE = 0.5;
 var CENTER = MAGNITUDE / 2;
 
 function loop() {
-    var i, index, x, y, w1, w2, w3, w4;
+    var i, x, y;
     CTX.clearRect(0, 0, CANVAS.width, CANVAS.height);
     if (RESET < ELAPSED) {
         init();
@@ -66,7 +66,7 @@ function loop() {
         ELAPSED += 1;
     }
     if (N < LIMIT) {
-        insertNode(Math.floor(Math.random() * N));
+        insert(Math.floor(Math.random() * N));
     }
     for (i = 0; i < N; i++) {
         NODES[i].x += (Math.random() * MAGNITUDE) - CENTER;
