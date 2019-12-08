@@ -21,13 +21,14 @@ CTX.lineWidth = 4;
 
 var PI_2 = Math.PI * 2;
 var RADIUS = 7;
-var LIMIT = 20;
+var SEED = 3;
+var STOP = 20;
 var NODES, N, M;
 
 function init() {
-    N = 3;
+    N = SEED;
     M = N - 1;
-    NODES = new Array(LIMIT);
+    NODES = new Array(STOP);
     for (var i = 0; i < N; i++) {
         NODES[i] = {
             x: randomBetween(0, CANVAS.width),
@@ -51,7 +52,7 @@ function insert(left) {
     N += 1;
 }
 
-var RESET = 60 * 5;
+var RESET = 60 * (STOP - SEED);
 var ELAPSED = RESET + 1;
 var MAGNITUDE = 0.5;
 var CENTER = MAGNITUDE / 2;
@@ -65,7 +66,7 @@ function loop() {
     } else {
         ELAPSED += 1;
     }
-    if (N < LIMIT) {
+    if ((ELAPSED % 60 === 0) && (N < STOP)) {
         insert(Math.floor(Math.random() * N));
     }
     for (i = 0; i < N; i++) {
