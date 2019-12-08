@@ -21,51 +21,42 @@ CTX.lineWidth = 4;
 
 var PI_2 = Math.PI * 2;
 var RADIUS = 7;
-var SEED = 3;
+var START = 3;
 var STOP = 18;
 var NODES, N, M;
-
-function init() {
-    N = SEED;
-    M = N - 1;
-    NODES = new Array(STOP);
-    for (var i = 0; i < N; i++) {
-        NODES[i] = {
-            x: randomBetween(0, CANVAS.width),
-            y: randomBetween(0, CANVAS.height),
-            left: i === 0 ? M : i - 1,
-            right: i === M ? 0 : i + 1,
-        };
-    }
-}
-
-function distance(i, j) {
-    var left = NODES[i];
-    var right = NODES[j];
-    var x = left.x - right.x;
-    var y = left.y - right.y;
-    return Math.sqrt((x * x) + (y * y));
-}
-
 var FRAMES = 60;
-var RESET = FRAMES * (STOP - SEED + 1);
+var RESET = FRAMES * (STOP - START + 1);
 var ELAPSED = RESET + 1;
 var MAGNITUDE = 0.5;
 var CENTER = MAGNITUDE / 2;
 
 function loop() {
-    var i, x, y, left, right, value, candidate;
+    var i, x, y, a, b, dX, dY, left, right, value, candidate;
     CTX.clearRect(0, 0, CANVAS.width, CANVAS.height);
     if (RESET < ELAPSED) {
-        init();
         ELAPSED = 0;
+        N = START;
+        M = N - 1;
+        NODES = new Array(STOP);
+        for (i = 0; i < N; i++) {
+            NODES[i] = {
+                x: randomBetween(0, CANVAS.width),
+                y: randomBetween(0, CANVAS.height),
+                left: i === 0 ? M : i - 1,
+                right: i === M ? 0 : i + 1,
+            };
+        }
     } else {
         ELAPSED += 1;
         if ((ELAPSED % FRAMES === 0) && (N < STOP)) {
             left = 0;
             value = 0;
             for (i = 0; i < N; i++) {
-                candidate = distance(i, NODES[i].right);
+                a = NODES[i];
+                b = NODES[NODES[i].right];
+                dX = a.x - b.x;
+                dY = a.y - b.y;
+                candidate = Math.sqrt((dX * dX) + (dY * dY));
                 if (value < candidate) {
                     left = i;
                     value = candidate;
