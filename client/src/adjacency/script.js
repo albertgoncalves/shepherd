@@ -39,19 +39,6 @@ function init() {
     }
 }
 
-function insert(left) {
-    var right = NODES[left].right;
-    NODES[left].right = N;
-    NODES[right].left = N;
-    NODES[N] = {
-        x: randomAverage(NODES[left].x, NODES[right].x),
-        y: randomAverage(NODES[left].y, NODES[right].y),
-        left: left,
-        right: right,
-    };
-    N += 1;
-}
-
 function distance(i, j) {
     var left = NODES[i];
     var right = NODES[j];
@@ -67,7 +54,7 @@ var MAGNITUDE = 0.5;
 var CENTER = MAGNITUDE / 2;
 
 function loop() {
-    var i, x, y, index, value, candidate;
+    var i, x, y, left, right, value, candidate;
     CTX.clearRect(0, 0, CANVAS.width, CANVAS.height);
     if (RESET < ELAPSED) {
         init();
@@ -75,16 +62,25 @@ function loop() {
     } else {
         ELAPSED += 1;
         if ((ELAPSED % FRAMES === 0) && (N < STOP)) {
-            index = 0;
+            left = 0;
             value = 0;
             for (i = 0; i < N; i++) {
                 candidate = distance(i, NODES[i].right);
                 if (value < candidate) {
-                    index = i;
+                    left = i;
                     value = candidate;
                 }
             }
-            insert(index);
+            right = NODES[left].right;
+            NODES[left].right = N;
+            NODES[right].left = N;
+            NODES[N] = {
+                x: randomAverage(NODES[left].x, NODES[right].x),
+                y: randomAverage(NODES[left].y, NODES[right].y),
+                left: left,
+                right: right,
+            };
+            N += 1;
         }
     }
     for (i = 0; i < N; i++) {
