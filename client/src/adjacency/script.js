@@ -23,7 +23,7 @@ var PI_2 = Math.PI * 2;
 var RADIUS = 7;
 var START = 3;
 var STOP = 18;
-var NODES, N, M;
+var NODES, N;
 var FRAMES = 60;
 var RESET = FRAMES * (STOP - START + 1);
 var ELAPSED = RESET + 1;
@@ -31,19 +31,19 @@ var MAGNITUDE = 0.5;
 var CENTER = MAGNITUDE / 2;
 
 function loop() {
-    var i, x, y, a, b, dX, dY, left, right, value, candidate;
+    var i, n, x, y, a, b, dX, dY, left, right, value, candidate;
     CTX.clearRect(0, 0, CANVAS.width, CANVAS.height);
     if (RESET < ELAPSED) {
         ELAPSED = 0;
         N = START;
-        M = N - 1;
+        n = N - 1;
         NODES = new Array(STOP);
         for (i = 0; i < N; i++) {
             NODES[i] = {
                 x: randomBetween(0, CANVAS.width),
                 y: randomBetween(0, CANVAS.height),
-                left: i === 0 ? M : i - 1,
-                right: i === M ? 0 : i + 1,
+                left: i === 0 ? n : i - 1,
+                right: i === n ? 0 : i + 1,
             };
         }
     } else {
