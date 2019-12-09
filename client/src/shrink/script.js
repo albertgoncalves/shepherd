@@ -18,18 +18,6 @@ var HALF_HEIGHT = CANVAS.height / 2;
 var ANGLES = new Array(N);
 var XS = new Array(N);
 var YS = new Array(N);
-
-function init() {
-    for (var i = 0; i < N; i++) {
-        ANGLES[i] = Math.random() * PI_2;
-    }
-    ANGLES.sort();
-    for (i = 0; i < N; i++) {
-        XS[i] = (Math.cos(ANGLES[i]) * SPREAD) + HALF_WIDTH;
-        YS[i] = (Math.sin(ANGLES[i]) * SPREAD) + HALF_HEIGHT;
-    }
-}
-
 var DRAG = 10;
 var RESET = 60 * 3;
 var ELAPSED = RESET + 1;
@@ -38,7 +26,14 @@ function loop() {
     var i, x, y, left, right;
     CTX.clearRect(0, 0, CANVAS.width, CANVAS.height);
     if (RESET < ELAPSED) {
-        init();
+        for (i = 0; i < N; i++) {
+            ANGLES[i] = Math.random() * PI_2;
+        }
+        ANGLES.sort();
+        for (i = 0; i < N; i++) {
+            XS[i] = (Math.cos(ANGLES[i]) * SPREAD) + HALF_WIDTH;
+            YS[i] = (Math.sin(ANGLES[i]) * SPREAD) + HALF_HEIGHT;
+        }
         ELAPSED = 0;
     } else {
         ELAPSED += 1;

@@ -50,19 +50,6 @@ for (var i = 0; i < N; i++) {
     }
 }
 
-function init() {
-    var index;
-    for (var i = 0; i < N; i++) {
-        for (var j = 0; j < N; j++) {
-            index = j + (i * N);
-            CIRCLES[index].x = DELTA + (SHORT_SIDE * ((i + 0.5) / N));
-            CIRCLES[index].y = SHORT_SIDE * ((j + 0.5) / N);
-            CIRCLES[index].weight = Math.random();
-            CIRCLES[index].polarity = Math.random() < 0.5 ? true : false;
-        }
-    }
-}
-
 var RELOAD = 60 * 15;
 var ELAPSED = RELOAD + 1;
 var DRAG;
@@ -71,7 +58,15 @@ function loop() {
     var i, j, index, x, y, xMove, yMove, norm, left, right;
     CTX.clearRect(0, 0, CANVAS.width, CANVAS.height);
     if (RELOAD < ELAPSED) {
-        init();
+        for (i = 0; i < N; i++) {
+            for (j = 0; j < N; j++) {
+                index = j + (i * N);
+                CIRCLES[index].x = DELTA + (SHORT_SIDE * ((i + 0.5) / N));
+                CIRCLES[index].y = SHORT_SIDE * ((j + 0.5) / N);
+                CIRCLES[index].weight = Math.random();
+                CIRCLES[index].polarity = Math.random() < 0.5 ? true : false;
+            }
+        }
         DRAG = 500;
         ELAPSED = 0;
     } else {

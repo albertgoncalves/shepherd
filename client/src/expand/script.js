@@ -22,20 +22,6 @@ var XS_NEXT = new Array(N);
 var YS_NEXT = new Array(N);
 var NORMS = new Array(N);
 
-function init() {
-    for (var i = 0; i < N; i++) {
-        ANGLES[i] = Math.random() * PI_2;
-    }
-    ANGLES.sort();
-    for (i = 0; i < N; i++) {
-        XS[i] = (Math.cos(ANGLES[i]) * SPREAD) + HALF_WIDTH;
-        YS[i] = (Math.sin(ANGLES[i]) * SPREAD) + HALF_HEIGHT;
-        XS_NEXT[i] = 0;
-        YS_NEXT[i] = 0;
-        NORMS[i] = 0;
-    }
-}
-
 function distance(i, j) {
     var x = XS[i] - XS[j];
     var y = YS[i] - YS[j];
@@ -53,7 +39,17 @@ function loop() {
     var i, j, x, y;
     CTX.clearRect(0, 0, CANVAS.width, CANVAS.height);
     if (RESET < ELAPSED) {
-        init();
+        for (i = 0; i < N; i++) {
+            ANGLES[i] = Math.random() * PI_2;
+        }
+        ANGLES.sort();
+        for (i = 0; i < N; i++) {
+            XS[i] = (Math.cos(ANGLES[i]) * SPREAD) + HALF_WIDTH;
+            YS[i] = (Math.sin(ANGLES[i]) * SPREAD) + HALF_HEIGHT;
+            XS_NEXT[i] = 0;
+            YS_NEXT[i] = 0;
+            NORMS[i] = 0;
+        }
         ELAPSED = 0;
     } else {
         ELAPSED += 1;

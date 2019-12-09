@@ -11,16 +11,6 @@ var XS = new Array(N);
 var YS = new Array(N);
 var SPEEDS_IND = new Array(N);
 var SPEEDS_AGG = new Array(N);
-
-function init() {
-    for (var i = 0; i < N; i++) {
-        XS[i] = CANVAS.width * ((i + 0.5) / N);
-        YS[i] = HALF_HEIGHT;
-        SPEEDS_IND[i] = 0;
-        SPEEDS_AGG[i] = 0;
-    }
-}
-
 var LOWER = CANVAS.height / 10;
 var UPPER = CANVAS.height - LOWER;
 var MAGNITUDE = 0.1;
@@ -32,7 +22,12 @@ function loop() {
     var i, j, norm;
     if (RELOAD < ELAPSED) {
         CTX.clearRect(0, 0, CANVAS.width, CANVAS.height);
-        init();
+        for (i = 0; i < N; i++) {
+            XS[i] = CANVAS.width * ((i + 0.5) / N);
+            YS[i] = HALF_HEIGHT;
+            SPEEDS_IND[i] = 0;
+            SPEEDS_AGG[i] = 0;
+        }
         ELAPSED = 0;
     } else {
         ELAPSED += 1;
