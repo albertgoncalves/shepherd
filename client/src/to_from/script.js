@@ -13,7 +13,7 @@ var RADIUS = 6;
 var LOWER = CANVAS.height / 10;
 var DELTA = CANVAS.height - (LOWER * 2);
 
-function randomBetween() {
+function randomPosition() {
     return LOWER + (Math.random() * DELTA);
 }
 
@@ -25,8 +25,8 @@ var DELTAS = new Array(N);
 
 for (var i = 0; i < N; i++) {
     XS[i] = CANVAS.width * ((i + 0.5) / N);
-    YS_TO[i] = randomBetween();
-    YS_FROM[i] = randomBetween();
+    YS_TO[i] = randomPosition();
+    YS_FROM[i] = randomPosition();
     DELTAS[i] = 0;
 }
 
@@ -47,7 +47,7 @@ function loop() {
     CTX.beginPath();
     for (i = 0; i < N; i++) {
         if (RESET) {
-            YS_TO[i] = randomBetween();
+            YS_TO[i] = randomPosition();
         }
         x = XS[i];
         y = YS_TO[i];
