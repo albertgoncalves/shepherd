@@ -1,9 +1,5 @@
 "use strict";
 
-function randomBetween(a, b) {
-    return a + (Math.random() * (b - a));
-}
-
 function randomAverage(a, b) {
     /* https://en.wikipedia.org/wiki/Linear_combination */
     var wA = Math.random();
@@ -40,8 +36,8 @@ function loop() {
         NODES = new Array(STOP);
         for (i = 0; i < N; i++) {
             NODES[i] = {
-                x: randomBetween(0, CANVAS.width),
-                y: randomBetween(0, CANVAS.height),
+                x: Math.random() * CANVAS.width,
+                y: Math.random() * CANVAS.height,
                 left: i === 0 ? n : i - 1,
                 right: i === n ? 0 : i + 1,
             };
