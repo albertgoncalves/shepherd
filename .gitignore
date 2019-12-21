@@ -7,13 +7,6 @@
 !.tidyrc
 !.clang-format
 !.jshintrc
-!to_from/
-!velocity/
-!no_clear/
-!grid/
-!shrink/
-!expand/
-!adjacency/
 !*.html
 !*.css
 !js/
@@ -21,3 +14,11 @@
 !server/
 !*.go
 !main
+!to_from/
+!velocity/
+!no_clear/
+!grid/
+!shrink/
+!expand/
+!adjacency/
+!orbits/
