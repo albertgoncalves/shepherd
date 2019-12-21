@@ -5,17 +5,15 @@ var CTX = CANVAS.getContext("2d");
 var COLOR = "hsl(0, 0%, 90%)";
 CTX.imageSmoothingEnabled = false;
 CTX.strokeStyle = COLOR;
-CTX.fillStyle = COLOR;
 CTX.lineWidth = 4;
 
-var PI_2 = Math.PI * 2;
-var RADIUS = 15;
-var N = 10;
+var N = 15;
 var XS = new Array(N);
 var YS = new Array(N);
 var XS_SPEED = new Array(N);
 var YS_SPEED = new Array(N);
 var K = 0.025;
+var L = 10;
 
 for (var i = 0; i < N; i++) {
     XS[i] = Math.random() * CANVAS.width;
@@ -53,10 +51,10 @@ function loop() {
     for (i = 0; i < N; i++) {
         x = XS[i];
         y = YS[i];
-        CTX.moveTo(x + RADIUS, y);
-        CTX.arc(x, y, RADIUS, 0, PI_2);
+        CTX.moveTo(x, y);
+        CTX.lineTo(x - (XS_SPEED[i] * L), y - (YS_SPEED[i] * L));
     }
-    CTX.fill();
+    CTX.stroke();
     requestAnimationFrame(loop);
 }
 
