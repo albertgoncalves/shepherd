@@ -37,7 +37,6 @@ var CENTER = MAGNITUDE / 2;
 
 function loop() {
     var i, j, x, y;
-    CTX.clearRect(0, 0, CANVAS.width, CANVAS.height);
     if (RESET < ELAPSED) {
         for (i = 0; i < N; i++) {
             ANGLES[i] = Math.random() * PI_2;
@@ -77,6 +76,7 @@ function loop() {
             YS[i] += (Math.random() * MAGNITUDE) - CENTER;
         }
     }
+    CTX.clearRect(0, 0, CANVAS.width, CANVAS.height);
     CTX.beginPath();
     for (i = 0; i < N; i++) {
         j = i === 0 ? M : i - 1;

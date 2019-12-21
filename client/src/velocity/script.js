@@ -36,7 +36,6 @@ var OFFSET_UPPER = CENTER * (1 + OFFSET);
 
 function loop() {
     var i, j, x, y, norm;
-    CTX.clearRect(0, 0, CANVAS.width, CANVAS.height);
     for (i = 0; i < N; i++) {
         SPEEDS_IND[i] += (Math.random() * MAGNITUDE) - CENTER;
         norm = 0;
@@ -62,6 +61,7 @@ function loop() {
             SPEEDS_AGG[i] = 0;
         }
     }
+    CTX.clearRect(0, 0, CANVAS.width, CANVAS.height);
     CTX.beginPath();
     for (i = 1; i < M; i++) {
         x = XS[i];

@@ -21,7 +21,6 @@ var ELAPSED = RELOAD + 1;
 function loop() {
     var i, j, norm;
     if (RELOAD < ELAPSED) {
-        CTX.clearRect(0, 0, CANVAS.width, CANVAS.height);
         for (i = 0; i < N; i++) {
             XS[i] = CANVAS.width * ((i + 0.5) / N);
             YS[i] = HALF_HEIGHT;
@@ -29,6 +28,7 @@ function loop() {
             SPEEDS_AGG[i] = 0;
         }
         ELAPSED = 0;
+        CTX.clearRect(0, 0, CANVAS.width, CANVAS.height);
     } else {
         ELAPSED += 1;
     }

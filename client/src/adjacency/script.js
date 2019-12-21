@@ -28,7 +28,6 @@ var CENTER = MAGNITUDE / 2;
 
 function loop() {
     var i, n, x, y, a, b, dX, dY, left, right, value, candidate;
-    CTX.clearRect(0, 0, CANVAS.width, CANVAS.height);
     if (RESET < ELAPSED) {
         ELAPSED = 0;
         N = START;
@@ -74,6 +73,7 @@ function loop() {
         NODES[i].x += (Math.random() * MAGNITUDE) - CENTER;
         NODES[i].y += (Math.random() * MAGNITUDE) - CENTER;
     }
+    CTX.clearRect(0, 0, CANVAS.width, CANVAS.height);
     CTX.beginPath();
     for (i = 0; i < N; i++) {
         CTX.moveTo(NODES[i].x, NODES[i].y);

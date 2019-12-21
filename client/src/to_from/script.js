@@ -36,7 +36,6 @@ var RESET;
 
 function loop() {
     var i, x, y;
-    CTX.clearRect(0, 0, CANVAS.width, CANVAS.height);
     RESET = true;
     for (i = 0; i < N; i++) {
         DELTAS[i] = (YS_TO[i] - YS_FROM[i]);
@@ -44,6 +43,7 @@ function loop() {
             RESET = false;
         }
     }
+    CTX.clearRect(0, 0, CANVAS.width, CANVAS.height);
     CTX.beginPath();
     for (i = 0; i < N; i++) {
         if (RESET) {

@@ -56,7 +56,6 @@ var DRAG;
 
 function loop() {
     var i, j, index, x, y, xMove, yMove, norm, left, right;
-    CTX.clearRect(0, 0, CANVAS.width, CANVAS.height);
     if (RELOAD < ELAPSED) {
         for (i = 0; i < N; i++) {
             for (j = 0; j < N; j++) {
@@ -73,6 +72,7 @@ function loop() {
         DRAG += 1;
         ELAPSED += 1;
     }
+    CTX.clearRect(0, 0, CANVAS.width, CANVAS.height);
     CTX.beginPath();
     for (i = 0; i < M; i++) {
         xMove = 0;
