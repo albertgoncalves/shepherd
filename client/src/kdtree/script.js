@@ -9,12 +9,12 @@ function distanceSquared(a, b) {
 
 var CANVAS = document.getElementById("canvas");
 var CTX = CANVAS.getContext("2d");
-var WHITE = "hsl(0, 0%, 90%)";
-var BLUE = "hsl(200, 75%, 65%)";
-var RED = "hsl(0, 85%, 65%)";
+var WHITE = "hsl(0, 0%, 35%)";
+var BLUE = "hsl(200, 75%, 50%)";
+var RED = "hsl(0, 75%, 50%)";
 CTX.imageSmoothingEnabled = false;
 CTX.strokeStyle = WHITE;
-CTX.lineWidth = 2;
+CTX.lineWidth = 3;
 
 function randomPoint() {
     return {
@@ -25,7 +25,7 @@ function randomPoint() {
 
 var PI_2 = Math.PI * 2;
 var RADIUS = 8;
-var N = 13;
+var N = 20;
 var POINTS = new Array(N);
 var POINT;
 
@@ -148,6 +148,16 @@ function loop() {
     }
     {
         CTX.beginPath();
+        for (i = 0; i < N; i++) {
+            if (POINTS[i] !== neighbor) {
+                drawCircle(POINTS[i].x, POINTS[i].y);
+            }
+        }
+        CTX.fillStyle = WHITE;
+        CTX.fill();
+    }
+    {
+        CTX.beginPath();
         drawCircle(POINT.x, POINT.y);
         CTX.fillStyle = BLUE;
         CTX.fill();
@@ -156,16 +166,6 @@ function loop() {
         CTX.beginPath();
         drawCircle(neighbor.x, neighbor.y);
         CTX.fillStyle = RED;
-        CTX.fill();
-    }
-    {
-        CTX.beginPath();
-        for (i = 0; i < N; i++) {
-            if (POINTS[i] !== neighbor) {
-                drawCircle(POINTS[i].x, POINTS[i].y);
-            }
-        }
-        CTX.fillStyle = WHITE;
         CTX.fill();
     }
     requestAnimationFrame(loop);
