@@ -12,7 +12,7 @@ var COLOR = "hsl(0, 0%, 90%)";
 CTX.imageSmoothingEnabled = false;
 CTX.strokeStyle = COLOR;
 CTX.fillStyle = COLOR;
-CTX.lineWidth = 3;
+CTX.lineWidth = 2;
 
 function randomPoint() {
     return {
@@ -22,14 +22,10 @@ function randomPoint() {
 }
 
 var PI_2 = Math.PI * 2;
-var RADIUS = 6;
+var RADIUS = 5;
 var D = 2;
-var N = 9;
+var N = 13;
 var POINTS = new Array(N);
-
-for (var i = 0; i < N; i++) {
-    POINTS[i] = randomPoint();
-}
 
 function order(axis) {
     if (axis === 0) {
@@ -78,12 +74,28 @@ function drawTree(tree, xLower, xUpper, yLower, yUpper) {
     }
 }
 
+var MAGNITUDE = 1;
+var SCALE = MAGNITUDE / 2;
+var RESET = 360;
+var ELAPSED = RESET + 1;
+
 function loop() {
-    var tree, i, x, y;
-    var axis = 0;
-    tree = buildTree(POINTS, axis);
+    var i, x, y;
+    if (RESET < ELAPSED) {
+        ELAPSED = 0;
+        for (i = 0; i < N; i++) {
+            POINTS[i] = randomPoint();
+        }
+    } else {
+        ELAPSED += 1;
+    }
+    for (i = 0; i < N; i++) {
+        POINTS[i].x += (Math.random() * MAGNITUDE) - SCALE;
+        POINTS[i].y += (Math.random() * MAGNITUDE) - SCALE;
+    }
+    CTX.clearRect(0, 0, CANVAS.width, CANVAS.height);
     CTX.beginPath();
-    drawTree(tree, 0, CANVAS.width, 0, CANVAS.height);
+    drawTree(buildTree(POINTS, 0), 0, CANVAS.width, 0, CANVAS.height);
     CTX.stroke();
     CTX.beginPath();
     for (i = 0; i < N; i++) {
@@ -93,6 +105,7 @@ function loop() {
         CTX.arc(x, y, RADIUS, 0, PI_2);
     }
     CTX.fill();
+    requestAnimationFrame(loop);
 }
 
 loop();
