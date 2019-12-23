@@ -1,18 +1,11 @@
 "use strict";
 
-function distanceSquared(a, b) {
-    var x, y;
-    x = a.x - b.x;
-    y = a.y - b.y;
-    return (x * x) + (y * y);
-}
-
 var CANVAS = document.getElementById("canvas");
 var CTX = CANVAS.getContext("2d");
 var GRAY = "hsl(0, 0%, 35%)";
-var ORANGE = "hsl(30, 100%, 50%)";
-var BLUE = "hsl(205, 75%, 50%)";
-var CYAN = "hsla(175, 65%, 50%, 0.15)";
+var RED = "hsl(15, 85%, 50%)";
+var BLUE = "hsl(200, 75%, 50%)";
+var CYAN = "hsla(175, 65%, 50%, 0.1)";
 CTX.imageSmoothingEnabled = false;
 CTX.strokeStyle = GRAY;
 CTX.lineWidth = 3;
@@ -91,7 +84,6 @@ function drawTree(tree) {
 }
 
 function overlapRects(a, b) {
-    /* https://www.geeksforgeeks.org/find-two-rectangles-overlap/ */
     if ((a.xBottomRight < b.xTopLeft) || (b.xBottomRight < a.xTopLeft)) {
         return false;
     }
@@ -129,7 +121,7 @@ function intersections(tree, points, rectangle) {
     }
 }
 
-var MAGNITUDE = 1;
+var MAGNITUDE = 3;
 var SCALE = MAGNITUDE / 2;
 var RESET = 360;
 var ELAPSED = RESET + 1;
@@ -143,8 +135,8 @@ function drawCircle(point) {
 }
 
 function loop() {
-    var i, x, y, n, tree, point, intersectingPoint, intersectingPoints,
-        rectangle;
+    var i, j, x, y, n, flag, tree, rectangle, point, intersectingPoint,
+        intersectingPoints, otherPoint;
     if (RESET < ELAPSED) {
         ELAPSED = 0;
         for (i = 0; i < N; i++) {
@@ -167,6 +159,7 @@ function loop() {
     };
     intersectingPoints = [];
     intersections(tree, intersectingPoints, rectangle);
+    n = intersectingPoints.length;
     CTX.clearRect(0, 0, CANVAS.width, CANVAS.height);
     {
         CTX.beginPath();
@@ -175,26 +168,35 @@ function loop() {
     }
     {
         CTX.beginPath();
-        drawCircle(POINTS[0]);
-        CTX.fillStyle = ORANGE;
-        CTX.fill();
-    }
-    {
-        CTX.beginPath();
         CTX.fillStyle = CYAN;
         CTX.fillRect(point.x - L, point.y - L, L_2, L_2);
     }
     {
         CTX.beginPath();
+        drawCircle(point);
+        CTX.fillStyle = RED;
+        CTX.fill();
+    }
+    {
+        CTX.beginPath();
         for (i = 1; i < N; i++) {
-            drawCircle(POINTS[i]);
+            otherPoint = POINTS[i];
+            flag = true;
+            for (j = 0; j < n; j++) {
+                if (otherPoint === intersectingPoints[j]) {
+                    flag = false;
+                    break;
+                }
+            }
+            if (flag) {
+                drawCircle(otherPoint);
+            }
         }
         CTX.fillStyle = GRAY;
         CTX.fill();
     }
     {
         CTX.beginPath();
-        n = intersectingPoints.length;
         for (i = 0; i < n; i++) {
             intersectingPoint = intersectingPoints[i];
             if (point !== intersectingPoint) {
