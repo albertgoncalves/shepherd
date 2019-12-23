@@ -9,11 +9,9 @@ function distanceSquared(a, b) {
 
 var CANVAS = document.getElementById("canvas");
 var CTX = CANVAS.getContext("2d");
-var GRAY = "hsl(0, 0%, 35%)";
-var BLUE = "hsl(200, 75%, 50%)";
-var RED = "hsl(0, 75%, 50%)";
+var WHITE = "hsl(0, 0%, 90%)";
+var RED = "hsl(0, 75%, 70%)";
 CTX.imageSmoothingEnabled = false;
-CTX.strokeStyle = GRAY;
 CTX.lineWidth = 3;
 
 function randomPoint() {
@@ -25,7 +23,7 @@ function randomPoint() {
 
 var PI_2 = Math.PI * 2;
 var RADIUS = 8;
-var N = 20;
+var N = 10;
 var POINTS = new Array(N);
 var POINT;
 
@@ -147,27 +145,27 @@ function loop() {
     {
         CTX.beginPath();
         drawTree(tree, 0, CANVAS.width, 0, CANVAS.height);
+        CTX.strokeStyle = WHITE;
+        CTX.stroke();
+    }
+    {
+        CTX.beginPath();
+        CTX.moveTo(POINT.x, POINT.y);
+        CTX.lineTo(neighbor.x, neighbor.y);
+        CTX.strokeStyle = RED;
         CTX.stroke();
     }
     {
         CTX.beginPath();
         for (i = 0; i < N; i++) {
-            if (POINTS[i] !== neighbor) {
-                drawCircle(POINTS[i]);
-            }
+            drawCircle(POINTS[i]);
         }
-        CTX.fillStyle = GRAY;
+        CTX.fillStyle = WHITE;
         CTX.fill();
     }
     {
         CTX.beginPath();
         drawCircle(POINT);
-        CTX.fillStyle = BLUE;
-        CTX.fill();
-    }
-    {
-        CTX.beginPath();
-        drawCircle(neighbor);
         CTX.fillStyle = RED;
         CTX.fill();
     }

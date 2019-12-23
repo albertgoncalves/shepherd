@@ -3,9 +3,9 @@
 var CANVAS = document.getElementById("canvas");
 var CTX = CANVAS.getContext("2d");
 var WHITE = "hsl(0, 0%, 90%)";
-var BLUE = "hsl(200, 100%, 75%)";
+var GREEN = "hsl(165, 100%, 75%)";
 var CYAN = "hsla(175, 65%, 50%, 0.35)";
-var RED = "hsl(15, 85%, 50%)";
+var RED = "hsl(0, 75%, 70%)";
 CTX.imageSmoothingEnabled = false;
 CTX.strokeStyle = WHITE;
 CTX.lineWidth = 3;
@@ -196,7 +196,7 @@ function loop() {
     {
         CTX.beginPath();
         drawCircle(point);
-        CTX.fillStyle = BLUE;
+        CTX.fillStyle = GREEN;
         CTX.fill();
     }
     requestAnimationFrame(loop);
