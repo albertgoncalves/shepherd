@@ -46,6 +46,10 @@ goall() {
         -exec bash -c 'echo "$0"; golint "$0"; gofmts "$0"' {} \;
 }
 
+export -f gofmts
+export -f golint
+export -f goall
+
 if [ ! -f "$JSPATH/.jsinit" ]; then
     cd "$JSPATH" || exit
     npm install --save-dev jshint
@@ -53,21 +57,23 @@ if [ ! -f "$JSPATH/.jsinit" ]; then
     cd "$WD" || exit
 fi
 
+sedtrailing () {
+    sed -i 's/[ \t]\+$//' "$1"
+}
+
+export -f sedtrailing
+
 jsall () {
-    for x in "$JSPATH"/src/*.html; do
-        printf "$ tidy %s\n" "$x"
-        tidy -config "$JSPATH/.tidyrc" -q -m "$x"
-        sed -i 's/[ \t]\+$//' "$x"
-    done
+    find "$JSPATH/src" -type f -name '*.html' -exec bash -c '
+        echo "$1"
+        tidy -config "$JSPATH/.tidyrc" -q -m "$1"
+        sedtrailing "$1"
+    ' bash {} \;
     find "$JSPATH/src" -type f -name '*.js' -exec bash -c '
-        printf "$ jshint %s\n" "$1"
+        echo "$1"
         "$JSPATH/node_modules/jshint/bin/jshint" -c "$JSPATH/.jshintrc" "$1"
-        printf "$ clang-format %s\n" "$1"
         clang-format -i "$1"
     ' bash {} \;
 }
 
-export -f gofmts
-export -f golint
-export -f goall
 export -f jsall

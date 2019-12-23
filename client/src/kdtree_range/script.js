@@ -163,12 +163,6 @@ function loop() {
         CTX.stroke();
     }
     {
-        CTX.beginPath();
-        drawCircle(point);
-        CTX.fillStyle = RED;
-        CTX.fill();
-    }
-    {
         var flag, outPoint;
         CTX.beginPath();
         for (i = 1; i < N; i++) {
@@ -197,6 +191,12 @@ function loop() {
             }
         }
         CTX.fillStyle = BLUE;
+        CTX.fill();
+    }
+    {
+        CTX.beginPath();
+        drawCircle(point);
+        CTX.fillStyle = RED;
         CTX.fill();
     }
     requestAnimationFrame(loop);
