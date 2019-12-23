@@ -2,12 +2,12 @@
 
 var CANVAS = document.getElementById("canvas");
 var CTX = CANVAS.getContext("2d");
-var GRAY = "hsl(0, 0%, 35%)";
-var BLUE = "hsl(200, 75%, 50%)";
-var CYAN = "hsla(175, 65%, 50%, 0.1)";
+var WHITE = "hsl(0, 0%, 90%)";
+var BLUE = "hsl(200, 100%, 75%)";
+var CYAN = "hsla(175, 65%, 50%, 0.35)";
 var RED = "hsl(15, 85%, 50%)";
 CTX.imageSmoothingEnabled = false;
-CTX.strokeStyle = GRAY;
+CTX.strokeStyle = WHITE;
 CTX.lineWidth = 3;
 
 function randomPoint() {
@@ -181,7 +181,7 @@ function loop() {
                 drawCircle(outPoint);
             }
         }
-        CTX.fillStyle = GRAY;
+        CTX.fillStyle = WHITE;
         CTX.fill();
     }
     {
