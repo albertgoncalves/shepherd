@@ -50,19 +50,17 @@ function buildTree(points, axis, xLower, xUpper, yLower, yUpper) {
         yLower: yLower,
         yUpper: yUpper,
     };
+    var left = points.slice(0, median);
+    var right = points.slice(median + 1);
     var next;
     if (axis === 0) {
         next = 1;
-        tree.left = buildTree(points.slice(0, median), next, xLower, point.x,
-                              yLower, yUpper);
-        tree.right = buildTree(points.slice(median + 1), next, point.x, xUpper,
-                               yLower, yUpper);
+        tree.left = buildTree(left, next, xLower, point.x, yLower, yUpper);
+        tree.right = buildTree(right, next, point.x, xUpper, yLower, yUpper);
     } else if (axis === 1) {
         next = 0;
-        tree.left = buildTree(points.slice(0, median), next, xLower, xUpper,
-                              yLower, point.y);
-        tree.right = buildTree(points.slice(median + 1), next, xLower, xUpper,
-                               point.y, yUpper);
+        tree.left = buildTree(left, next, xLower, xUpper, yLower, point.y);
+        tree.right = buildTree(right, next, xLower, xUpper, point.y, yUpper);
     }
     return tree;
 }
