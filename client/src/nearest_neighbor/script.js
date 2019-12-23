@@ -116,7 +116,10 @@ var SCALE = MAGNITUDE / 2;
 var RESET = 360;
 var ELAPSED = RESET + 1;
 
-function drawCircle(x, y) {
+function drawCircle(point) {
+    var x, y;
+    x = point.x;
+    y = point.y;
     CTX.moveTo(x + RADIUS, y);
     CTX.arc(x, y, RADIUS, 0, PI_2);
 }
@@ -150,7 +153,7 @@ function loop() {
         CTX.beginPath();
         for (i = 0; i < N; i++) {
             if (POINTS[i] !== neighbor) {
-                drawCircle(POINTS[i].x, POINTS[i].y);
+                drawCircle(POINTS[i]);
             }
         }
         CTX.fillStyle = WHITE;
@@ -158,13 +161,13 @@ function loop() {
     }
     {
         CTX.beginPath();
-        drawCircle(POINT.x, POINT.y);
+        drawCircle(POINT);
         CTX.fillStyle = BLUE;
         CTX.fill();
     }
     {
         CTX.beginPath();
-        drawCircle(neighbor.x, neighbor.y);
+        drawCircle(neighbor);
         CTX.fillStyle = RED;
         CTX.fill();
     }
