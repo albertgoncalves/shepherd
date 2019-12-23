@@ -19,7 +19,7 @@ function randomPoint() {
 
 var PI_2 = Math.PI * 2;
 var RADIUS = 8;
-var N = 30;
+var N = 50;
 var POINTS = new Array(N);
 
 function order(axis) {
@@ -124,7 +124,7 @@ function drawCircle(point) {
 
 var RESET = 360;
 var ELAPSED = RESET + 1;
-var MAGNITUDE = 1;
+var MAGNITUDE = 0.5;
 var SCALE = MAGNITUDE / 2;
 var L = 200;
 var L_2 = L * 2;
@@ -151,9 +151,9 @@ function loop() {
         xBottomRight: point.x + L,
         yBottomRight: point.y - L,
     };
-    var intersectingPoints = [];
-    intersections(tree, intersectingPoints, rectangle);
-    var n = intersectingPoints.length;
+    var inPoints = [];
+    intersections(tree, inPoints, rectangle);
+    var n = inPoints.length;
     CTX.clearRect(0, 0, CANVAS.width, CANVAS.height);
     {
         CTX.fillStyle = CYAN;
@@ -171,31 +171,31 @@ function loop() {
         CTX.fill();
     }
     {
-        var flag, otherPoint;
+        var flag, outPoint;
         CTX.beginPath();
         for (i = 1; i < N; i++) {
-            otherPoint = POINTS[i];
+            outPoint = POINTS[i];
             flag = true;
             for (j = 0; j < n; j++) {
-                if (otherPoint === intersectingPoints[j]) {
+                if (outPoint === inPoints[j]) {
                     flag = false;
                     break;
                 }
             }
             if (flag) {
-                drawCircle(otherPoint);
+                drawCircle(outPoint);
             }
         }
         CTX.fillStyle = GRAY;
         CTX.fill();
     }
     {
-        var intersectingPoint;
+        var inPoint;
         CTX.beginPath();
         for (i = 0; i < n; i++) {
-            intersectingPoint = intersectingPoints[i];
-            if (point !== intersectingPoint) {
-                drawCircle(intersectingPoint);
+            inPoint = inPoints[i];
+            if (point !== inPoint) {
+                drawCircle(inPoint);
             }
         }
         CTX.fillStyle = BLUE;
