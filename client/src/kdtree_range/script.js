@@ -3,9 +3,9 @@
 var CANVAS = document.getElementById("canvas");
 var CTX = CANVAS.getContext("2d");
 var GRAY = "hsl(0, 0%, 35%)";
-var RED = "hsl(15, 85%, 50%)";
 var BLUE = "hsl(200, 75%, 50%)";
 var CYAN = "hsla(175, 65%, 50%, 0.1)";
+var RED = "hsl(15, 85%, 50%)";
 CTX.imageSmoothingEnabled = false;
 CTX.strokeStyle = GRAY;
 CTX.lineWidth = 3;
@@ -75,12 +75,13 @@ function rectsOverlap(a, b) {
     return true;
 }
 
-function pointInRect(p, r) {
-    return ((r.xTopLeft < p.x) && (p.y < r.yTopLeft) &&
-            (p.x < r.xBottomRight) && (r.yBottomRight < p.y));
+function pointInRect(rectangle, point) {
+    return (
+        (point.y < rectangle.yTopLeft) && (point.x < rectangle.xBottomRight) &&
+        (rectangle.xTopLeft < point.x) && (rectangle.yBottomRight < point.y));
 }
 
-function intersections(tree, points, rectangle) {
+function intersections(tree, rectangle, callback) {
     if (tree === null) {
         return;
     }
@@ -91,11 +92,9 @@ function intersections(tree, points, rectangle) {
         yBottomRight: tree.yLower,
     };
     if (rectsOverlap(branch, rectangle)) {
-        if (pointInRect(tree.point, rectangle)) {
-            points.push(tree.point);
-        }
-        intersections(tree.left, points, rectangle);
-        intersections(tree.right, points, rectangle);
+        callback(tree.point);
+        intersections(tree.left, rectangle, callback);
+        intersections(tree.right, rectangle, callback);
     }
 }
 
@@ -122,7 +121,7 @@ function drawCircle(point) {
 
 var RESET = 360;
 var ELAPSED = RESET + 1;
-var MAGNITUDE = 0.5;
+var MAGNITUDE = 0.25;
 var SCALE = MAGNITUDE / 2;
 var L = 200;
 var L_2 = L * 2;
@@ -150,7 +149,11 @@ function loop() {
         yBottomRight: point.y - L,
     };
     var inPoints = [];
-    intersections(tree, inPoints, rectangle);
+    intersections(tree, rectangle, function(candidate) {
+        if ((point !== candidate) && (pointInRect(rectangle, candidate))) {
+            inPoints.push(candidate);
+        }
+    });
     var n = inPoints.length;
     CTX.clearRect(0, 0, CANVAS.width, CANVAS.height);
     {
@@ -166,8 +169,8 @@ function loop() {
         var flag, outPoint;
         CTX.beginPath();
         for (i = 1; i < N; i++) {
-            outPoint = POINTS[i];
             flag = true;
+            outPoint = POINTS[i];
             for (j = 0; j < n; j++) {
                 if (outPoint === inPoints[j]) {
                     flag = false;
@@ -185,18 +188,15 @@ function loop() {
         var inPoint;
         CTX.beginPath();
         for (i = 0; i < n; i++) {
-            inPoint = inPoints[i];
-            if (point !== inPoint) {
-                drawCircle(inPoint);
-            }
+            drawCircle(inPoints[i]);
         }
-        CTX.fillStyle = BLUE;
+        CTX.fillStyle = RED;
         CTX.fill();
     }
     {
         CTX.beginPath();
         drawCircle(point);
-        CTX.fillStyle = RED;
+        CTX.fillStyle = BLUE;
         CTX.fill();
     }
     requestAnimationFrame(loop);
