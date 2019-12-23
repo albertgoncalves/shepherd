@@ -21,8 +21,6 @@ var PI_2 = Math.PI * 2;
 var RADIUS = 8;
 var N = 7;
 var POINTS = new Array(N);
-var L = 200;
-var L_2 = L * 2;
 
 function order(axis) {
     if (axis === 0) {
@@ -37,15 +35,14 @@ function order(axis) {
 }
 
 function buildTree(points, axis, xLower, xUpper, yLower, yUpper) {
-    var n, median, point, next, tree;
-    n = points.length;
-    if (n <= 0) {
+    var n = points.length;
+    if (n === 0) {
         return null;
     }
     points.sort(order(axis));
-    median = Math.floor(n / 2);
-    point = points[median];
-    tree = {
+    var median = Math.floor(n / 2);
+    var point = points[median];
+    var tree = {
         point: point,
         axis: axis,
         xLower: xLower,
@@ -53,6 +50,7 @@ function buildTree(points, axis, xLower, xUpper, yLower, yUpper) {
         yLower: yLower,
         yUpper: yUpper,
     };
+    var next;
     if (axis === 0) {
         next = 1;
         tree.left = buildTree(points.slice(0, median), next, xLower, point.x,
@@ -69,6 +67,40 @@ function buildTree(points, axis, xLower, xUpper, yLower, yUpper) {
     return tree;
 }
 
+function rectsOverlap(a, b) {
+    if ((a.xBottomRight < b.xTopLeft) || (b.xBottomRight < a.xTopLeft)) {
+        return false;
+    }
+    if ((a.yTopLeft < b.yBottomRight) || (b.yTopLeft < a.yBottomRight)) {
+        return false;
+    }
+    return true;
+}
+
+function pointInRect(p, r) {
+    return ((r.xTopLeft < p.x) && (p.y < r.yTopLeft) &&
+            (p.x < r.xBottomRight) && (r.yBottomRight < p.y));
+}
+
+function intersections(tree, points, rectangle) {
+    if (tree === null) {
+        return;
+    }
+    var branch = {
+        xTopLeft: tree.xLower,
+        yTopLeft: tree.yUpper,
+        xBottomRight: tree.xUpper,
+        yBottomRight: tree.yLower,
+    };
+    if (rectsOverlap(branch, rectangle)) {
+        if (pointInRect(tree.point, rectangle)) {
+            points.push(tree.point);
+        }
+        intersections(tree.left, points, rectangle);
+        intersections(tree.right, points, rectangle);
+    }
+}
+
 function drawTree(tree) {
     if (tree === null) {
         return;
@@ -83,60 +115,22 @@ function drawTree(tree) {
     drawTree(tree.right);
 }
 
-function overlapRects(a, b) {
-    if ((a.xBottomRight < b.xTopLeft) || (b.xBottomRight < a.xTopLeft)) {
-        return false;
-    }
-    if ((a.yTopLeft < b.yBottomRight) || (b.yTopLeft < a.yBottomRight)) {
-        return false;
-    }
-    return true;
-}
-
-function pointInRect(p, r) {
-    if ((r.xTopLeft < p.x) && (p.y < r.yTopLeft) && (p.x < r.xBottomRight) &&
-        (r.yBottomRight < p.y)) {
-        return true;
-    }
-    return false;
-}
-
-function intersections(tree, points, rectangle) {
-    var boundingBox;
-    if (tree === null) {
-        return;
-    }
-    boundingBox = {
-        xTopLeft: tree.xLower,
-        yTopLeft: tree.yUpper,
-        xBottomRight: tree.xUpper,
-        yBottomRight: tree.yLower,
-    };
-    if (overlapRects(boundingBox, rectangle)) {
-        if (pointInRect(tree.point, rectangle)) {
-            points.push(tree.point);
-        }
-        intersections(tree.left, points, rectangle);
-        intersections(tree.right, points, rectangle);
-    }
-}
-
-var MAGNITUDE = 3;
-var SCALE = MAGNITUDE / 2;
-var RESET = 360;
-var ELAPSED = RESET + 1;
-
 function drawCircle(point) {
-    var x, y;
-    x = point.x;
-    y = point.y;
+    var x = point.x;
+    var y = point.y;
     CTX.moveTo(x + RADIUS, y);
     CTX.arc(x, y, RADIUS, 0, PI_2);
 }
 
+var RESET = 360;
+var ELAPSED = RESET + 1;
+var MAGNITUDE = 1;
+var SCALE = MAGNITUDE / 2;
+var L = 200;
+var L_2 = L * 2;
+
 function loop() {
-    var i, j, x, y, n, flag, tree, rectangle, point, intersectingPoint,
-        intersectingPoints, otherPoint;
+    var i, j;
     if (RESET < ELAPSED) {
         ELAPSED = 0;
         for (i = 0; i < N; i++) {
@@ -149,27 +143,26 @@ function loop() {
         POINTS[i].x += (Math.random() * MAGNITUDE) - SCALE;
         POINTS[i].y += (Math.random() * MAGNITUDE) - SCALE;
     }
-    tree = buildTree(POINTS, 0, 0, CANVAS.width, 0, CANVAS.height);
-    point = POINTS[0];
-    rectangle = {
+    var tree = buildTree(POINTS, 0, 0, CANVAS.width, 0, CANVAS.height);
+    var point = POINTS[0];
+    var rectangle = {
         xTopLeft: point.x - L,
         yTopLeft: point.y + L,
         xBottomRight: point.x + L,
         yBottomRight: point.y - L,
     };
-    intersectingPoints = [];
+    var intersectingPoints = [];
     intersections(tree, intersectingPoints, rectangle);
-    n = intersectingPoints.length;
+    var n = intersectingPoints.length;
     CTX.clearRect(0, 0, CANVAS.width, CANVAS.height);
+    {
+        CTX.fillStyle = CYAN;
+        CTX.fillRect(point.x - L, point.y - L, L_2, L_2);
+    }
     {
         CTX.beginPath();
         drawTree(tree);
         CTX.stroke();
-    }
-    {
-        CTX.beginPath();
-        CTX.fillStyle = CYAN;
-        CTX.fillRect(point.x - L, point.y - L, L_2, L_2);
     }
     {
         CTX.beginPath();
@@ -178,6 +171,7 @@ function loop() {
         CTX.fill();
     }
     {
+        var flag, otherPoint;
         CTX.beginPath();
         for (i = 1; i < N; i++) {
             otherPoint = POINTS[i];
@@ -196,6 +190,7 @@ function loop() {
         CTX.fill();
     }
     {
+        var intersectingPoint;
         CTX.beginPath();
         for (i = 0; i < n; i++) {
             intersectingPoint = intersectingPoints[i];
