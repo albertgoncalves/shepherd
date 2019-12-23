@@ -154,7 +154,6 @@ function loop() {
             inPoints.push(candidate);
         }
     });
-    var n = inPoints.length;
     CTX.clearRect(0, 0, CANVAS.width, CANVAS.height);
     {
         CTX.fillStyle = CYAN;
@@ -165,6 +164,7 @@ function loop() {
         drawTree(tree);
         CTX.stroke();
     }
+    var n = inPoints.length;
     {
         var flag, outPoint;
         CTX.beginPath();
