@@ -19,7 +19,7 @@ function randomPoint() {
 
 var PI_2 = Math.PI * 2;
 var RADIUS = 8;
-var N = 7;
+var N = 30;
 var POINTS = new Array(N);
 
 function order(axis) {
