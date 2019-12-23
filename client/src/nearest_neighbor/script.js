@@ -9,11 +9,11 @@ function distanceSquared(a, b) {
 
 var CANVAS = document.getElementById("canvas");
 var CTX = CANVAS.getContext("2d");
-var WHITE = "hsl(0, 0%, 35%)";
+var GRAY = "hsl(0, 0%, 35%)";
 var BLUE = "hsl(200, 75%, 50%)";
 var RED = "hsl(0, 75%, 50%)";
 CTX.imageSmoothingEnabled = false;
-CTX.strokeStyle = WHITE;
+CTX.strokeStyle = GRAY;
 CTX.lineWidth = 3;
 
 function randomPoint() {
@@ -156,7 +156,7 @@ function loop() {
                 drawCircle(POINTS[i]);
             }
         }
-        CTX.fillStyle = WHITE;
+        CTX.fillStyle = GRAY;
         CTX.fill();
     }
     {
