@@ -10,17 +10,24 @@ CTX.imageSmoothingEnabled = false;
 CTX.strokeStyle = WHITE;
 CTX.lineWidth = 3;
 
+var PI_2 = Math.PI * 2;
+var RADIUS = 8;
+var N = 50;
+var POINTS = new Array(N);
+var POINT;
+var L = 175;
+var L_2 = L * 2;
+var MAGNITUDE = 0.25;
+var SCALE = MAGNITUDE / 2;
+var RESET = 360;
+var ELAPSED = RESET + 1;
+
 function randomPoint() {
     return {
         x: Math.random() * CANVAS.width,
         y: Math.random() * CANVAS.height,
     };
 }
-
-var PI_2 = Math.PI * 2;
-var RADIUS = 8;
-var N = 50;
-var POINTS = new Array(N);
 
 function order(axis) {
     if (axis === 0) {
@@ -119,13 +126,6 @@ function drawCircle(point) {
     CTX.arc(x, y, RADIUS, 0, PI_2);
 }
 
-var RESET = 360;
-var ELAPSED = RESET + 1;
-var MAGNITUDE = 0.25;
-var SCALE = MAGNITUDE / 2;
-var L = 200;
-var L_2 = L * 2;
-
 function loop() {
     var i, j;
     if (RESET < ELAPSED) {
@@ -133,31 +133,33 @@ function loop() {
         for (i = 0; i < N; i++) {
             POINTS[i] = randomPoint();
         }
+        POINT = randomPoint();
     } else {
         ELAPSED += 1;
     }
+    POINT.x += (Math.random() * MAGNITUDE) - SCALE;
+    POINT.y += (Math.random() * MAGNITUDE) - SCALE;
     for (i = 0; i < N; i++) {
         POINTS[i].x += (Math.random() * MAGNITUDE) - SCALE;
         POINTS[i].y += (Math.random() * MAGNITUDE) - SCALE;
     }
     var tree = buildTree(POINTS, 0, 0, CANVAS.width, 0, CANVAS.height);
-    var point = POINTS[0];
     var rectangle = {
-        xTopLeft: point.x - L,
-        yTopLeft: point.y + L,
-        xBottomRight: point.x + L,
-        yBottomRight: point.y - L,
+        xTopLeft: POINT.x - L,
+        yTopLeft: POINT.y + L,
+        xBottomRight: POINT.x + L,
+        yBottomRight: POINT.y - L,
     };
     var inPoints = [];
     intersections(tree, rectangle, function(candidate) {
-        if ((point !== candidate) && (pointInRect(rectangle, candidate))) {
+        if (pointInRect(rectangle, candidate)) {
             inPoints.push(candidate);
         }
     });
     CTX.clearRect(0, 0, CANVAS.width, CANVAS.height);
     {
         CTX.fillStyle = CYAN;
-        CTX.fillRect(point.x - L, point.y - L, L_2, L_2);
+        CTX.fillRect(POINT.x - L, POINT.y - L, L_2, L_2);
     }
     {
         CTX.beginPath();
@@ -168,7 +170,7 @@ function loop() {
     {
         var flag, outPoint;
         CTX.beginPath();
-        for (i = 1; i < N; i++) {
+        for (i = 0; i < N; i++) {
             flag = true;
             outPoint = POINTS[i];
             for (j = 0; j < n; j++) {
@@ -195,7 +197,7 @@ function loop() {
     }
     {
         CTX.beginPath();
-        drawCircle(point);
+        drawCircle(POINT);
         CTX.fillStyle = GREEN;
         CTX.fill();
     }
