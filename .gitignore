@@ -17,7 +17,7 @@
 !adjacency/
 !expand/
 !grid/
-!kdtree_range/
+!kdtree_rect/
 !nearest_neighbor/
 !no_clear/
 !orbits/
