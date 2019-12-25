@@ -12,15 +12,10 @@ CTX.lineWidth = 3;
 
 var PI_2 = Math.PI * 2;
 var RADIUS = 8;
-var N = 75;
+var N = 50;
 var POINTS = new Array(N);
-var WIDTH = 300;
-var HEIGHT = 225;
-var HALF_WIDTH = WIDTH / 2;
-var HALF_HEIGHT = HEIGHT / 2;
-var RECTANGLE = {
-    width: WIDTH,
-    height: HEIGHT,
+var CIRCLE = {
+    radius: 175,
 };
 var MAGNITUDE = 0.25;
 var SCALE = MAGNITUDE / 2;
@@ -70,36 +65,30 @@ function buildTree(points, axis, xLower, xUpper, yLower, yUpper) {
     return tree;
 }
 
-function rectsOverlap(a, b) {
-    if (((a.x + a.width) < b.x) || ((b.x + b.width) < a.x)) {
-        return false;
-    }
-    if (((a.y + a.height) < b.y) || ((b.y + b.height) < a.y)) {
-        return false;
-    }
-    return true;
+function rectCircleOverlap(rectangle, circle) {
+    var xDelta = circle.x -
+        Math.max(rectangle.xLower, Math.min(circle.x, rectangle.xUpper));
+    var yDelta = circle.y -
+        Math.max(rectangle.yLower, Math.min(circle.y, rectangle.yUpper));
+    return ((xDelta * xDelta) + (yDelta * yDelta)) <
+        (circle.radius * circle.radius);
 }
 
-function pointInRect(point, rectangle) {
-    return ((rectangle.x < point.x) && (rectangle.y < point.y) &&
-            (point.x < (rectangle.x + rectangle.width)) &&
-            (point.y < (rectangle.y + rectangle.height)));
+function pointInCircle(point, circle) {
+    var xDelta = point.x - circle.x;
+    var yDelta = point.y - circle.y;
+    return ((xDelta * xDelta) + (yDelta * yDelta)) <
+        (circle.radius * circle.radius);
 }
 
-function intersections(tree, rectangle, callback) {
+function intersections(tree, circle, callback) {
     if (tree === null) {
         return;
     }
-    var branch = {
-        x: tree.xLower,
-        y: tree.yLower,
-        width: tree.xUpper - tree.xLower,
-        height: tree.yUpper - tree.yLower,
-    };
-    if (rectsOverlap(branch, rectangle)) {
+    if (rectCircleOverlap(tree, circle)) {
         callback(tree.point);
-        intersections(tree.left, rectangle, callback);
-        intersections(tree.right, rectangle, callback);
+        intersections(tree.left, circle, callback);
+        intersections(tree.right, circle, callback);
     }
 }
 
@@ -127,29 +116,31 @@ function loop() {
                 y: Math.random() * CANVAS.height,
             };
         }
-        RECTANGLE.x = Math.random() * (CANVAS.width - WIDTH);
-        RECTANGLE.y = Math.random() * (CANVAS.height - HEIGHT);
+        CIRCLE.x = Math.random() * CANVAS.width;
+        CIRCLE.y = Math.random() * CANVAS.height;
     } else {
         ELAPSED += 1;
     }
-    RECTANGLE.x += (Math.random() * MAGNITUDE) - SCALE;
-    RECTANGLE.y += (Math.random() * MAGNITUDE) - SCALE;
+    CIRCLE.x += (Math.random() * MAGNITUDE) - SCALE;
+    CIRCLE.y += (Math.random() * MAGNITUDE) - SCALE;
     for (i = 0; i < N; i++) {
         POINTS[i].x += (Math.random() * MAGNITUDE) - SCALE;
         POINTS[i].y += (Math.random() * MAGNITUDE) - SCALE;
     }
     var tree = buildTree(POINTS, 0, 0, CANVAS.width, 0, CANVAS.height);
     var inPoints = [];
-    intersections(tree, RECTANGLE, function(candidate) {
-        if (pointInRect(candidate, RECTANGLE)) {
+    intersections(tree, CIRCLE, function(candidate) {
+        if (pointInCircle(candidate, CIRCLE)) {
             inPoints.push(candidate);
         }
     });
     CTX.clearRect(0, 0, CANVAS.width, CANVAS.height);
     {
+        CTX.beginPath();
+        CTX.moveTo(CIRCLE.x + CIRCLE.radius, CIRCLE.y);
+        CTX.arc(CIRCLE.x, CIRCLE.y, CIRCLE.radius, 0, PI_2);
         CTX.fillStyle = CYAN;
-        CTX.fillRect(RECTANGLE.x, RECTANGLE.y, RECTANGLE.width,
-                     RECTANGLE.height);
+        CTX.fill();
     }
     {
         CTX.beginPath();
@@ -189,11 +180,9 @@ function loop() {
         CTX.fill();
     }
     {
-        var x = RECTANGLE.x + HALF_WIDTH;
-        var y = RECTANGLE.y + HALF_HEIGHT;
         CTX.beginPath();
-        CTX.moveTo(x + RADIUS, y);
-        CTX.arc(x, y, RADIUS, 0, PI_2);
+        CTX.moveTo(CIRCLE.x + RADIUS, CIRCLE.y);
+        CTX.arc(CIRCLE.x, CIRCLE.y, RADIUS, 0, PI_2);
         CTX.fillStyle = GREEN;
         CTX.fill();
     }
