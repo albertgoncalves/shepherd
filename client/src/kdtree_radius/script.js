@@ -11,11 +11,13 @@ CTX.strokeStyle = WHITE;
 CTX.lineWidth = 3;
 
 var PI_2 = Math.PI * 2;
-var RADIUS = 8;
+var POINT_RADIUS = 8;
 var N = 50;
 var POINTS = new Array(N);
+var CIRCLE_RADIUS = 150;
+var CIRCLE_RADIUS_2 = CIRCLE_RADIUS * 2;
 var CIRCLE = {
-    radius: 175,
+    radius: CIRCLE_RADIUS,
 };
 var MAGNITUDE = 0.25;
 var SCALE = MAGNITUDE / 2;
@@ -112,8 +114,10 @@ function loop() {
                 y: Math.random() * CANVAS.height,
             };
         }
-        CIRCLE.x = Math.random() * CANVAS.width;
-        CIRCLE.y = Math.random() * CANVAS.height;
+        CIRCLE.x =
+            (Math.random() * (CANVAS.width - CIRCLE_RADIUS_2)) + CIRCLE_RADIUS;
+        CIRCLE.y = (Math.random() * (CANVAS.height - CIRCLE_RADIUS_2)) +
+            CIRCLE_RADIUS;
     } else {
         ELAPSED += 1;
     }
@@ -157,8 +161,8 @@ function loop() {
                 }
             }
             if (flag) {
-                CTX.moveTo(outPoint.x + RADIUS, outPoint.y);
-                CTX.arc(outPoint.x, outPoint.y, RADIUS, 0, PI_2);
+                CTX.moveTo(outPoint.x + POINT_RADIUS, outPoint.y);
+                CTX.arc(outPoint.x, outPoint.y, POINT_RADIUS, 0, PI_2);
             }
         }
         CTX.fillStyle = WHITE;
@@ -169,16 +173,16 @@ function loop() {
         CTX.beginPath();
         for (i = 0; i < n; i++) {
             inPoint = inPoints[i];
-            CTX.moveTo(inPoint.x + RADIUS, inPoint.y);
-            CTX.arc(inPoint.x, inPoint.y, RADIUS, 0, PI_2);
+            CTX.moveTo(inPoint.x + POINT_RADIUS, inPoint.y);
+            CTX.arc(inPoint.x, inPoint.y, POINT_RADIUS, 0, PI_2);
         }
         CTX.fillStyle = RED;
         CTX.fill();
     }
     {
         CTX.beginPath();
-        CTX.moveTo(CIRCLE.x + RADIUS, CIRCLE.y);
-        CTX.arc(CIRCLE.x, CIRCLE.y, RADIUS, 0, PI_2);
+        CTX.moveTo(CIRCLE.x + POINT_RADIUS, CIRCLE.y);
+        CTX.arc(CIRCLE.x, CIRCLE.y, POINT_RADIUS, 0, PI_2);
         CTX.fillStyle = GREEN;
         CTX.fill();
     }
