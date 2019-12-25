@@ -27,24 +27,20 @@ var SCALE = MAGNITUDE / 2;
 var RESET = 360;
 var ELAPSED = RESET + 1;
 
-function order(axis) {
-    if (axis === 0) {
-        return function(a, b) {
-            return a.x - b.x;
-        };
-    } else if (axis === 1) {
-        return function(a, b) {
-            return a.y - b.y;
-        };
-    }
-}
-
 function buildTree(points, axis, xLower, xUpper, yLower, yUpper) {
     var n = points.length;
     if (n === 0) {
         return null;
     }
-    points.sort(order(axis));
+    if (axis === 0) {
+        points.sort(function(a, b) {
+            return a.x - b.x;
+        });
+    } else if (axis === 1) {
+        points.sort(function(a, b) {
+            return a.y - b.y;
+        });
+    }
     var median = Math.floor(n / 2);
     var point = points[median];
     var tree = {

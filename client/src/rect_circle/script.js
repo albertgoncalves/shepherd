@@ -56,14 +56,12 @@ function loop() {
             (Math.random() * (CANVAS.width - CIRCLE_RADIUS_2)) + CIRCLE_RADIUS;
         CIRCLE.y = (Math.random() * (CANVAS.height - CIRCLE_RADIUS_2)) +
             CIRCLE_RADIUS;
-        POINT = nearest(RECTANGLE, CIRCLE);
     } else {
         ELAPSED += 1;
         RECTANGLE.x += (Math.random() * MAGNITUDE) - SCALE;
         RECTANGLE.y += (Math.random() * MAGNITUDE) - SCALE;
         CIRCLE.x += (Math.random() * MAGNITUDE) - SCALE;
         CIRCLE.y += (Math.random() * MAGNITUDE) - SCALE;
-        POINT = nearest(RECTANGLE, CIRCLE);
     }
     CTX.clearRect(0, 0, CANVAS.width, CANVAS.height);
     CTX.strokeRect(RECTANGLE.x, RECTANGLE.y, RECTANGLE.width,
@@ -75,23 +73,25 @@ function loop() {
         CTX.stroke();
     }
     if (!intersect(RECTANGLE, CIRCLE)) {
-        var radians = Math.atan2(POINT.y - CIRCLE.y, POINT.x - CIRCLE.x);
-        var intersection = {
+        var rectPoint = nearest(RECTANGLE, CIRCLE);
+        var radians =
+            Math.atan2(rectPoint.y - CIRCLE.y, rectPoint.x - CIRCLE.x);
+        var circlePoint = {
             x: CIRCLE.x + (CIRCLE.radius * Math.cos(radians)),
             y: CIRCLE.y + (CIRCLE.radius * Math.sin(radians)),
         };
         {
             CTX.beginPath();
-            CTX.moveTo(POINT.x, POINT.y);
-            CTX.lineTo(intersection.x, intersection.y);
+            CTX.moveTo(rectPoint.x, rectPoint.y);
+            CTX.lineTo(circlePoint.x, circlePoint.y);
             CTX.stroke();
         }
         {
             CTX.beginPath();
-            CTX.moveTo(POINT.x + POINT_RADIUS, POINT.y);
-            CTX.arc(POINT.x, POINT.y, POINT_RADIUS, 0, PI_2);
-            CTX.moveTo(intersection.x + POINT_RADIUS, intersection.y);
-            CTX.arc(intersection.x, intersection.y, POINT_RADIUS, 0, PI_2);
+            CTX.moveTo(rectPoint.x + POINT_RADIUS, rectPoint.y);
+            CTX.arc(rectPoint.x, rectPoint.y, POINT_RADIUS, 0, PI_2);
+            CTX.moveTo(circlePoint.x + POINT_RADIUS, circlePoint.y);
+            CTX.arc(circlePoint.x, circlePoint.y, POINT_RADIUS, 0, PI_2);
             CTX.fill();
         }
     }
