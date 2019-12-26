@@ -71,7 +71,10 @@ jsall () {
     ' bash {} \;
     find "$JSPATH/src" -type f -name '*.js' -exec bash -c '
         echo "$1"
-        "$JSPATH/node_modules/jshint/bin/jshint" -c "$JSPATH/.jshintrc" "$1"
+        "$JSPATH/node_modules/jshint/bin/jshint" \
+            --verbose \
+            -c "$JSPATH/.jshintrc" \
+            "$1"
         clang-format -i "$1"
     ' bash {} \;
 }

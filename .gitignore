@@ -17,6 +17,7 @@
 !adjacency/
 !expand/
 !grid/
+!growth/
 !kdtree_radius/
 !kdtree_rect/
 !nearest_neighbor/
