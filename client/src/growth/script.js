@@ -14,15 +14,16 @@ var PI_2 = Math.PI * 2;
 var RADIUS = 3;
 var HALF_WIDTH = CANVAS.width / 2;
 var HALF_HEIGHT = CANVAS.height / 2;
-var START = 25;
-var END = 150;
+var START = 10;
+var END = 225;
 var N = END + 1;
 var POINTS;
-var SPREAD = 25;
-var SEARCH_RADIUS = 50;
-var DRAG = 15;
+var SPREAD = 50;
+var SEARCH_RADIUS = 65;
+var DRAG_ATTRACT = 10;
+var DRAG_REJECT = 15;
 var LIMIT = 0.5;
-var THRESHOLD = 150;
+var THRESHOLD = 200;
 
 function buildTree(points, axis, xLower, xUpper, yLower, yUpper) {
     var n = points.length;
@@ -102,6 +103,7 @@ function loop() {
         for (i = 0; i < N; i++) {
             POINTS[i] = {
                 angle: Math.random() * PI_2,
+                neighbors: [],
             };
         }
         POINTS.sort(function(a, b) {
@@ -120,11 +122,31 @@ function loop() {
             point.right = POINTS[i === n ? 0 : i + 1];
         }
     } else {
-        var rejection, insert;
+        var x, y, rejection, insert;
         for (i = 0; i < N; i++) {
             point = POINTS[i];
-            point.x += (((point.left.x + point.right.x) / 2) - point.x) / DRAG;
-            point.y += (((point.left.y + point.right.y) / 2) - point.y) / DRAG;
+            if ((Math.random() < (LIMIT / N)) &&
+                (threshold(point.left, point))) {
+                insert = {
+                    x: (point.left.x + point.x) / 2,
+                    y: (point.left.y + point.y) / 2,
+                    radius: SEARCH_RADIUS,
+                    neighbors: [],
+                    left: point.left,
+                    right: point,
+                };
+                point.left.right = insert;
+                point.left = insert;
+                POINTS[N] = insert;
+                N += 1;
+            }
+        }
+        for (i = 0; i < N; i++) {
+            point = POINTS[i];
+            x = point.left.x + point.right.x;
+            y = point.left.y + point.right.y;
+            point.xNext = point.x + (((x / 2) - point.x) / DRAG_ATTRACT);
+            point.yNext = point.y + (((y / 2) - point.y) / DRAG_ATTRACT);
             n = point.neighbors.length;
             if (0 < n) {
                 rejection = {
@@ -136,26 +158,14 @@ function loop() {
                     rejection.x += point.x - neighbor.x;
                     rejection.y += point.y - neighbor.y;
                 }
-                point.x += (rejection.x / n) / DRAG;
-                point.y += (rejection.y / n) / DRAG;
+                point.xNext += (rejection.x / n) / DRAG_REJECT;
+                point.yNext += (rejection.y / n) / DRAG_REJECT;
             }
         }
         for (i = 0; i < N; i++) {
             point = POINTS[i];
-            if ((Math.random() < (LIMIT / N)) &&
-                (threshold(point.left, point))) {
-                insert = {
-                    x: (point.left.x + point.x) / 2,
-                    y: (point.left.y + point.y) / 2,
-                    radius: SEARCH_RADIUS,
-                    left: point.left,
-                    right: point,
-                };
-                point.left.right = insert;
-                point.left = insert;
-                POINTS[N] = insert;
-                N += 1;
-            }
+            point.x = point.xNext;
+            point.y = point.yNext;
         }
     }
     var tree =
