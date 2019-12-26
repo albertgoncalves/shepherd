@@ -15,6 +15,7 @@
 !*.go
 !main
 !adjacency/
+!curvature/
 !expand/
 !grid/
 !growth/
