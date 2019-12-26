@@ -64,19 +64,17 @@ function buildTree(points, axis, xLower, xUpper, yLower, yUpper) {
 }
 
 function rectCircleOverlap(rectangle, circle) {
-    var xDelta = circle.x -
+    var x = circle.x -
         Math.max(rectangle.xLower, Math.min(circle.x, rectangle.xUpper));
-    var yDelta = circle.y -
+    var y = circle.y -
         Math.max(rectangle.yLower, Math.min(circle.y, rectangle.yUpper));
-    return ((xDelta * xDelta) + (yDelta * yDelta)) <
-        (circle.radius * circle.radius);
+    return ((x * x) + (y * y)) < (circle.radius * circle.radius);
 }
 
 function pointInCircle(point, circle) {
-    var xDelta = point.x - circle.x;
-    var yDelta = point.y - circle.y;
-    return ((xDelta * xDelta) + (yDelta * yDelta)) <
-        (circle.radius * circle.radius);
+    var x = point.x - circle.x;
+    var y = point.y - circle.y;
+    return ((x * x) + (y * y)) < (circle.radius * circle.radius);
 }
 
 function intersections(tree, circle, callback) {

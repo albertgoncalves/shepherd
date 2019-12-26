@@ -37,14 +37,13 @@ function nearest(rectangle, point) {
 }
 
 function intersect(rectangle, circle) {
-    var xDelta = circle.x -
+    var x = circle.x -
         Math.max(rectangle.x,
                  Math.min(circle.x, rectangle.x + rectangle.width));
-    var yDelta = circle.y -
+    var y = circle.y -
         Math.max(rectangle.y,
                  Math.min(circle.y, rectangle.y + rectangle.height));
-    return ((xDelta * xDelta) + (yDelta * yDelta)) <
-        (circle.radius * circle.radius);
+    return ((x * x) + (y * y)) < (circle.radius * circle.radius);
 }
 
 function loop() {
