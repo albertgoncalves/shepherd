@@ -120,12 +120,12 @@ function loop() {
             CIRCLE_RADIUS;
     } else {
         ELAPSED += 1;
-    }
-    CIRCLE.x += (Math.random() * MAGNITUDE) - SCALE;
-    CIRCLE.y += (Math.random() * MAGNITUDE) - SCALE;
-    for (i = 0; i < N; i++) {
-        POINTS[i].x += (Math.random() * MAGNITUDE) - SCALE;
-        POINTS[i].y += (Math.random() * MAGNITUDE) - SCALE;
+        CIRCLE.x += (Math.random() * MAGNITUDE) - SCALE;
+        CIRCLE.y += (Math.random() * MAGNITUDE) - SCALE;
+        for (i = 0; i < N; i++) {
+            POINTS[i].x += (Math.random() * MAGNITUDE) - SCALE;
+            POINTS[i].y += (Math.random() * MAGNITUDE) - SCALE;
+        }
     }
     var tree = buildTree(POINTS, 0, 0, CANVAS.width, 0, CANVAS.height);
     var inPoints = [];

@@ -127,12 +127,12 @@ function loop() {
         RECTANGLE.y = Math.random() * (CANVAS.height - HEIGHT);
     } else {
         ELAPSED += 1;
-    }
-    RECTANGLE.x += (Math.random() * MAGNITUDE) - SCALE;
-    RECTANGLE.y += (Math.random() * MAGNITUDE) - SCALE;
-    for (i = 0; i < N; i++) {
-        POINTS[i].x += (Math.random() * MAGNITUDE) - SCALE;
-        POINTS[i].y += (Math.random() * MAGNITUDE) - SCALE;
+        RECTANGLE.x += (Math.random() * MAGNITUDE) - SCALE;
+        RECTANGLE.y += (Math.random() * MAGNITUDE) - SCALE;
+        for (i = 0; i < N; i++) {
+            POINTS[i].x += (Math.random() * MAGNITUDE) - SCALE;
+            POINTS[i].y += (Math.random() * MAGNITUDE) - SCALE;
+        }
     }
     var tree = buildTree(POINTS, 0, 0, CANVAS.width, 0, CANVAS.height);
     var inPoints = [];

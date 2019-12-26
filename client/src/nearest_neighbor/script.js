@@ -120,12 +120,12 @@ function loop() {
         }
     } else {
         ELAPSED += 1;
-    }
-    POINT.x += (Math.random() * MAGNITUDE) - SCALE;
-    POINT.y += (Math.random() * MAGNITUDE) - SCALE;
-    for (i = 0; i < N; i++) {
-        POINTS[i].x += (Math.random() * MAGNITUDE) - SCALE;
-        POINTS[i].y += (Math.random() * MAGNITUDE) - SCALE;
+        POINT.x += (Math.random() * MAGNITUDE) - SCALE;
+        POINT.y += (Math.random() * MAGNITUDE) - SCALE;
+        for (i = 0; i < N; i++) {
+            POINTS[i].x += (Math.random() * MAGNITUDE) - SCALE;
+            POINTS[i].y += (Math.random() * MAGNITUDE) - SCALE;
+        }
     }
     var tree = buildTree(POINTS, 0);
     var neighbor = nearestNeighbor(tree, POINT);
