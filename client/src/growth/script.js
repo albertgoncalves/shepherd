@@ -14,16 +14,14 @@ var PI_2 = Math.PI * 2;
 var RADIUS = 3;
 var HALF_WIDTH = CANVAS.width / 2;
 var HALF_HEIGHT = CANVAS.height / 2;
-var START = 35;
+var START = 50;
 var N, POINTS;
-var SPREAD = 5;
-var SEARCH_RADIUS = 25;
-var DRAG = 5;
-var LIMIT = 0.025;
-var THRESHOLD = 150;
-var MAGNITUDE = 0.25;
-var SCALE = MAGNITUDE / 2;
-var RESET = 360;
+var SPREAD = 10;
+var SEARCH_RADIUS = 30;
+var DRAG = 10;
+var LIMIT = 0.95;
+var THRESHOLD = 15;
+var RESET = 600;
 var ELAPSED = RESET + 1;
 
 function buildTree(points, axis, xLower, xUpper, yLower, yUpper) {
@@ -92,9 +90,9 @@ function intersections(tree, circle, callback) {
     }
 }
 
-function threshold(a, b) {
-    var x = a.x - b.x;
-    var y = a.y - b.y;
+function threshold(aPoint, bPoint) {
+    var x = aPoint.x - bPoint.x;
+    var y = aPoint.y - bPoint.y;
     return THRESHOLD < ((x * x) + (y * y));
 }
 
@@ -152,7 +150,7 @@ function loop() {
         for (i = 0; i < N; i++) {
             point = POINTS[i];
             left = point.left;
-            if ((Math.random() < LIMIT) && (threshold(left, point))) {
+            if ((Math.random() < (LIMIT / N)) && (threshold(left, point))) {
                 insert = {
                     x: (left.x + point.x) / 2,
                     y: (left.y + point.y) / 2,
