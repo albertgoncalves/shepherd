@@ -4,10 +4,10 @@
 
 var CANVAS = document.getElementById("canvas");
 var CTX = CANVAS.getContext("2d");
-var WHITE = "hsl(0, 0%, 35%)";
+var GRAY = "hsl(0, 0%, 35%)";
 var CYAN = "hsl(175, 75%, 50%)";
 CTX.imageSmoothingEnabled = false;
-CTX.fillStyle = WHITE;
+CTX.fillStyle = GRAY;
 CTX.lineWidth = 2;
 
 var PI_2 = Math.PI * 2;
@@ -95,7 +95,7 @@ function threshold(aPoint, bPoint) {
 }
 
 function loop() {
-    var i, j, n, point, angle, neighbor;
+    var i, j, n, point, neighbor;
     if (END < N) {
         N = START;
         POINTS = new Array(END);
@@ -109,9 +109,8 @@ function loop() {
         });
         for (i = 0; i < N; i++) {
             point = POINTS[i];
-            angle = point.angle;
-            point.x = (Math.cos(angle) * SPREAD) + HALF_WIDTH;
-            point.y = (Math.sin(angle) * SPREAD) + HALF_HEIGHT;
+            point.x = (Math.cos(point.angle) * SPREAD) + HALF_WIDTH;
+            point.y = (Math.sin(point.angle) * SPREAD) + HALF_HEIGHT;
             point.radius = SEARCH_RADIUS;
         }
         n = N - 1;
@@ -121,13 +120,11 @@ function loop() {
             point.right = POINTS[i === n ? 0 : i + 1];
         }
     } else {
-        var left, right, rejection, insert;
+        var rejection, insert;
         for (i = 0; i < N; i++) {
             point = POINTS[i];
-            left = point.left;
-            right = point.right;
-            point.x += (((left.x + right.x) / 2) - point.x) / DRAG;
-            point.y += (((left.y + right.y) / 2) - point.y) / DRAG;
+            point.x += (((point.left.x + point.right.x) / 2) - point.x) / DRAG;
+            point.y += (((point.left.y + point.right.y) / 2) - point.y) / DRAG;
             n = point.neighbors.length;
             if (0 < n) {
                 rejection = {
@@ -143,10 +140,10 @@ function loop() {
                 point.y += (rejection.y / n) / DRAG;
             }
         }
+        var left;
         for (i = 0; i < N; i++) {
             point = POINTS[i];
             left = point.left;
-            right = point.right;
             if ((Math.random() < (LIMIT / N)) && (threshold(left, point))) {
                 insert = {
                     x: (left.x + point.x) / 2,
@@ -198,7 +195,7 @@ function loop() {
             CTX.moveTo(neighbor.x, neighbor.y);
             CTX.lineTo(point.x, point.y);
         }
-        CTX.strokeStyle = WHITE;
+        CTX.strokeStyle = GRAY;
         CTX.stroke();
     }
     {
