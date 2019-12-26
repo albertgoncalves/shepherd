@@ -140,20 +140,19 @@ function loop() {
                 point.y += (rejection.y / n) / DRAG;
             }
         }
-        var left;
         for (i = 0; i < N; i++) {
             point = POINTS[i];
-            left = point.left;
-            if ((Math.random() < (LIMIT / N)) && (threshold(left, point))) {
+            if ((Math.random() < (LIMIT / N)) &&
+                (threshold(point.left, point))) {
                 insert = {
-                    x: (left.x + point.x) / 2,
-                    y: (left.y + point.y) / 2,
+                    x: (point.left.x + point.x) / 2,
+                    y: (point.left.y + point.y) / 2,
                     radius: SEARCH_RADIUS,
-                    left: left,
+                    left: point.left,
                     right: point,
                 };
+                point.left.right = insert;
                 point.left = insert;
-                left.right = insert;
                 POINTS[N] = insert;
                 N += 1;
             }
@@ -191,8 +190,7 @@ function loop() {
         CTX.beginPath();
         for (i = 0; i < N; i++) {
             point = POINTS[i];
-            neighbor = point.left;
-            CTX.moveTo(neighbor.x, neighbor.y);
+            CTX.moveTo(point.left.x, point.left.y);
             CTX.lineTo(point.x, point.y);
         }
         CTX.strokeStyle = GRAY;
