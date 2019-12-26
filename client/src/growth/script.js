@@ -14,15 +14,15 @@ var PI_2 = Math.PI * 2;
 var RADIUS = 3;
 var HALF_WIDTH = CANVAS.width / 2;
 var HALF_HEIGHT = CANVAS.height / 2;
-var START = 50;
-var N, POINTS;
-var SPREAD = 10;
-var SEARCH_RADIUS = 30;
-var DRAG = 10;
-var LIMIT = 0.95;
-var THRESHOLD = 15;
-var RESET = 600;
-var ELAPSED = RESET + 1;
+var START = 25;
+var END = 150;
+var N = END + 1;
+var POINTS;
+var SPREAD = 25;
+var SEARCH_RADIUS = 50;
+var DRAG = 15;
+var LIMIT = 0.5;
+var THRESHOLD = 150;
 
 function buildTree(points, axis, xLower, xUpper, yLower, yUpper) {
     var n = points.length;
@@ -64,19 +64,17 @@ function buildTree(points, axis, xLower, xUpper, yLower, yUpper) {
 }
 
 function rectCircleOverlap(rectangle, circle) {
-    var xDelta = circle.x -
+    var x = circle.x -
         Math.max(rectangle.xLower, Math.min(circle.x, rectangle.xUpper));
-    var yDelta = circle.y -
+    var y = circle.y -
         Math.max(rectangle.yLower, Math.min(circle.y, rectangle.yUpper));
-    return ((xDelta * xDelta) + (yDelta * yDelta)) <
-        (circle.radius * circle.radius);
+    return ((x * x) + (y * y)) < (circle.radius * circle.radius);
 }
 
 function pointInRadius(point, circle) {
-    var xDelta = point.x - circle.x;
-    var yDelta = point.y - circle.y;
-    return ((xDelta * xDelta) + (yDelta * yDelta)) <
-        (circle.radius * circle.radius);
+    var x = point.x - circle.x;
+    var y = point.y - circle.y;
+    return ((x * x) + (y * y)) < (circle.radius * circle.radius);
 }
 
 function intersections(tree, circle, callback) {
@@ -98,10 +96,9 @@ function threshold(aPoint, bPoint) {
 
 function loop() {
     var i, j, n, point, angle, neighbor;
-    if (RESET < ELAPSED) {
-        ELAPSED = 0;
+    if (END < N) {
         N = START;
-        POINTS = new Array(N);
+        POINTS = new Array(END);
         for (i = 0; i < N; i++) {
             POINTS[i] = {
                 angle: Math.random() * PI_2,
@@ -124,7 +121,6 @@ function loop() {
             point.right = POINTS[i === n ? 0 : i + 1];
         }
     } else {
-        ELAPSED += 1;
         var left, right, rejection, insert;
         for (i = 0; i < N; i++) {
             point = POINTS[i];
@@ -150,6 +146,7 @@ function loop() {
         for (i = 0; i < N; i++) {
             point = POINTS[i];
             left = point.left;
+            right = point.right;
             if ((Math.random() < (LIMIT / N)) && (threshold(left, point))) {
                 insert = {
                     x: (left.x + point.x) / 2,
@@ -160,12 +157,13 @@ function loop() {
                 };
                 point.left = insert;
                 left.right = insert;
-                POINTS.push(insert);
+                POINTS[N] = insert;
                 N += 1;
             }
         }
     }
-    var tree = buildTree(POINTS, 0, 0, CANVAS.width, 0, CANVAS.height);
+    var tree =
+        buildTree(POINTS.slice(0, N), 0, 0, CANVAS.width, 0, CANVAS.height);
     for (i = 0; i < N; i++) {
         point = POINTS[i];
         point.neighbors = [];
