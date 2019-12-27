@@ -9,14 +9,10 @@ CTX.lineWidth = 4;
 
 var N = 15;
 var FLOAT32_BYTES = N * 4;
-var XS_BUFFER = new ArrayBuffer(FLOAT32_BYTES);
-var YS_BUFFER = new ArrayBuffer(FLOAT32_BYTES);
-var XS_SPEED_BUFFER = new ArrayBuffer(FLOAT32_BYTES);
-var YS_SPEED_BUFFER = new ArrayBuffer(FLOAT32_BYTES);
-var XS = new Float32Array(XS_BUFFER);
-var YS = new Float32Array(YS_BUFFER);
-var XS_SPEED = new Float32Array(XS_SPEED_BUFFER);
-var YS_SPEED = new Float32Array(YS_SPEED_BUFFER);
+var XS = new Float32Array(new ArrayBuffer(FLOAT32_BYTES));
+var YS = new Float32Array(new ArrayBuffer(FLOAT32_BYTES));
+var XS_SPEED = new Float32Array(new ArrayBuffer(FLOAT32_BYTES));
+var YS_SPEED = new Float32Array(new ArrayBuffer(FLOAT32_BYTES));
 var K = 0.025;
 var L = 10;
 

@@ -9,8 +9,7 @@ var PI_2 = Math.PI * 2;
 var RADIUS = 7;
 var N = 65;
 var FLOAT32_BYTES = N * 4;
-var BUFFER = new ArrayBuffer(FLOAT32_BYTES);
-var XS = new Float32Array(BUFFER);
+var XS = new Float32Array(new ArrayBuffer(FLOAT32_BYTES));
 var HALF_HEIGHT = CANVAS.height / 2;
 
 for (var i = 0; i < N; i++) {
