@@ -7,15 +7,14 @@ CTX.fillStyle = "hsla(0, 0%, 90%, 0.035)";
 
 var PI_2 = Math.PI * 2;
 var RADIUS = 7;
-var N = 75;
-var NODES = new Array(N);
+var N = 65;
+var FLOAT32_BYTES = N * 4;
+var BUFFER = new ArrayBuffer(FLOAT32_BYTES);
+var XS = new Float32Array(BUFFER);
 var HALF_HEIGHT = CANVAS.height / 2;
 
 for (var i = 0; i < N; i++) {
-    NODES[i] = {
-        x: CANVAS.width * ((i + 1) / N),
-        y: HALF_HEIGHT,
-    };
+    XS[i] = CANVAS.width * ((i + 1) / N);
 }
 
 var M = 50;
@@ -51,20 +50,20 @@ function loop() {
     } else {
         ELAPSED += 1;
     }
-    var point, previous, offset, sample;
+    var x, xPrev, offset, sample;
     for (i = 1; i < N; i++) {
-        point = NODES[i];
-        previous = NODES[i - 1];
-        offset = (CANVAS.width - point.x) / CANVAS.width;
+        x = XS[i];
+        xPrev = XS[i - 1];
+        offset = (CANVAS.width - x) / CANVAS.width;
         for (j = 0; j < M; j++) {
             sample = randomLerp(
                 {
-                    x: point.x + randomOffset(randomError(offset)),
-                    y: point.y + randomOffset(randomError(offset)),
+                    x: x + randomOffset(randomError(offset)),
+                    y: HALF_HEIGHT + randomOffset(randomError(offset)),
                 },
                 {
-                    x: previous.x + randomOffset(randomError(offset)),
-                    y: previous.y + randomOffset(randomError(offset)),
+                    x: xPrev + randomOffset(randomError(offset)),
+                    y: HALF_HEIGHT + randomOffset(randomError(offset)),
                 });
             CTX.fillRect(sample.x, sample.y, 1, 1);
         }
