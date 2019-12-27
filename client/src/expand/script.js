@@ -15,12 +15,19 @@ var M = N - 1;
 var SPREAD = 10;
 var HALF_WIDTH = CANVAS.width / 2;
 var HALF_HEIGHT = CANVAS.height / 2;
-var ANGLES = new Array(N);
-var XS = new Array(N);
-var YS = new Array(N);
-var XS_NEXT = new Array(N);
-var YS_NEXT = new Array(N);
-var NORMS = new Array(N);
+var FLOAT32_BYTES = N * 4;
+var ANGLES_BUFFER = new ArrayBuffer(FLOAT32_BYTES);
+var XS_BUFFER = new ArrayBuffer(FLOAT32_BYTES);
+var YS_BUFFER = new ArrayBuffer(FLOAT32_BYTES);
+var XS_NEXT_BUFFER = new ArrayBuffer(FLOAT32_BYTES);
+var YS_NEXT_BUFFER = new ArrayBuffer(FLOAT32_BYTES);
+var NORMS_BUFFER = new ArrayBuffer(FLOAT32_BYTES);
+var ANGLES = new Float32Array(ANGLES_BUFFER);
+var XS = new Float32Array(XS_BUFFER);
+var YS = new Float32Array(YS_BUFFER);
+var XS_NEXT = new Float32Array(XS_NEXT_BUFFER);
+var YS_NEXT = new Float32Array(YS_NEXT_BUFFER);
+var NORMS = new Float32Array(NORMS_BUFFER);
 
 function distance(i, j) {
     var x = XS[i] - XS[j];

@@ -12,27 +12,26 @@ var PI_2 = Math.PI * 2;
 var RADIUS = 6;
 var LOWER = CANVAS.height / 10;
 var DELTA = CANVAS.height - (LOWER * 2);
-
-function randomPosition() {
-    return LOWER + (Math.random() * DELTA);
-}
-
 var N = 50;
-var XS = new Array(N);
-var YS_TO = new Array(N);
-var YS_FROM = new Array(N);
-var DELTAS = new Array(N);
-
-for (var i = 0; i < N; i++) {
-    XS[i] = CANVAS.width * ((i + 0.5) / N);
-    YS_TO[i] = randomPosition();
-    YS_FROM[i] = randomPosition();
-    DELTAS[i] = 0;
-}
-
+var FLOAT32_BYTES = N * 4;
+var XS_BUFFER = new ArrayBuffer(FLOAT32_BYTES);
+var YS_TO_BUFFER = new ArrayBuffer(FLOAT32_BYTES);
+var YS_FROM_BUFFER = new ArrayBuffer(FLOAT32_BYTES);
+var DELTAS_BUFFER = new ArrayBuffer(FLOAT32_BYTES);
+var XS = new Float32Array(XS_BUFFER);
+var YS_TO = new Float32Array(YS_TO_BUFFER);
+var YS_FROM = new Float32Array(YS_FROM_BUFFER);
+var DELTAS = new Float32Array(DELTAS_BUFFER);
 var DRAG = 50;
 var THRESHOLD = 1;
 var RESET;
+
+for (var i = 0; i < N; i++) {
+    XS[i] = CANVAS.width * ((i + 0.5) / N);
+    YS_TO[i] = LOWER + (Math.random() * DELTA);
+    YS_FROM[i] = LOWER + (Math.random() * DELTA);
+    DELTAS[i] = 0;
+}
 
 function loop() {
     var i, x, y;
@@ -47,7 +46,7 @@ function loop() {
     CTX.beginPath();
     for (i = 0; i < N; i++) {
         if (RESET) {
-            YS_TO[i] = randomPosition();
+            YS_TO[i] = LOWER + (Math.random() * DELTA);
         }
         x = XS[i];
         y = YS_TO[i];
