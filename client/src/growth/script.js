@@ -19,11 +19,11 @@ var END = 225;
 var N = END + 1;
 var POINTS;
 var SPREAD = 50;
-var SEARCH_RADIUS = 65;
-var DRAG_ATTRACT = 10;
-var DRAG_REJECT = 15;
+var SEARCH_RADIUS = 50;
+var DRAG_ATTRACT = 5;
+var DRAG_REJECT = 10;
 var LIMIT = 0.5;
-var THRESHOLD = 200;
+var THRESHOLD = 100;
 
 function buildTree(points, axis, xLower, xUpper, yLower, yUpper) {
     var n = points.length;
