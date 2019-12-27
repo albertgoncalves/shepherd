@@ -104,28 +104,36 @@ function loop() {
             point.right = POINTS[i === n ? 0 : i + 1];
         }
     } else {
-        var x, y, rejection, insert;
+        var x, y;
+        var inserts = [];
         for (i = 0; i < N; i++) {
             point = POINTS[i];
             if (Math.random() < (LIMIT / N)) {
                 x = point.left.x - point.x;
                 y = point.left.y - point.y;
                 if (THRESHOLD < ((x * x) + (y * y))) {
-                    insert = {
-                        x: (point.left.x + point.x) / 2,
-                        y: (point.left.y + point.y) / 2,
-                        radius: SEARCH_RADIUS,
-                        neighbors: [],
-                        left: point.left,
-                        right: point,
-                    };
-                    point.left.right = insert;
-                    point.left = insert;
-                    POINTS[N] = insert;
-                    N += 1;
+                    inserts.push(i);
                 }
             }
         }
+        var insert;
+        n = inserts.length;
+        for (i = 0; i < n; i++) {
+            point = POINTS[inserts[i]];
+            insert = {
+                x: (point.left.x + point.x) / 2,
+                y: (point.left.y + point.y) / 2,
+                radius: SEARCH_RADIUS,
+                neighbors: [],
+                left: point.left,
+                right: point,
+            };
+            point.left.right = insert;
+            point.left = insert;
+            POINTS[N] = insert;
+            N += 1;
+        }
+        var rejection;
         for (i = 0; i < N; i++) {
             point = POINTS[i];
             x = point.left.x + point.right.x;
