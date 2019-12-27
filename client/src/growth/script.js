@@ -15,11 +15,11 @@ var RADIUS = 3;
 var HALF_WIDTH = CANVAS.width / 2;
 var HALF_HEIGHT = CANVAS.height / 2;
 var START = 10;
-var END = 225;
+var END = 200;
 var N = END + 1;
 var POINTS;
-var SPREAD = 50;
-var SEARCH_RADIUS = 50;
+var SPREAD = 35;
+var SEARCH_RADIUS = 65;
 var DRAG_ATTRACT = 5;
 var DRAG_REJECT = 10;
 var LIMIT = 0.5;
@@ -64,35 +64,17 @@ function buildTree(points, axis, xLower, xUpper, yLower, yUpper) {
     return tree;
 }
 
-function rectCircleOverlap(rectangle, circle) {
-    var x = circle.x -
-        Math.max(rectangle.xLower, Math.min(circle.x, rectangle.xUpper));
-    var y = circle.y -
-        Math.max(rectangle.yLower, Math.min(circle.y, rectangle.yUpper));
-    return ((x * x) + (y * y)) < (circle.radius * circle.radius);
-}
-
-function pointInRadius(point, circle) {
-    var x = point.x - circle.x;
-    var y = point.y - circle.y;
-    return ((x * x) + (y * y)) < (circle.radius * circle.radius);
-}
-
 function intersections(tree, circle, callback) {
     if (tree === null) {
         return;
     }
-    if (rectCircleOverlap(tree, circle)) {
+    var x = circle.x - Math.max(tree.xLower, Math.min(circle.x, tree.xUpper));
+    var y = circle.y - Math.max(tree.yLower, Math.min(circle.y, tree.yUpper));
+    if (((x * x) + (y * y)) < (circle.radius * circle.radius)) {
         callback(tree.point);
         intersections(tree.left, circle, callback);
         intersections(tree.right, circle, callback);
     }
-}
-
-function threshold(aPoint, bPoint) {
-    var x = aPoint.x - bPoint.x;
-    var y = aPoint.y - bPoint.y;
-    return THRESHOLD < ((x * x) + (y * y));
 }
 
 function loop() {
@@ -125,20 +107,23 @@ function loop() {
         var x, y, rejection, insert;
         for (i = 0; i < N; i++) {
             point = POINTS[i];
-            if ((Math.random() < (LIMIT / N)) &&
-                (threshold(point.left, point))) {
-                insert = {
-                    x: (point.left.x + point.x) / 2,
-                    y: (point.left.y + point.y) / 2,
-                    radius: SEARCH_RADIUS,
-                    neighbors: [],
-                    left: point.left,
-                    right: point,
-                };
-                point.left.right = insert;
-                point.left = insert;
-                POINTS[N] = insert;
-                N += 1;
+            if (Math.random() < (LIMIT / N)) {
+                x = point.left.x - point.x;
+                y = point.left.y - point.y;
+                if (THRESHOLD < ((x * x) + (y * y))) {
+                    insert = {
+                        x: (point.left.x + point.x) / 2,
+                        y: (point.left.y + point.y) / 2,
+                        radius: SEARCH_RADIUS,
+                        neighbors: [],
+                        left: point.left,
+                        right: point,
+                    };
+                    point.left.right = insert;
+                    point.left = insert;
+                    POINTS[N] = insert;
+                    N += 1;
+                }
             }
         }
         for (i = 0; i < N; i++) {
@@ -174,10 +159,11 @@ function loop() {
         point = POINTS[i];
         point.neighbors = [];
         intersections(tree, point, function(candidate) {
-            if (pointInRadius(candidate, point)) {
-                if (point !== candidate) {
-                    point.neighbors.push(candidate);
-                }
+            var x = point.x - candidate.x;
+            var y = point.y - candidate.y;
+            if ((((x * x) + (y * y)) < (point.radius * point.radius)) &&
+                (point !== candidate)) {
+                point.neighbors.push(candidate);
             }
         });
     }
