@@ -2,13 +2,12 @@
 
 var CANVAS = document.getElementById("canvas");
 var CTX = CANVAS.getContext("2d");
-var COLOR = "hsla(0, 0%, 90%, 0.035)";
 CTX.imageSmoothingEnabled = false;
-CTX.fillStyle = COLOR;
+CTX.fillStyle = "hsla(0, 0%, 90%, 0.035)";
 
 var PI_2 = Math.PI * 2;
 var RADIUS = 7;
-var N = 50;
+var N = 75;
 var NODES = new Array(N);
 var HALF_HEIGHT = CANVAS.height / 2;
 
@@ -22,7 +21,7 @@ for (var i = 0; i < N; i++) {
 var M = 50;
 var MAGNITUDE = CANVAS.height;
 var MAGNITUDE_CENTER = MAGNITUDE / 2;
-var ERROR = 0.1;
+var ERROR = 0.15;
 var ERROR_CENTER = ERROR / 2;
 var RESET = 600;
 var ELAPSED = RESET + 1;
@@ -56,7 +55,7 @@ function loop() {
     for (i = 1; i < N; i++) {
         point = NODES[i];
         previous = NODES[i - 1];
-        offset = (CANVAS.width - previous.x) / CANVAS.width;
+        offset = (CANVAS.width - point.x) / CANVAS.width;
         for (j = 0; j < M; j++) {
             sample = randomLerp(
                 {

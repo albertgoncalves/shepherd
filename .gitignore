@@ -21,6 +21,7 @@
 !growth/
 !kdtree_radius/
 !kdtree_rect/
+!line_sample/
 !nearest_neighbor/
 !no_clear/
 !orbits/
