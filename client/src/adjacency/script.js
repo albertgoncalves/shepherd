@@ -1,12 +1,5 @@
 "use strict";
 
-function randomAverage(a, b) {
-    /* https://en.wikipedia.org/wiki/Linear_combination */
-    var wA = Math.random();
-    var wB = Math.random();
-    return ((a * wA) + (b * wB)) / (wA + wB);
-}
-
 var CANVAS = document.getElementById("canvas");
 var CTX = CANVAS.getContext("2d");
 var COLOR = "hsl(0, 0%, 35%)";
@@ -20,18 +13,25 @@ var RADIUS = 7;
 var START = 3;
 var STOP = 18;
 var NODES, N;
+var MAGNITUDE = 0.5;
+var CENTER = MAGNITUDE / 2;
 var FRAMES = 60;
 var RESET = FRAMES * (STOP - START + 1);
 var ELAPSED = RESET + 1;
-var MAGNITUDE = 0.5;
-var CENTER = MAGNITUDE / 2;
+
+function randomAverage(a, b) {
+    /* https://en.wikipedia.org/wiki/Linear_combination */
+    var wA = Math.random();
+    var wB = Math.random();
+    return ((a * wA) + (b * wB)) / (wA + wB);
+}
 
 function loop() {
-    var i, n, x, y, a, b, dX, dY, left, right, value, candidate;
+    var i;
     if (RESET < ELAPSED) {
         ELAPSED = 0;
         N = START;
-        n = N - 1;
+        var n = N - 1;
         NODES = new Array(STOP);
         for (i = 0; i < N; i++) {
             NODES[i] = {
@@ -43,21 +43,25 @@ function loop() {
         }
     } else {
         ELAPSED += 1;
+        for (i = 0; i < N; i++) {
+            NODES[i].x += (Math.random() * MAGNITUDE) - CENTER;
+            NODES[i].y += (Math.random() * MAGNITUDE) - CENTER;
+        }
         if ((ELAPSED % FRAMES === 0) && (N < STOP)) {
-            left = 0;
-            value = 0;
+            var left = 0;
+            var value = 0;
             for (i = 0; i < N; i++) {
-                a = NODES[i];
-                b = NODES[NODES[i].right];
-                dX = a.x - b.x;
-                dY = a.y - b.y;
-                candidate = Math.sqrt((dX * dX) + (dY * dY));
+                var a = NODES[i];
+                var b = NODES[NODES[i].right];
+                var dX = a.x - b.x;
+                var dY = a.y - b.y;
+                var candidate = Math.sqrt((dX * dX) + (dY * dY));
                 if (value < candidate) {
                     left = i;
                     value = candidate;
                 }
             }
-            right = NODES[left].right;
+            var right = NODES[left].right;
             NODES[left].right = N;
             NODES[right].left = N;
             NODES[N] = {
@@ -69,10 +73,6 @@ function loop() {
             N += 1;
         }
     }
-    for (i = 0; i < N; i++) {
-        NODES[i].x += (Math.random() * MAGNITUDE) - CENTER;
-        NODES[i].y += (Math.random() * MAGNITUDE) - CENTER;
-    }
     CTX.clearRect(0, 0, CANVAS.width, CANVAS.height);
     CTX.beginPath();
     for (i = 0; i < N; i++) {
@@ -81,6 +81,7 @@ function loop() {
     }
     CTX.stroke();
     CTX.beginPath();
+    var x, y;
     for (i = 0; i < N; i++) {
         x = NODES[i].x;
         y = NODES[i].y;
