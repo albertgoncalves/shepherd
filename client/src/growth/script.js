@@ -15,8 +15,8 @@ var RADIUS = 3;
 var HALF_WIDTH = CANVAS.width / 2;
 var HALF_HEIGHT = CANVAS.height / 2;
 var START = 10;
-var END = 200;
-var N = END + 1;
+var STOP = 200;
+var N = STOP + 1;
 var POINTS;
 var SPREAD = 35;
 var SEARCH_RADIUS = 65;
@@ -79,9 +79,9 @@ function intersections(tree, circle, callback) {
 
 function loop() {
     var i, j, n, point, neighbor;
-    if (END < N) {
+    if (STOP < N) {
         N = START;
-        POINTS = new Array(END);
+        POINTS = new Array(STOP);
         for (i = 0; i < N; i++) {
             POINTS[i] = {
                 angle: Math.random() * PI_2,
