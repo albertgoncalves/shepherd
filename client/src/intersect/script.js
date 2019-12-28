@@ -10,7 +10,7 @@ CTX.fillStyle = WHITE;
 CTX.lineWidth = 3;
 
 var PI_2 = Math.PI * 2;
-var RADIUS = 8;
+var RADIUS = 6;
 var N = 10;
 var EDGES = new Array(N);
 var CANDIDATE;
