@@ -19,6 +19,7 @@
 !expand/
 !grid/
 !growth/
+!intersect/
 !kdtree_radius/
 !kdtree_rect/
 !line_sample/
