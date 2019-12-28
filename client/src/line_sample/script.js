@@ -34,10 +34,9 @@ function randomOffset(weight) {
 
 function randomLerp(aPoint, bPoint) {
     var weight = Math.random();
-    var inverse = 1 - weight;
     return {
-        x: (aPoint.x * weight) + (bPoint.x * inverse),
-        y: (aPoint.y * weight) + (bPoint.y * inverse),
+        x: aPoint.x + ((bPoint.x - aPoint.x) * weight),
+        y: aPoint.y + ((bPoint.y - aPoint.y) * weight),
     };
 }
 
