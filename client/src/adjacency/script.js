@@ -21,9 +21,9 @@ var ELAPSED = RESET + 1;
 
 function randomAverage(a, b) {
     /* https://en.wikipedia.org/wiki/Linear_combination */
-    var wA = Math.random();
-    var wB = Math.random();
-    return ((a * wA) + (b * wB)) / (wA + wB);
+    var aWeight = Math.random();
+    var bWeight = Math.random();
+    return ((a * aWeight) + (b * bWeight)) / (aWeight + bWeight);
 }
 
 function loop() {

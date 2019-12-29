@@ -16,12 +16,12 @@ var LOWER = CANVAS.height / 10;
 var UPPER = CANVAS.height - LOWER;
 var MAGNITUDE = 0.1;
 var CENTER = MAGNITUDE / 2;
-var RELOAD = 60 * 12;
-var ELAPSED = RELOAD + 1;
+var RESET = 60 * 12;
+var ELAPSED = RESET + 1;
 
 function loop() {
     var i, j, norm;
-    if (RELOAD < ELAPSED) {
+    if (RESET < ELAPSED) {
         for (i = 0; i < N; i++) {
             XS[i] = CANVAS.width * ((i + 0.5) / N);
             YS[i] = HALF_HEIGHT;

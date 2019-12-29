@@ -50,20 +50,20 @@ for (var i = 0; i < N; i++) {
     }
 }
 
-var RELOAD = 60 * 15;
-var ELAPSED = RELOAD + 1;
 var DRAG;
+var RESET = 60 * 15;
+var ELAPSED = RESET + 1;
 
 function loop() {
-    var i, j, index, x, y, xMove, yMove, norm, left, right;
-    if (RELOAD < ELAPSED) {
+    var i, j, k, x, y, xMove, yMove, norm, left, right;
+    if (RESET < ELAPSED) {
         for (i = 0; i < N; i++) {
             for (j = 0; j < N; j++) {
-                index = j + (i * N);
-                CIRCLES[index].x = DELTA + (SHORT_SIDE * ((i + 0.5) / N));
-                CIRCLES[index].y = SHORT_SIDE * ((j + 0.5) / N);
-                CIRCLES[index].weight = Math.random();
-                CIRCLES[index].polarity = Math.random() < 0.5 ? true : false;
+                k = j + (i * N);
+                CIRCLES[k].x = DELTA + (SHORT_SIDE * ((i + 0.5) / N));
+                CIRCLES[k].y = SHORT_SIDE * ((j + 0.5) / N);
+                CIRCLES[k].weight = Math.random();
+                CIRCLES[k].polarity = Math.random() < 0.5 ? true : false;
             }
         }
         DRAG = 500;
@@ -79,10 +79,10 @@ function loop() {
         yMove = 0;
         norm = 0;
         for (j = 0; j < CIRCLES[i].neighbors.length; j++) {
-            index = CIRCLES[i].neighbors[j];
-            xMove += CIRCLES[index].x * CIRCLES[index].weight;
-            yMove += CIRCLES[index].y * CIRCLES[index].weight;
-            norm += CIRCLES[index].weight;
+            k = CIRCLES[i].neighbors[j];
+            xMove += CIRCLES[k].x * CIRCLES[k].weight;
+            yMove += CIRCLES[k].y * CIRCLES[k].weight;
+            norm += CIRCLES[k].weight;
         }
         xMove = ((xMove / norm) - CIRCLES[i].x) / DRAG;
         yMove = ((yMove / norm) - CIRCLES[i].y) / DRAG;
