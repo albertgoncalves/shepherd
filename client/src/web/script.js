@@ -55,7 +55,7 @@ function pointOfIntersection(aPoint1, aPoint2, bPoint1, bPoint2) {
 }
 
 function insert() {
-    var i, j, a, b, aNode, bNode, candidate, edge, point, points, n, p, m;
+    var i, j, a, b, n, m, candidate, edge, point, points, aNode, bNode;
     while (true) {
         candidate = {
             a: {
@@ -74,21 +74,24 @@ function insert() {
                                         NODES[edge.a], NODES[edge.b]);
             if (point !== null) {
                 points.push({
-                    coord: point,
+                    coordinates: point,
                     index: i,
                 });
             }
         }
         n = points.length;
         if (n === 1) {
-            m = M + 1;
-            p = N + 1;
+            /* NOTE:
+                a---b    a--M--b
+                      ->    |
+                            m */
             point = points[0];
             j = point.index;
             edge = EDGES[j];
+            m = M + 1; /* NOTE: Index positions into `NODES`. */
             a = edge.a;
             b = edge.b;
-            NODES[M] = point.coord;
+            NODES[M] = point.coordinates;
             NODES[m] = candidate.a;
             NODES[M].neighbors = [a, b, m];
             NODES[m].neighbors = [M];
@@ -104,7 +107,7 @@ function insert() {
                 a: M,
                 b: b,
             };
-            EDGES[p] = {
+            EDGES[N + 1] = {
                 a: m,
                 b: M,
             };
@@ -112,26 +115,28 @@ function insert() {
             M += 2;
             return;
         } else if (1 < n) {
-            var l, k, c, d, aPoint, bPoint, aEdge, bEdge, cNode, dNode, q;
+            /* NOTE:
+                a---b    a--M--b
+                      ->    |
+                c---d    c--m--d */
+            var l, k, c, d, aPoint, bPoint, cNode, dNode, aEdge, bEdge;
             points.sort(function(a, b) {
-                return a.coord.x - b.coord.x;
+                return a.coordinates.x - b.coordinates.x;
             });
             l = Math.floor(Math.random() * (n - 1));
-            m = M + 1;
-            p = N + 1;
-            q = N + 2;
             aPoint = points[l];
             bPoint = points[l + 1];
             j = aPoint.index;
             k = bPoint.index;
             aEdge = EDGES[j];
             bEdge = EDGES[k];
+            m = M + 1; /* NOTE: Index positions into `NODES`. */
             a = aEdge.a;
             b = aEdge.b;
             c = bEdge.a;
             d = bEdge.b;
-            NODES[M] = aPoint.coord;
-            NODES[m] = bPoint.coord;
+            NODES[M] = aPoint.coordinates;
+            NODES[m] = bPoint.coordinates;
             NODES[M].neighbors = [a, b, m];
             NODES[m].neighbors = [c, d, M];
             aNode = NODES[a];
@@ -154,11 +159,11 @@ function insert() {
                 a: c,
                 b: m,
             };
-            EDGES[p] = {
+            EDGES[N + 1] = {
                 a: m,
                 b: d,
             };
-            EDGES[q] = {
+            EDGES[N + 2] = {
                 a: m,
                 b: M,
             };
@@ -200,7 +205,7 @@ function drawArc(point) {
 }
 
 function loop() {
-    var i, j, n, edge;
+    var i, j, n;
     if ((RESET < ELAPSED) || (THRESHOLD < N) || (THRESHOLD < M)) {
         ELAPSED = 0;
         N = START;
@@ -231,7 +236,7 @@ function loop() {
         if (ELAPSED % FRAMES === 0) {
             insert();
         }
-        var node, neighbor, m, x, y;
+        var m, x, y, node, neighbor;
         var start = START * 2;
         for (i = start; i < M; i++) {
             node = NODES[i];
@@ -268,6 +273,7 @@ function loop() {
         CTX.fillRect(rect.x - PAD, rect.y - PAD, rect.width + PAD_2,
                      rect.height + PAD_2);
     }
+    var edge;
     n = N - 1;
     {
         CTX.beginPath();
