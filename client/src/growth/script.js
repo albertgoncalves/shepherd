@@ -77,93 +77,101 @@ function intersections(tree, circle, callback) {
     }
 }
 
-function loop() {
-    var i, j, n, point, neighbor;
-    if (STOP < N) {
-        N = START;
-        POINTS = new Array(STOP);
-        for (i = 0; i < N; i++) {
-            POINTS[i] = {
-                angle: Math.random() * PI_2,
-                neighbors: [],
-            };
-        }
-        POINTS.sort(function(a, b) {
-            return a.angle - b.angle;
-        });
-        for (i = 0; i < N; i++) {
-            point = POINTS[i];
-            point.x = (Math.cos(point.angle) * SPREAD) + HALF_WIDTH;
-            point.y = (Math.sin(point.angle) * SPREAD) + HALF_HEIGHT;
-            point.radius = SEARCH_RADIUS;
-        }
-        n = N - 1;
-        for (i = 0; i < N; i++) {
-            point = POINTS[i];
-            point.left = POINTS[i === 0 ? n : i - 1];
-            point.right = POINTS[i === n ? 0 : i + 1];
-        }
-    } else {
-        var x, y;
-        var inserts = [];
-        for (i = 0; i < N; i++) {
-            point = POINTS[i];
-            if (Math.random() < (LIMIT / N)) {
-                x = point.left.x - point.x;
-                y = point.left.y - point.y;
-                if (THRESHOLD < ((x * x) + (y * y))) {
-                    inserts.push(i);
-                }
+function init() {
+    var i;
+    N = START;
+    POINTS = new Array(STOP);
+    for (i = 0; i < N; i++) {
+        POINTS[i] = {
+            angle: Math.random() * PI_2,
+            neighbors: [],
+        };
+    }
+    POINTS.sort(function(a, b) {
+        return a.angle - b.angle;
+    });
+    var point;
+    for (i = 0; i < N; i++) {
+        point = POINTS[i];
+        point.x = (Math.cos(point.angle) * SPREAD) + HALF_WIDTH;
+        point.y = (Math.sin(point.angle) * SPREAD) + HALF_HEIGHT;
+        point.radius = SEARCH_RADIUS;
+    }
+    var n = N - 1;
+    for (i = 0; i < N; i++) {
+        point = POINTS[i];
+        point.left = POINTS[i === 0 ? n : i - 1];
+        point.right = POINTS[i === n ? 0 : i + 1];
+    }
+}
+
+function insert() {
+    var i, x, y, point;
+    var inserts = [];
+    for (i = 0; i < N; i++) {
+        point = POINTS[i];
+        if (Math.random() < (LIMIT / N)) {
+            x = point.left.x - point.x;
+            y = point.left.y - point.y;
+            if (THRESHOLD < ((x * x) + (y * y))) {
+                inserts.push(i);
             }
-        }
-        var insert;
-        n = inserts.length;
-        for (i = 0; i < n; i++) {
-            point = POINTS[inserts[i]];
-            insert = {
-                x: (point.left.x + point.x) / 2,
-                y: (point.left.y + point.y) / 2,
-                radius: SEARCH_RADIUS,
-                neighbors: [],
-                left: point.left,
-                right: point,
-            };
-            point.left.right = insert;
-            point.left = insert;
-            POINTS[N] = insert;
-            N += 1;
-        }
-        var rejection;
-        for (i = 0; i < N; i++) {
-            point = POINTS[i];
-            x = point.left.x + point.right.x;
-            y = point.left.y + point.right.y;
-            point.xNext = point.x + (((x / 2) - point.x) / DRAG_ATTRACT);
-            point.yNext = point.y + (((y / 2) - point.y) / DRAG_ATTRACT);
-            n = point.neighbors.length;
-            if (0 < n) {
-                rejection = {
-                    x: 0,
-                    y: 0,
-                };
-                for (j = 0; j < n; j++) {
-                    neighbor = point.neighbors[j];
-                    rejection.x += point.x - neighbor.x;
-                    rejection.y += point.y - neighbor.y;
-                }
-                point.xNext += (rejection.x / n) / DRAG_REJECT;
-                point.yNext += (rejection.y / n) / DRAG_REJECT;
-            }
-        }
-        for (i = 0; i < N; i++) {
-            point = POINTS[i];
-            point.x = point.xNext;
-            point.y = point.yNext;
         }
     }
+    var insert;
+    var n = inserts.length;
+    for (i = 0; i < n; i++) {
+        point = POINTS[inserts[i]];
+        insert = {
+            x: (point.left.x + point.x) / 2,
+            y: (point.left.y + point.y) / 2,
+            radius: SEARCH_RADIUS,
+            neighbors: [],
+            left: point.left,
+            right: point,
+        };
+        point.left.right = insert;
+        point.left = insert;
+        POINTS[N] = insert;
+        N += 1;
+    }
+}
+
+function updatePositions() {
+    var i, j, x, y, n, point, neighbor, rejection;
+    for (i = 0; i < N; i++) {
+        point = POINTS[i];
+        x = point.left.x + point.right.x;
+        y = point.left.y + point.right.y;
+        point.xNext = point.x + (((x / 2) - point.x) / DRAG_ATTRACT);
+        point.yNext = point.y + (((y / 2) - point.y) / DRAG_ATTRACT);
+        n = point.neighbors.length;
+        if (0 < n) {
+            rejection = {
+                x: 0,
+                y: 0,
+            };
+            for (j = 0; j < n; j++) {
+                neighbor = point.neighbors[j];
+                rejection.x += point.x - neighbor.x;
+                rejection.y += point.y - neighbor.y;
+            }
+            point.xNext += (rejection.x / n) / DRAG_REJECT;
+            point.yNext += (rejection.y / n) / DRAG_REJECT;
+        }
+    }
+    for (i = 0; i < N; i++) {
+        point = POINTS[i];
+        point.x = point.xNext;
+        point.y = point.yNext;
+    }
+}
+
+function updateNeighbors() {
+    var point;
     var tree =
         buildTree(POINTS.slice(0, N), 0, 0, CANVAS.width, 0, CANVAS.height);
-    for (i = 0; i < N; i++) {
+    for (var i = 0; i < N; i++) {
         point = POINTS[i];
         point.neighbors = [];
         intersections(tree, point, function(candidate) {
@@ -175,6 +183,10 @@ function loop() {
             }
         });
     }
+}
+
+function draw() {
+    var i, j, n, point, neighbor;
     CTX.clearRect(0, 0, CANVAS.width, CANVAS.height);
     {
         CTX.beginPath();
@@ -209,6 +221,17 @@ function loop() {
         }
         CTX.fill();
     }
+}
+
+function loop() {
+    if (STOP < N) {
+        init();
+    } else {
+        insert();
+        updatePositions();
+    }
+    updateNeighbors();
+    draw();
     requestAnimationFrame(loop);
 }
 

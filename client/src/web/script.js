@@ -54,8 +54,34 @@ function pointOfIntersection(aPoint1, aPoint2, bPoint1, bPoint2) {
     return null;
 }
 
+function init() {
+    var j, k;
+    N = START;
+    M = N * 2;
+    EDGES = new Array(MEMORY);
+    NODES = new Array(MEMORY);
+    for (var i = 0; i < N; i++) {
+        j = i * 2;
+        k = j + 1;
+        NODES[j] = {
+            x: Math.random() * CANVAS.width,
+            y: Math.random() * CANVAS.height,
+            neighbors: [k],
+        };
+        NODES[k] = {
+            x: Math.random() * CANVAS.width,
+            y: Math.random() * CANVAS.height,
+            neighbors: [j],
+        };
+        EDGES[i] = {
+            a: j,
+            b: k,
+        };
+    }
+}
+
 function insert() {
-    var i, j, a, b, n, m, candidate, edge, point, points, aNode, bNode;
+    var j, a, b, n, m, candidate, edge, point, points, aNode, bNode;
     while (true) {
         candidate = {
             a: {
@@ -68,7 +94,7 @@ function insert() {
             },
         };
         points = [];
-        for (i = 0; i < N; i++) {
+        for (var i = 0; i < N; i++) {
             edge = EDGES[i];
             point = pointOfIntersection(candidate.a, candidate.b,
                                         NODES[edge.a], NODES[edge.b]);
@@ -174,6 +200,38 @@ function insert() {
     }
 }
 
+function update() {
+    var i, j, n, m, x, y, node, neighbor;
+    var start = START * 2;
+    for (i = start; i < M; i++) {
+        node = NODES[i];
+        n = node.neighbors.length;
+        m = 0;
+        x = 0;
+        y = 0;
+        for (j = 0; j < n; j++) {
+            neighbor = NODES[node.neighbors[j]];
+            if (CUTOFF < squaredDistance(node, neighbor)) {
+                m += 1;
+                x += node.x - neighbor.x;
+                y += node.y - neighbor.y;
+            }
+        }
+        if (0 < m) {
+            node.xNext = node.x - ((x / m) * DRAG);
+            node.yNext = node.y - ((y / m) * DRAG);
+        } else {
+            node.xNext = node.x;
+            node.yNext = node.y;
+        }
+    }
+    for (i = start; i < M; i++) {
+        node = NODES[i];
+        node.x = node.xNext;
+        node.y = node.yNext;
+    }
+}
+
 function boundingBox(edge) {
     var aEdge = NODES[edge.a];
     var bEdge = NODES[edge.b];
@@ -204,68 +262,7 @@ function drawArc(point) {
     CTX.arc(point.x, point.y, RADIUS, 0, PI_2);
 }
 
-function loop() {
-    var i, j, n;
-    if ((RESET < ELAPSED) || (THRESHOLD < N) || (THRESHOLD < M)) {
-        ELAPSED = 0;
-        N = START;
-        M = N * 2;
-        EDGES = new Array(MEMORY);
-        NODES = new Array(MEMORY);
-        var k;
-        for (i = 0; i < N; i++) {
-            j = i * 2;
-            k = j + 1;
-            NODES[j] = {
-                x: Math.random() * CANVAS.width,
-                y: Math.random() * CANVAS.height,
-                neighbors: [k],
-            };
-            NODES[k] = {
-                x: Math.random() * CANVAS.width,
-                y: Math.random() * CANVAS.height,
-                neighbors: [j],
-            };
-            EDGES[i] = {
-                a: j,
-                b: k,
-            };
-        }
-    } else {
-        ELAPSED += 1;
-        if (ELAPSED % FRAMES === 0) {
-            insert();
-        }
-        var m, x, y, node, neighbor;
-        var start = START * 2;
-        for (i = start; i < M; i++) {
-            node = NODES[i];
-            n = node.neighbors.length;
-            m = 0;
-            x = 0;
-            y = 0;
-            for (j = 0; j < n; j++) {
-                neighbor = NODES[node.neighbors[j]];
-                if (CUTOFF < squaredDistance(node, neighbor)) {
-                    m += 1;
-                    x += node.x - neighbor.x;
-                    y += node.y - neighbor.y;
-                }
-            }
-            if (0 < m) {
-                node.xNext = node.x - ((x / m) * DRAG);
-                node.yNext = node.y - ((y / m) * DRAG);
-            } else {
-                node.xNext = node.x;
-                node.yNext = node.y;
-            }
-        }
-        for (i = start; i < M; i++) {
-            node = NODES[i];
-            node.x = node.xNext;
-            node.y = node.yNext;
-        }
-    }
+function draw() {
     CTX.clearRect(0, 0, CANVAS.width, CANVAS.height);
     {
         var rect = boundingBox(EDGES[N - 1]);
@@ -274,10 +271,10 @@ function loop() {
                      rect.height + PAD_2);
     }
     var edge;
-    n = N - 1;
+    var n = N - 1;
     {
         CTX.beginPath();
-        for (i = 0; i < n; i++) {
+        for (var i = 0; i < n; i++) {
             edge = EDGES[i];
             CTX.moveTo(NODES[edge.a].x, NODES[edge.a].y);
             CTX.lineTo(NODES[edge.b].x, NODES[edge.b].y);
@@ -300,6 +297,20 @@ function loop() {
         CTX.fillStyle = GREEN;
         CTX.fill();
     }
+}
+
+function loop() {
+    if ((RESET < ELAPSED) || (THRESHOLD < N) || (THRESHOLD < M)) {
+        ELAPSED = 0;
+        init();
+    } else {
+        ELAPSED += 1;
+        if (ELAPSED % FRAMES === 0) {
+            insert();
+        }
+        update();
+    }
+    draw();
     requestAnimationFrame(loop);
 }
 
