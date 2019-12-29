@@ -10,16 +10,16 @@ CTX.lineWidth = 2;
 
 var PI_2 = Math.PI * 2;
 var RADIUS = 3;
-var START = 3;
+var START = 2;
 var STOP = 400;
 var N, M, NODES, EDGES;
 var MEMORY = 800;
 var THRESHOLD = MEMORY - 3;
-var CUTOFF = 5000;
-var DRAG = 0.00075;
-var PAD = 20;
+var CUTOFF = 250;
+var DRAG = 0.001;
+var PAD = 25;
 var PAD_2 = PAD * 2;
-var FRAMES = 10;
+var FRAMES = 2;
 var RESET = FRAMES * (STOP - START + 1);
 var ELAPSED = RESET + 1;
 
@@ -226,7 +226,8 @@ function loop() {
             insert();
         }
         var node, neighbor, m, x, y;
-        for (i = 0; i < M; i++) {
+        var start = START * 2;
+        for (i = start; i < M; i++) {
             node = NODES[i];
             n = node.neighbors.length;
             m = 0;
@@ -248,7 +249,7 @@ function loop() {
                 node.yNext = node.y;
             }
         }
-        for (i = 0; i < M; i++) {
+        for (i = start; i < M; i++) {
             node = NODES[i];
             node.x = node.xNext;
             node.y = node.yNext;
