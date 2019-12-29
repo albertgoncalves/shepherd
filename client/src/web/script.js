@@ -15,11 +15,11 @@ var STOP = 400;
 var N, M, NODES, EDGES;
 var MEMORY = 800;
 var THRESHOLD = MEMORY - 3;
-var CUTOFF = 250;
-var DRAG = 0.00085;
+var CUTOFF = 100;
+var DRAG = 0.0025;
 var PAD = 25;
 var PAD_2 = PAD * 2;
-var FRAMES = 15;
+var FRAMES = 10;
 var RESET = FRAMES * (STOP - START + 1);
 var ELAPSED = RESET + 1;
 
