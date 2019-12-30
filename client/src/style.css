@@ -1,7 +1,8 @@
 body {
-    background-color: hsl(0, 0%, 80%);
-    font-family: "Courier New", Courier, monospace;
-    font-size: 19px;
+    background-color: hsl(0, 0%, 98%);
+    font-family: "Lucida Console", Monaco, "Andale Mono", monospace;
+    font-size: 20px;
+    -webkit-text-size-adjust: 100%;
 }
 
 canvas {
@@ -13,12 +14,22 @@ canvas {
     margin-right: auto;
 }
 
-div.left {
-    float: left;
-    width: 25%;
+table {
+    border-collapse: collapse;
+    margin-left: auto;
+    margin-right: auto;
 }
 
-div.right {
-    float: right;
-    width: 75%;
+td {
+    padding-top: 5px;
+    padding-bottom: 5px;
+    padding-right: 50px;
+}
+
+tr:hover {
+    background-color: hsl(0, 0%, 95%);
+}
+
+div.center {
+    text-align: center;
 }
