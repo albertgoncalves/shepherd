@@ -29,7 +29,6 @@ function randomAverage(a, b) {
 function loop() {
     var i;
     if (RESET < ELAPSED) {
-        ELAPSED = 0;
         N = START;
         var n = N - 1;
         NODES = new Array(STOP);
@@ -41,8 +40,8 @@ function loop() {
                 right: i === n ? 0 : i + 1,
             };
         }
+        ELAPSED = 0;
     } else {
-        ELAPSED += 1;
         for (i = 0; i < N; i++) {
             NODES[i].x += (Math.random() * MAGNITUDE) - CENTER;
             NODES[i].y += (Math.random() * MAGNITUDE) - CENTER;
@@ -72,6 +71,7 @@ function loop() {
             };
             N += 1;
         }
+        ELAPSED += 1;
     }
     CTX.clearRect(0, 0, CANVAS.width, CANVAS.height);
     CTX.beginPath();

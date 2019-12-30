@@ -90,7 +90,6 @@ function pointOfIntersection(aEdge, bEdge) {
 function loop() {
     var i, edge;
     if (RESET < ELAPSED) {
-        ELAPSED = 0;
         for (i = 0; i < N; i++) {
             EDGES[i] = {
                 a: {
@@ -107,8 +106,8 @@ function loop() {
             a: randomLerp(EDGES[0].a, EDGES[0].b),
             b: randomLerp(EDGES[1].a, EDGES[1].b),
         };
+        ELAPSED = 0;
     } else {
-        ELAPSED += 1;
         for (i = 0; i < N; i++) {
             edge = EDGES[i];
             edge.a.x += (Math.random() * MAGNITUDE) - CENTER;
@@ -120,6 +119,7 @@ function loop() {
         CANDIDATE.a.y += (Math.random() * MAGNITUDE) - CENTER;
         CANDIDATE.b.x += (Math.random() * MAGNITUDE) - CENTER;
         CANDIDATE.b.y += (Math.random() * MAGNITUDE) - CENTER;
+        ELAPSED += 1;
     }
     var points = [];
     var point;

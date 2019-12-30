@@ -301,14 +301,14 @@ function draw() {
 
 function loop() {
     if ((RESET < ELAPSED) || (THRESHOLD < N) || (THRESHOLD < M)) {
-        ELAPSED = 0;
         init();
+        ELAPSED = 0;
     } else {
-        ELAPSED += 1;
         if (ELAPSED % FRAMES === 0) {
             insert();
         }
         update();
+        ELAPSED += 1;
     }
     draw();
     requestAnimationFrame(loop);

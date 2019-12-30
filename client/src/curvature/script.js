@@ -37,7 +37,6 @@ function angle(aPoint, bPoint, cPoint) {
 function loop() {
     var i, j, n, point;
     if (RESET < ELAPSED) {
-        ELAPSED = 0;
         for (i = 0; i < N; i++) {
             POINTS[i] = {
                 angle: Math.random() * PI_2,
@@ -57,13 +56,14 @@ function loop() {
             point.left = POINTS[i === 0 ? n : i - 1];
             point.right = POINTS[i === n ? 0 : i + 1];
         }
+        ELAPSED = 0;
     } else {
-        ELAPSED += 1;
         for (i = 0; i < N; i++) {
             point = POINTS[i];
             point.x += (Math.random() * MAGNITUDE) - SCALE;
             point.y += (Math.random() * MAGNITUDE) - SCALE;
         }
+        ELAPSED += 1;
     }
     CTX.clearRect(0, 0, CANVAS.width, CANVAS.height);
     {

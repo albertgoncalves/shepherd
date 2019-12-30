@@ -28,8 +28,8 @@ function loop() {
             SPEEDS_IND[i] = 0;
             SPEEDS_AGG[i] = 0;
         }
-        ELAPSED = 0;
         CTX.clearRect(0, 0, CANVAS.width, CANVAS.height);
+        ELAPSED = 0;
     } else {
         ELAPSED += 1;
     }

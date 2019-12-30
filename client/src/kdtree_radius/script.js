@@ -105,7 +105,6 @@ function drawTree(tree) {
 function loop() {
     var i, j;
     if (RESET < ELAPSED) {
-        ELAPSED = 0;
         for (i = 0; i < N; i++) {
             POINTS[i] = {
                 x: Math.random() * CANVAS.width,
@@ -116,14 +115,15 @@ function loop() {
             (Math.random() * (CANVAS.width - CIRCLE_RADIUS_2)) + CIRCLE_RADIUS;
         CIRCLE.y = (Math.random() * (CANVAS.height - CIRCLE_RADIUS_2)) +
             CIRCLE_RADIUS;
+        ELAPSED = 0;
     } else {
-        ELAPSED += 1;
         CIRCLE.x += (Math.random() * MAGNITUDE) - SCALE;
         CIRCLE.y += (Math.random() * MAGNITUDE) - SCALE;
         for (i = 0; i < N; i++) {
             POINTS[i].x += (Math.random() * MAGNITUDE) - SCALE;
             POINTS[i].y += (Math.random() * MAGNITUDE) - SCALE;
         }
+        ELAPSED += 1;
     }
     var tree = buildTree(POINTS, 0, 0, CANVAS.width, 0, CANVAS.height);
     var inPoints = [];

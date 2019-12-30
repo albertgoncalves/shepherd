@@ -48,19 +48,19 @@ function intersect(rectangle, circle) {
 
 function loop() {
     if (RESET < ELAPSED) {
-        ELAPSED = 0;
         RECTANGLE.x = Math.random() * (CANVAS.width - WIDTH);
         RECTANGLE.y = Math.random() * (CANVAS.height - HEIGHT);
         CIRCLE.x =
             (Math.random() * (CANVAS.width - CIRCLE_RADIUS_2)) + CIRCLE_RADIUS;
         CIRCLE.y = (Math.random() * (CANVAS.height - CIRCLE_RADIUS_2)) +
             CIRCLE_RADIUS;
+        ELAPSED = 0;
     } else {
-        ELAPSED += 1;
         RECTANGLE.x += (Math.random() * MAGNITUDE) - SCALE;
         RECTANGLE.y += (Math.random() * MAGNITUDE) - SCALE;
         CIRCLE.x += (Math.random() * MAGNITUDE) - SCALE;
         CIRCLE.y += (Math.random() * MAGNITUDE) - SCALE;
+        ELAPSED += 1;
     }
     CTX.clearRect(0, 0, CANVAS.width, CANVAS.height);
     CTX.strokeRect(RECTANGLE.x, RECTANGLE.y, RECTANGLE.width,

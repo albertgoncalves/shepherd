@@ -107,7 +107,6 @@ function drawTree(tree, xLower, xUpper, yLower, yUpper) {
 function loop() {
     var i;
     if (RESET < ELAPSED) {
-        ELAPSED = 0;
         POINT = {
             x: Math.random() * CANVAS.width,
             y: Math.random() * CANVAS.height,
@@ -118,14 +117,15 @@ function loop() {
                 y: Math.random() * CANVAS.height,
             };
         }
+        ELAPSED = 0;
     } else {
-        ELAPSED += 1;
         POINT.x += (Math.random() * MAGNITUDE) - SCALE;
         POINT.y += (Math.random() * MAGNITUDE) - SCALE;
         for (i = 0; i < N; i++) {
             POINTS[i].x += (Math.random() * MAGNITUDE) - SCALE;
             POINTS[i].y += (Math.random() * MAGNITUDE) - SCALE;
         }
+        ELAPSED += 1;
     }
     var tree = buildTree(POINTS, 0);
     var neighbor = nearestNeighbor(tree, POINT);
