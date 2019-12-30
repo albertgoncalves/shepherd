@@ -8,21 +8,20 @@ CTX.fillStyle = "hsla(0, 0%, 90%, 0.035)";
 var PI_2 = Math.PI * 2;
 var RADIUS = 7;
 var N = 65;
+var M = 50;
 var FLOAT32_BYTES = N * 4;
 var XS = new Float32Array(new ArrayBuffer(FLOAT32_BYTES));
 var HALF_HEIGHT = CANVAS.height / 2;
-
-for (var i = 0; i < N; i++) {
-    XS[i] = CANVAS.width * ((i + 1) / N);
-}
-
-var M = 50;
 var MAGNITUDE = CANVAS.height;
 var MAGNITUDE_CENTER = MAGNITUDE / 2;
 var ERROR = 0.15;
 var ERROR_CENTER = ERROR / 2;
 var RESET = 600;
 var ELAPSED = RESET + 1;
+
+for (var i = 0; i < N; i++) {
+    XS[i] = CANVAS.width * ((i + 1) / N);
+}
 
 function randomError(offset) {
     return offset + ((Math.random() * ERROR) - ERROR_CENTER);

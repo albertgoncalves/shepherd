@@ -18,6 +18,14 @@ var XS = new Float32Array(new ArrayBuffer(FLOAT32_BYTES));
 var YS = new Float32Array(new ArrayBuffer(FLOAT32_BYTES));
 var SPEEDS_IND = new Float32Array(new ArrayBuffer(FLOAT32_BYTES));
 var SPEEDS_AGG = new Float32Array(new ArrayBuffer(FLOAT32_BYTES));
+var SCALE = 15;
+var LOWER = CANVAS.height / 10;
+var UPPER = CANVAS.height - LOWER;
+var MAGNITUDE = 1.1;
+var CENTER = MAGNITUDE / 2;
+var OFFSET = 0.3;
+var OFFSET_LOWER = CENTER * (1 - OFFSET);
+var OFFSET_UPPER = CENTER * (1 + OFFSET);
 
 for (var i = 0; i < N; i++) {
     XS[i] = CANVAS.width * ((i + 0.5) / N);
@@ -25,15 +33,6 @@ for (var i = 0; i < N; i++) {
     SPEEDS_IND[i] = 0;
     SPEEDS_AGG[i] = 0;
 }
-
-var LOWER = CANVAS.height / 10;
-var UPPER = CANVAS.height - LOWER;
-var SCALE = 15;
-var MAGNITUDE = 1.1;
-var CENTER = MAGNITUDE / 2;
-var OFFSET = 0.3;
-var OFFSET_LOWER = CENTER * (1 - OFFSET);
-var OFFSET_UPPER = CENTER * (1 + OFFSET);
 
 function loop() {
     var i, j, x, y, norm;

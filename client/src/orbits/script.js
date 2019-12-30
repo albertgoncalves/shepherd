@@ -24,7 +24,7 @@ for (var i = 0; i < N; i++) {
 }
 
 function loop() {
-    var i, j, x, y;
+    var i, j;
     for (i = 0; i < N; i++) {
         for (j = i + 1; j < N; j++) {
             if (XS[i] < XS[j]) {
@@ -49,6 +49,7 @@ function loop() {
     }
     CTX.clearRect(0, 0, CANVAS.width, CANVAS.height);
     CTX.beginPath();
+    var x, y;
     for (i = 0; i < N; i++) {
         x = XS[i];
         y = YS[i];

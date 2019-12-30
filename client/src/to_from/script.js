@@ -30,7 +30,7 @@ for (var i = 0; i < N; i++) {
 }
 
 function loop() {
-    var i, x, y;
+    var i;
     RESET = true;
     for (i = 0; i < N; i++) {
         DELTAS[i] = (YS_TO[i] - YS_FROM[i]);
@@ -40,6 +40,7 @@ function loop() {
     }
     CTX.clearRect(0, 0, CANVAS.width, CANVAS.height);
     CTX.beginPath();
+    var x, y;
     for (i = 0; i < N; i++) {
         if (RESET) {
             YS_TO[i] = LOWER + (Math.random() * DELTA);

@@ -24,7 +24,7 @@ var RESET = 60 * 3;
 var ELAPSED = RESET + 1;
 
 function loop() {
-    var i, x, y, left, right;
+    var i;
     if (RESET < ELAPSED) {
         for (i = 0; i < N; i++) {
             ANGLES[i] = Math.random() * PI_2;
@@ -40,6 +40,7 @@ function loop() {
     }
     CTX.clearRect(0, 0, CANVAS.width, CANVAS.height);
     CTX.beginPath();
+    var left, right;
     for (i = 0; i < N; i++) {
         left = i === 0 ? M : i - 1;
         right = i === M ? 0 : i + 1;
@@ -50,6 +51,7 @@ function loop() {
     }
     CTX.stroke();
     CTX.beginPath();
+    var x, y;
     for (i = 0; i < N; i++) {
         x = XS[i];
         y = YS[i];

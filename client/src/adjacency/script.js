@@ -20,14 +20,14 @@ var RESET = FRAMES * (STOP - START + 1);
 var ELAPSED = RESET + 1;
 
 function randomAverage(a, b) {
-    /* https://en.wikipedia.org/wiki/Linear_combination */
+    /* NOTE: https://en.wikipedia.org/wiki/Linear_combination */
     var aWeight = Math.random();
     var bWeight = Math.random();
     return ((a * aWeight) + (b * bWeight)) / (aWeight + bWeight);
 }
 
 function loop() {
-    var i;
+    var i, x, y;
     if (RESET < ELAPSED) {
         N = START;
         var n = N - 1;
@@ -49,12 +49,13 @@ function loop() {
         if ((ELAPSED % FRAMES === 0) && (N < STOP)) {
             var left = 0;
             var value = 0;
+            var a, b, candidate;
             for (i = 0; i < N; i++) {
-                var a = NODES[i];
-                var b = NODES[NODES[i].right];
-                var dX = a.x - b.x;
-                var dY = a.y - b.y;
-                var candidate = Math.sqrt((dX * dX) + (dY * dY));
+                a = NODES[i];
+                b = NODES[NODES[i].right];
+                x = a.x - b.x;
+                y = a.y - b.y;
+                candidate = Math.sqrt((x * x) + (y * y));
                 if (value < candidate) {
                     left = i;
                     value = candidate;
@@ -81,7 +82,6 @@ function loop() {
     }
     CTX.stroke();
     CTX.beginPath();
-    var x, y;
     for (i = 0; i < N; i++) {
         x = NODES[i].x;
         y = NODES[i].y;

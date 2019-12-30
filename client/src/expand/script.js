@@ -22,19 +22,18 @@ var YS = new Float32Array(new ArrayBuffer(FLOAT32_BYTES));
 var XS_NEXT = new Float32Array(new ArrayBuffer(FLOAT32_BYTES));
 var YS_NEXT = new Float32Array(new ArrayBuffer(FLOAT32_BYTES));
 var NORMS = new Float32Array(new ArrayBuffer(FLOAT32_BYTES));
-
-function distance(i, j) {
-    var x = XS[i] - XS[j];
-    var y = YS[i] - YS[j];
-    return Math.sqrt((x * x) + (y * y));
-}
-
 var RESET = 60 * 5;
 var ELAPSED = RESET + 1;
 var DRAG = 45;
 var PROXIMITY = 100;
 var MAGNITUDE = 1.25;
 var CENTER = MAGNITUDE / 2;
+
+function distance(i, j) {
+    var x = XS[i] - XS[j];
+    var y = YS[i] - YS[j];
+    return Math.sqrt((x * x) + (y * y));
+}
 
 function loop() {
     var i, j, x, y;

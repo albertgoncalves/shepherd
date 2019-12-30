@@ -65,12 +65,12 @@ function branchDistance(point, a, b) {
 }
 
 function nearestNeighbor(tree, point) {
-    var pointAxis, treeAxis, nextBranch, oppositeBranch, best, delta;
     if (tree === null) {
         return null;
     }
-    pointAxis = tree.axis === 0 ? point.x : point.y;
-    treeAxis = tree.axis === 0 ? tree.point.x : tree.point.y;
+    var pointAxis = tree.axis === 0 ? point.x : point.y;
+    var treeAxis = tree.axis === 0 ? tree.point.x : tree.point.y;
+    var nextBranch, oppositeBranch;
     if (pointAxis < treeAxis) {
         nextBranch = tree.left;
         oppositeBranch = tree.right;
@@ -78,9 +78,9 @@ function nearestNeighbor(tree, point) {
         oppositeBranch = tree.left;
         nextBranch = tree.right;
     }
-    best =
+    var best =
         branchDistance(point, nearestNeighbor(nextBranch, point), tree.point);
-    delta = pointAxis - treeAxis;
+    var delta = pointAxis - treeAxis;
     if ((delta * delta) < distanceSquared(point, best)) {
         best = branchDistance(point, nearestNeighbor(oppositeBranch, point),
                               best);
