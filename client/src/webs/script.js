@@ -304,7 +304,7 @@ function loop() {
         init();
         ELAPSED = 0;
     } else {
-        if (ELAPSED % FRAMES === 0) {
+        if ((ELAPSED % FRAMES) === 0) {
             insert();
         }
         update();
