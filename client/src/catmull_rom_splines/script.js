@@ -22,11 +22,9 @@ for (var i = 0; i < N; i++) {
     };
 }
 
-/* NOTE:
- * https://qroph.github.io/2018/07/30/smooth-paths-using-catmull-rom-splines.html
- */
-var ALPHA = 0.5;
+var ALPHA = 0.15;
 var TENSION = 0;
+var TENSION_INV = 1 - TENSION;
 var RESOLUTION = 100;
 var M = N - 3;
 var P = RESOLUTION * M;
@@ -68,7 +66,7 @@ function flMulPt(float, point) {
 }
 
 function loop() {
-    var i, j, x, y;
+    var i, j;
     for (i = 0; i < N; i++) {
         POINTS[i].x += (Math.random() * MAGNITUDE) - CENTER;
         POINTS[i].y += (Math.random() * MAGNITUDE) - CENTER;
@@ -81,16 +79,15 @@ function loop() {
         var t01 = Math.pow(distance(p0, p1), ALPHA);
         var t12 = Math.pow(distance(p1, p2), ALPHA);
         var t23 = Math.pow(distance(p2, p3), ALPHA);
-        var tension = 1 - TENSION;
         var p2SubP1 = ptSubPt(p2, p1);
         var m1 = flMulPt(
-            tension,
+            TENSION_INV,
             ptAddPt(p2SubP1,
                     flMulPt(t12,
                             ptSubPt(ptDivFl(ptSubPt(p1, p0), t01),
                                     ptDivFl(ptSubPt(p2, p0), t01 + t12)))));
         var m2 = flMulPt(
-            tension,
+            TENSION_INV,
             ptAddPt(p2SubP1,
                     flMulPt(t12,
                             ptSubPt(ptDivFl(ptSubPt(p3, p2), t23),
@@ -100,12 +97,12 @@ function loop() {
         var sB = ptSubPt(ptSubPt(ptSubPt(flMulPt(-3, p1SubP2), m1), m1), m2);
         var sC = m1;
         var sD = p1;
-        var t, t2, t3;
+        var offset = i * RESOLUTION;
         for (j = 0; j < RESOLUTION; j++) {
-            t = j / RESOLUTION;
-            t2 = t * t;
-            t3 = t2 * t;
-            SPLINES[j + (i * RESOLUTION)] =
+            var t = j / RESOLUTION;
+            var t2 = t * t;
+            var t3 = t2 * t;
+            SPLINES[j + offset] =
                 ptAddPt(ptAddPt(ptAddPt(flMulPt(t3, sA), flMulPt(t2, sB)),
                                 flMulPt(t, sC)),
                         sD);
@@ -120,8 +117,8 @@ function loop() {
     CTX.stroke();
     CTX.beginPath();
     for (i = 0; i < N; i++) {
-        x = POINTS[i].x;
-        y = POINTS[i].y;
+        var x = POINTS[i].x;
+        var y = POINTS[i].y;
         CTX.moveTo(x + RADIUS, y);
         CTX.arc(x, y, RADIUS, 0, PI_2);
     }
