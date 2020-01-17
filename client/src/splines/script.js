@@ -10,8 +10,10 @@ CTX.lineCap = "round";
 
 var PI_2 = Math.PI * 2;
 var RADIUS = 7;
-var POINTS = new Array(N);
 var N = 10;
+var M = N - 1;
+var POINTS = new Array(N);
+var DISTANCES = new Array(M);
 var MAGNITUDE = 1.5;
 var CENTER = MAGNITUDE / 2;
 
@@ -24,10 +26,10 @@ for (var i = 0; i < N; i++) {
 
 var ALPHA = 0.15;
 var TENSION = 0;
-var TENSION_INV = 1 - TENSION;
+var INVERSE_TENSION = 1 - TENSION;
 var RESOLUTION = 100;
-var M = N - 3;
-var P = RESOLUTION * M;
+var R = N - 3;
+var P = RESOLUTION * R;
 var Q = P - 1;
 var SPLINES = new Array(P);
 
@@ -51,17 +53,17 @@ function ptSubPt(pointA, pointB) {
     };
 }
 
+function ptMulFl(point, float) {
+    return {
+        x: point.x * float,
+        y: point.y * float,
+    };
+}
+
 function ptDivFl(point, float) {
     return {
         x: point.x / float,
         y: point.y / float,
-    };
-}
-
-function flMulPt(float, point) {
-    return {
-        x: float * point.x,
-        y: float * point.y,
     };
 }
 
@@ -72,40 +74,41 @@ function loop() {
         POINTS[i].y += (Math.random() * MAGNITUDE) - CENTER;
     }
     for (i = 0; i < M; i++) {
+        DISTANCES[i] = Math.pow(distance(POINTS[i], POINTS[i + 1]), ALPHA);
+    }
+    for (i = 0; i < R; i++) {
         var p0 = POINTS[i];
         var p1 = POINTS[i + 1];
         var p2 = POINTS[i + 2];
         var p3 = POINTS[i + 3];
-        var t01 = Math.pow(distance(p0, p1), ALPHA);
-        var t12 = Math.pow(distance(p1, p2), ALPHA);
-        var t23 = Math.pow(distance(p2, p3), ALPHA);
+        var d01 = DISTANCES[i];
+        var d12 = DISTANCES[i + 1];
+        var d23 = DISTANCES[i + 2];
         var p2SubP1 = ptSubPt(p2, p1);
-        var m1 = flMulPt(
-            TENSION_INV,
+        var m1 = ptMulFl(
             ptAddPt(p2SubP1,
-                    flMulPt(t12,
-                            ptSubPt(ptDivFl(ptSubPt(p1, p0), t01),
-                                    ptDivFl(ptSubPt(p2, p0), t01 + t12)))));
-        var m2 = flMulPt(
-            TENSION_INV,
+                    ptMulFl(ptSubPt(ptDivFl(ptSubPt(p1, p0), d01),
+                                    ptDivFl(ptSubPt(p2, p0), d01 + d12)),
+                            d12)),
+            INVERSE_TENSION);
+        var m2 = ptMulFl(
             ptAddPt(p2SubP1,
-                    flMulPt(t12,
-                            ptSubPt(ptDivFl(ptSubPt(p3, p2), t23),
-                                    ptDivFl(ptSubPt(p3, p1), t12 + t23)))));
+                    ptMulFl(ptSubPt(ptDivFl(ptSubPt(p3, p2), d23),
+                                    ptDivFl(ptSubPt(p3, p1), d12 + d23)),
+                            d12)),
+            INVERSE_TENSION);
         var p1SubP2 = ptSubPt(p1, p2);
-        var sA = ptAddPt(ptAddPt(flMulPt(2, p1SubP2), m1), m2);
-        var sB = ptSubPt(ptSubPt(ptSubPt(flMulPt(-3, p1SubP2), m1), m1), m2);
-        var sC = m1;
-        var sD = p1;
+        var sA = ptAddPt(ptAddPt(ptMulFl(p1SubP2, 2), m1), m2);
+        var sB = ptSubPt(ptSubPt(ptSubPt(ptMulFl(p1SubP2, -3), m1), m1), m2);
         var offset = i * RESOLUTION;
         for (j = 0; j < RESOLUTION; j++) {
             var t = j / RESOLUTION;
             var t2 = t * t;
             var t3 = t2 * t;
             SPLINES[j + offset] =
-                ptAddPt(ptAddPt(ptAddPt(flMulPt(t3, sA), flMulPt(t2, sB)),
-                                flMulPt(t, sC)),
-                        sD);
+                ptAddPt(ptAddPt(ptAddPt(ptMulFl(sA, t3), ptMulFl(sB, t2)),
+                                ptMulFl(m1, t)),
+                        p1);
         }
     }
     CTX.clearRect(0, 0, CANVAS.width, CANVAS.height);
