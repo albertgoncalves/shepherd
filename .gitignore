@@ -15,7 +15,6 @@
 !*.go
 !main
 !adjacency/
-!catmull_rom_splines/
 !curvature/
 !expand/
 !grid/
@@ -29,6 +28,7 @@
 !orbits/
 !rect_circle/
 !shrink/
+!splines/
 !to_from/
 !velocity/
 !webs/
