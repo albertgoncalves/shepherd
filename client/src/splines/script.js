@@ -32,6 +32,22 @@ var R = N - 3;
 var P = RESOLUTION * R;
 var Q = P - 1;
 var SPLINES = new Array(P);
+var TS = new Array(RESOLUTION);
+var OFFSETS = new Array(R);
+
+for (var i = 0; i < RESOLUTION; i++) {
+    var t = i / RESOLUTION;
+    var t2 = t * t;
+    TS[i] = {
+        t: t,
+        t2: t2,
+        t3: t2 * t,
+    };
+}
+
+for (var i = 0; i < R; i++) {
+    OFFSETS[i] = i * RESOLUTION;
+}
 
 function distance(pointA, pointB) {
     var x = pointA.x - pointB.x;
@@ -100,15 +116,11 @@ function loop() {
         var p1SubP2 = ptSubPt(p1, p2);
         var sA = ptAddPt(ptAddPt(ptMulFl(p1SubP2, 2), m1), m2);
         var sB = ptSubPt(ptSubPt(ptSubPt(ptMulFl(p1SubP2, -3), m1), m1), m2);
-        var offset = i * RESOLUTION;
         for (j = 0; j < RESOLUTION; j++) {
-            var t = j / RESOLUTION;
-            var t2 = t * t;
-            var t3 = t2 * t;
-            SPLINES[j + offset] =
-                ptAddPt(ptAddPt(ptAddPt(ptMulFl(sA, t3), ptMulFl(sB, t2)),
-                                ptMulFl(m1, t)),
-                        p1);
+            SPLINES[j + OFFSETS[i]] = ptAddPt(
+                ptAddPt(ptAddPt(ptMulFl(sA, TS[j].t3), ptMulFl(sB, TS[j].t2)),
+                        ptMulFl(m1, TS[j].t)),
+                p1);
         }
     }
     CTX.clearRect(0, 0, CANVAS.width, CANVAS.height);
