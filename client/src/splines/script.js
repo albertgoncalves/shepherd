@@ -16,13 +16,8 @@ var POINTS = new Array(N);
 var DISTANCES = new Array(M);
 var MAGNITUDE = 1.5;
 var CENTER = MAGNITUDE / 2;
-
-for (var i = 0; i < N; i++) {
-    POINTS[i] = {
-        x: Math.random() * CANVAS.width,
-        y: Math.random() * CANVAS.height,
-    };
-}
+var RESET = 300;
+var ELAPSED = RESET + 1;
 
 var ALPHA = 0.15;
 var TENSION = 0;
@@ -83,12 +78,8 @@ function ptDivFl(point, float) {
     };
 }
 
-function loop() {
+function updateSplines() {
     var i, j;
-    for (i = 0; i < N; i++) {
-        POINTS[i].x += (Math.random() * MAGNITUDE) - CENTER;
-        POINTS[i].y += (Math.random() * MAGNITUDE) - CENTER;
-    }
     for (i = 0; i < M; i++) {
         DISTANCES[i] = Math.pow(distance(POINTS[i], POINTS[i + 1]), ALPHA);
     }
@@ -123,6 +114,26 @@ function loop() {
                 p1);
         }
     }
+}
+
+function loop() {
+    var i;
+    if (RESET < ELAPSED) {
+        for (i = 0; i < N; i++) {
+            POINTS[i] = {
+                x: Math.random() * CANVAS.width,
+                y: Math.random() * CANVAS.height,
+            };
+        }
+        ELAPSED = 0;
+    } else {
+        for (i = 0; i < N; i++) {
+            POINTS[i].x += (Math.random() * MAGNITUDE) - CENTER;
+            POINTS[i].y += (Math.random() * MAGNITUDE) - CENTER;
+        }
+        ELAPSED += 1;
+    }
+    updateSplines();
     CTX.clearRect(0, 0, CANVAS.width, CANVAS.height);
     CTX.beginPath();
     for (i = 0; i < Q; i++) {
