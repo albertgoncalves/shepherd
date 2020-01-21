@@ -11,10 +11,11 @@ CTX.lineWidth = 3;
 
 var PI_2 = Math.PI * 2;
 var RADIUS = 8;
+var RADIUS_2 = RADIUS * 2;
 var N = 10;
 var POINTS = new Array(N);
 var POINT;
-var PAD = 15;
+var PAD = 30;
 var PAD_2 = PAD * 2;
 var MAGNITUDE = 1;
 var SCALE = MAGNITUDE / 2;
@@ -140,42 +141,33 @@ function loop() {
                  (Math.max(POINT.y, neighbor.y) - boundingBox.y) + PAD_2);
     {
         CTX.beginPath();
-        drawTree(tree, 0, CANVAS.width, 0, CANVAS.height);
-        CTX.strokeStyle = WHITE;
-        CTX.stroke();
-    }
-    {
-        CTX.beginPath();
-        CTX.moveTo(POINT.x, POINT.y);
-        CTX.lineTo(neighbor.x, neighbor.y);
-        CTX.strokeStyle = RED;
-        CTX.stroke();
+        CTX.moveTo(neighbor.x + RADIUS_2, neighbor.y);
+        CTX.arc(neighbor.x, neighbor.y, RADIUS_2, 0, PI_2);
+        CTX.fillStyle = RED;
+        CTX.fill();
     }
     {
         var point;
         CTX.beginPath();
         for (i = 0; i < N; i++) {
             point = POINTS[i];
-            if (point !== neighbor) {
-                CTX.moveTo(point.x + RADIUS, point.y);
-                CTX.arc(point.x, point.y, RADIUS, 0, PI_2);
-            }
+            CTX.moveTo(point.x + RADIUS, point.y);
+            CTX.arc(point.x, point.y, RADIUS, 0, PI_2);
         }
         CTX.fillStyle = WHITE;
         CTX.fill();
     }
     {
         CTX.beginPath();
-        CTX.moveTo(neighbor.x + RADIUS, neighbor.y);
-        CTX.arc(neighbor.x, neighbor.y, RADIUS, 0, PI_2);
-        CTX.fillStyle = GREEN;
-        CTX.fill();
+        drawTree(tree, 0, CANVAS.width, 0, CANVAS.height);
+        CTX.strokeStyle = WHITE;
+        CTX.stroke();
     }
     {
         CTX.beginPath();
         CTX.moveTo(POINT.x + RADIUS, POINT.y);
         CTX.arc(POINT.x, POINT.y, RADIUS, 0, PI_2);
-        CTX.fillStyle = RED;
+        CTX.fillStyle = GREEN;
         CTX.fill();
     }
     requestAnimationFrame(loop);

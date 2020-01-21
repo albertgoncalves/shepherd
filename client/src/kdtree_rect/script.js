@@ -3,7 +3,6 @@
 var CANVAS = document.getElementById("canvas");
 var CTX = CANVAS.getContext("2d");
 var WHITE = "hsl(0, 0%, 90%)";
-var GREEN = "hsl(165, 100%, 75%)";
 var CYAN = "hsla(175, 65%, 50%, 0.35)";
 var RED = "hsl(0, 75%, 70%)";
 CTX.imageSmoothingEnabled = false;
@@ -12,6 +11,7 @@ CTX.lineWidth = 3;
 
 var PI_2 = Math.PI * 2;
 var RADIUS = 8;
+var RADIUS_2 = RADIUS * 2;
 var N = 75;
 var POINTS = new Array(N);
 var WIDTH = 300;
@@ -135,10 +135,10 @@ function loop() {
         ELAPSED += 1;
     }
     var tree = buildTree(POINTS, 0, 0, CANVAS.width, 0, CANVAS.height);
-    var inPoints = [];
+    var neighbors = [];
     intersections(tree, RECTANGLE, function(candidate) {
         if (pointInRect(candidate, RECTANGLE)) {
-            inPoints.push(candidate);
+            neighbors.push(candidate);
         }
     });
     CTX.clearRect(0, 0, CANVAS.width, CANVAS.height);
@@ -147,51 +147,32 @@ function loop() {
         CTX.fillRect(RECTANGLE.x, RECTANGLE.y, RECTANGLE.width,
                      RECTANGLE.height);
     }
+    var point;
     {
-        CTX.beginPath();
-        drawTree(tree);
-        CTX.stroke();
-    }
-    var n = inPoints.length;
-    {
-        var flag, outPoint;
-        CTX.beginPath();
-        for (i = 0; i < N; i++) {
-            flag = true;
-            outPoint = POINTS[i];
-            for (j = 0; j < n; j++) {
-                if (outPoint === inPoints[j]) {
-                    flag = false;
-                    break;
-                }
-            }
-            if (flag) {
-                CTX.moveTo(outPoint.x + RADIUS, outPoint.y);
-                CTX.arc(outPoint.x, outPoint.y, RADIUS, 0, PI_2);
-            }
-        }
-        CTX.fillStyle = WHITE;
-        CTX.fill();
-    }
-    {
-        var inPoint;
+        var n = neighbors.length;
         CTX.beginPath();
         for (i = 0; i < n; i++) {
-            inPoint = inPoints[i];
-            CTX.moveTo(inPoint.x + RADIUS, inPoint.y);
-            CTX.arc(inPoint.x, inPoint.y, RADIUS, 0, PI_2);
+            point = neighbors[i];
+            CTX.moveTo(point.x + RADIUS_2, point.y);
+            CTX.arc(point.x, point.y, RADIUS_2, 0, PI_2);
         }
         CTX.fillStyle = RED;
         CTX.fill();
     }
     {
-        var x = RECTANGLE.x + HALF_WIDTH;
-        var y = RECTANGLE.y + HALF_HEIGHT;
         CTX.beginPath();
-        CTX.moveTo(x + RADIUS, y);
-        CTX.arc(x, y, RADIUS, 0, PI_2);
-        CTX.fillStyle = GREEN;
+        for (i = 0; i < N; i++) {
+            point = POINTS[i];
+            CTX.moveTo(point.x + RADIUS, point.y);
+            CTX.arc(point.x, point.y, RADIUS, 0, PI_2);
+        }
+        CTX.fillStyle = WHITE;
         CTX.fill();
+    }
+    {
+        CTX.beginPath();
+        drawTree(tree);
+        CTX.stroke();
     }
     requestAnimationFrame(loop);
 }
