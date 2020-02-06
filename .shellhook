@@ -12,7 +12,7 @@ if [ "$(uname -s)" = "Darwin" ]; then
     HOST=$(ipconfig getifaddr en0 || ipconfig getifaddr en1)
 else
     alias open="xdg-open"
-    HOST=$(hostname -I | cut -d " " -f 1)
+    HOST=$(hostname -i | cut -d " " -f 1)
 fi
 
 if [ ! -d "$GOPATH/bin" ]; then
