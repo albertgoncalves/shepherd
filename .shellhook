@@ -12,7 +12,7 @@ if [ "$(uname -s)" = "Darwin" ]; then
     HOST=$(ipconfig getifaddr en0 || ipconfig getifaddr en1)
 else
     alias open="xdg-open"
-    HOST=$(hostname -i | cut -d " " -f 1)
+    HOST=$(hostname -I > /dev/null 2>&1 || hostname -i | cut -d " " -f 1)
 fi
 
 if [ ! -d "$GOPATH/bin" ]; then
@@ -69,6 +69,7 @@ jsall () {
         tidy -config "$JSPATH/.tidyrc" -q -m "$1"
         sedtrailing "$1"
     ' bash {} \;
+    # shellcheck disable=SC1004
     find "$JSPATH/src" -type f -name '*.js' -exec bash -c '
         echo "$1"
         "$JSPATH/node_modules/jshint/bin/jshint" \
