@@ -9,10 +9,10 @@ else
     alias open="xdg-open"
 fi
 
-if [ ! -f "$WD/.jsinit" ]; then
+if [ ! -f "$WD/.init" ]; then
     cd "$WD" || exit
     npm install --no-save jshint
-    touch "$WD/.jsinit"
+    touch "$WD/.init"
     cd "$WD" || exit
 fi
 
