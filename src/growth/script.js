@@ -178,7 +178,8 @@ function updateNeighbors() {
             var x = point.x - candidate.x;
             var y = point.y - candidate.y;
             if ((((x * x) + (y * y)) < (point.radius * point.radius)) &&
-                (point !== candidate)) {
+                (point !== candidate))
+            {
                 point.neighbors.push(candidate);
             }
         });
