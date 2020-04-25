@@ -95,4 +95,4 @@ function loop() {
     requestAnimationFrame(loop);
 }
 
-loop();
+window.onload = loop;

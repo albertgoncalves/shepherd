@@ -20,7 +20,7 @@ var RESET = FRAMES * (STOP - START + 1);
 var ELAPSED = RESET + 1;
 
 function randomAverage(a, b) {
-    /* NOTE: https://en.wikipedia.org/wiki/Linear_combination */
+    /* NOTE: See `https://en.wikipedia.org/wiki/Linear_combination`. */
     var aWeight = Math.random();
     var bWeight = Math.random();
     return ((a * aWeight) + (b * bWeight)) / (aWeight + bWeight);
@@ -92,4 +92,4 @@ function loop() {
     requestAnimationFrame(loop);
 }
 
-loop();
+window.onload = loop;
