@@ -83,7 +83,8 @@ function nearestNeighbor(tree, point) {
         branchDistance(point, nearestNeighbor(nextBranch, point), tree.point);
     var delta = pointAxis - treeAxis;
     if ((delta * delta) < distanceSquared(point, best)) {
-        best = branchDistance(point, nearestNeighbor(oppositeBranch, point),
+        best = branchDistance(point,
+                              nearestNeighbor(oppositeBranch, point),
                               best);
     }
     return best;
@@ -136,7 +137,8 @@ function loop() {
     };
     CTX.clearRect(0, 0, CANVAS.width, CANVAS.height);
     CTX.fillStyle = CYAN;
-    CTX.fillRect(boundingBox.x - PAD, boundingBox.y - PAD,
+    CTX.fillRect(boundingBox.x - PAD,
+                 boundingBox.y - PAD,
                  (Math.max(POINT.x, neighbor.x) - boundingBox.x) + PAD_2,
                  (Math.max(POINT.y, neighbor.y) - boundingBox.y) + PAD_2);
     {

@@ -144,7 +144,9 @@ function loop() {
     CTX.clearRect(0, 0, CANVAS.width, CANVAS.height);
     {
         CTX.fillStyle = CYAN;
-        CTX.fillRect(RECTANGLE.x, RECTANGLE.y, RECTANGLE.width,
+        CTX.fillRect(RECTANGLE.x,
+                     RECTANGLE.y,
+                     RECTANGLE.width,
                      RECTANGLE.height);
     }
     var point;

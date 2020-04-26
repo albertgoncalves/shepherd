@@ -63,7 +63,9 @@ function loop() {
         ELAPSED += 1;
     }
     CTX.clearRect(0, 0, CANVAS.width, CANVAS.height);
-    CTX.strokeRect(RECTANGLE.x, RECTANGLE.y, RECTANGLE.width,
+    CTX.strokeRect(RECTANGLE.x,
+                   RECTANGLE.y,
+                   RECTANGLE.width,
                    RECTANGLE.height);
     {
         CTX.beginPath();

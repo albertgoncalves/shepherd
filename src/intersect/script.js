@@ -134,7 +134,9 @@ function loop() {
     {
         var rect = boundingBox(CANDIDATE);
         CTX.fillStyle = CYAN;
-        CTX.fillRect(rect.x - PAD, rect.y - PAD, rect.width + PAD_2,
+        CTX.fillRect(rect.x - PAD,
+                     rect.y - PAD,
+                     rect.width + PAD_2,
                      rect.height + PAD_2);
     }
     {

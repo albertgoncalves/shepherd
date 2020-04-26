@@ -96,8 +96,10 @@ function insert() {
         points = [];
         for (var i = 0; i < N; i++) {
             edge = EDGES[i];
-            point = pointOfIntersection(candidate.a, candidate.b,
-                                        NODES[edge.a], NODES[edge.b]);
+            point = pointOfIntersection(candidate.a,
+                                        candidate.b,
+                                        NODES[edge.a],
+                                        NODES[edge.b]);
             if (point !== null) {
                 points.push({
                     coordinates: point,
@@ -267,7 +269,9 @@ function draw() {
     {
         var rect = boundingBox(EDGES[N - 1]);
         CTX.fillStyle = CYAN;
-        CTX.fillRect(rect.x - PAD, rect.y - PAD, rect.width + PAD_2,
+        CTX.fillRect(rect.x - PAD,
+                     rect.y - PAD,
+                     rect.width + PAD_2,
                      rect.height + PAD_2);
     }
     var edge;
