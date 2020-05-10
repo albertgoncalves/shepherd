@@ -110,9 +110,10 @@ function insert() {
         n = points.length;
         if (n === 1) {
             /* NOTE:
-                a---b    a--M--b
-                      ->    |
-                            m */
+             *  a---b    a--M--b
+             *        ->    |
+             *              m
+             */
             point = points[0];
             j = point.index;
             edge = EDGES[j];
@@ -144,9 +145,10 @@ function insert() {
             return;
         } else if (1 < n) {
             /* NOTE:
-                a---b    a--M--b
-                      ->    |
-                c---d    c--m--d */
+             *  a---b    a--M--b
+             *        ->    |
+             *  c---d    c--m--d
+             */
             var l, k, c, d, aPoint, bPoint, cNode, dNode, aEdge, bEdge;
             points.sort(function(a, b) {
                 return a.coordinates.x - b.coordinates.x;
