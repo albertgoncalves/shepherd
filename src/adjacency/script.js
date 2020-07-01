@@ -49,13 +49,12 @@ function loop() {
         if ((ELAPSED % FRAMES === 0) && (N < STOP)) {
             var left = 0;
             var value = 0;
-            var a, b, candidate;
             for (i = 0; i < N; i++) {
-                a = NODES[i];
-                b = NODES[NODES[i].right];
+                var a = NODES[i];
+                var b = NODES[NODES[i].right];
                 x = a.x - b.x;
                 y = a.y - b.y;
-                candidate = Math.sqrt((x * x) + (y * y));
+                var candidate = Math.sqrt((x * x) + (y * y));
                 if (value < candidate) {
                     left = i;
                     value = candidate;

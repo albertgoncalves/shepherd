@@ -35,7 +35,7 @@ function angle(aPoint, bPoint, cPoint) {
 }
 
 function loop() {
-    var i, j, n, point;
+    var i, point;
     if (RESET < ELAPSED) {
         for (i = 0; i < N; i++) {
             POINTS[i] = {
@@ -50,7 +50,7 @@ function loop() {
             point.x = (Math.cos(point.angle) * SPREAD) + HALF_WIDTH;
             point.y = (Math.sin(point.angle) * SPREAD) + HALF_HEIGHT;
         }
-        n = N - 1;
+        var n = N - 1;
         for (i = 0; i < N; i++) {
             point = POINTS[i];
             point.left = POINTS[i === 0 ? n : i - 1];

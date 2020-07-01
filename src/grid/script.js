@@ -26,9 +26,8 @@ if (CANVAS.width < CANVAS.height) {
 }
 
 for (var i = 0; i < N; i++) {
-    var neighbors;
     for (var j = 0; j < N; j++) {
-        neighbors = [];
+        var neighbors = [];
         if (j !== 0) {
             neighbors.push(j - 1 + (i * N));
         }
@@ -71,12 +70,11 @@ function loop() {
     }
     CTX.clearRect(0, 0, CANVAS.width, CANVAS.height);
     CTX.beginPath();
-    var x, y, norm, circle;
     for (i = 0; i < M; i++) {
-        circle = CIRCLES[i];
-        x = 0;
-        y = 0;
-        norm = 0;
+        var circle = CIRCLES[i];
+        var x = 0;
+        var y = 0;
+        var norm = 0;
         for (j = 0; j < circle.neighbors.length; j++) {
             k = circle.neighbors[j];
             x += CIRCLES[k].x * CIRCLES[k].weight;

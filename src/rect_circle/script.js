@@ -25,7 +25,6 @@ var RECTANGLE = {
 var CIRCLE = {
     radius: CIRCLE_RADIUS,
 };
-var POINT;
 
 function nearest(rectangle, point) {
     return {

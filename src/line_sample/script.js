@@ -40,20 +40,18 @@ function randomLerp(aPoint, bPoint) {
 }
 
 function loop() {
-    var i, j;
     if (RESET < ELAPSED) {
         CTX.clearRect(0, 0, CANVAS.width, CANVAS.height);
         ELAPSED = 0;
     } else {
         ELAPSED += 1;
     }
-    var x, xPrev, offset, sample;
-    for (i = 1; i < N; i++) {
-        x = XS[i];
-        xPrev = XS[i - 1];
-        offset = (CANVAS.width - x) / CANVAS.width;
-        for (j = 0; j < M; j++) {
-            sample = randomLerp(
+    for (var i = 1; i < N; i++) {
+        var x = XS[i];
+        var xPrev = XS[i - 1];
+        var offset = (CANVAS.width - x) / CANVAS.width;
+        for (var j = 0; j < M; j++) {
+            var sample = randomLerp(
                 {
                     x: x + randomOffset(randomError(offset)),
                     y: HALF_HEIGHT + randomOffset(randomError(offset)),

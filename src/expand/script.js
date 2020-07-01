@@ -36,7 +36,7 @@ function distance(i, j) {
 }
 
 function loop() {
-    var i, j, x, y;
+    var i, j;
     if (RESET < ELAPSED) {
         for (i = 0; i < N; i++) {
             ANGLES[i] = Math.random() * PI_2;
@@ -86,8 +86,8 @@ function loop() {
     CTX.stroke();
     CTX.beginPath();
     for (i = 0; i < N; i++) {
-        x = XS[i];
-        y = YS[i];
+        var x = XS[i];
+        var y = YS[i];
         CTX.moveTo(x + RADIUS, y);
         CTX.arc(x, y, RADIUS, 0, PI_2);
     }

@@ -149,10 +149,9 @@ function loop() {
         CTX.fill();
     }
     {
-        var point;
         CTX.beginPath();
         for (i = 0; i < N; i++) {
-            point = POINTS[i];
+            var point = POINTS[i];
             CTX.moveTo(point.x + RADIUS, point.y);
             CTX.arc(point.x, point.y, RADIUS, 0, PI_2);
         }

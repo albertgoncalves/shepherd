@@ -40,10 +40,9 @@ function loop() {
     }
     CTX.clearRect(0, 0, CANVAS.width, CANVAS.height);
     CTX.beginPath();
-    var left, right;
     for (i = 0; i < N; i++) {
-        left = i === 0 ? M : i - 1;
-        right = i === M ? 0 : i + 1;
+        var left = i === 0 ? M : i - 1;
+        var right = i === M ? 0 : i + 1;
         XS[i] += (((XS[left] + XS[right]) / 2) - XS[i]) / DRAG;
         YS[i] += (((YS[left] + YS[right]) / 2) - YS[i]) / DRAG;
         CTX.moveTo(XS[left], YS[left]);
@@ -51,10 +50,9 @@ function loop() {
     }
     CTX.stroke();
     CTX.beginPath();
-    var x, y;
     for (i = 0; i < N; i++) {
-        x = XS[i];
-        y = YS[i];
+        var x = XS[i];
+        var y = YS[i];
         CTX.moveTo(x + RADIUS, y);
         CTX.arc(x, y, RADIUS, 0, PI_2);
     }

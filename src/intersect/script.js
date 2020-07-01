@@ -122,10 +122,9 @@ function loop() {
         ELAPSED += 1;
     }
     var points = [];
-    var point;
     for (i = 0; i < N; i++) {
         edge = EDGES[i];
-        point = pointOfIntersection(CANDIDATE, edge);
+        var point = pointOfIntersection(CANDIDATE, edge);
         if (point !== null) {
             points.push(point);
         }

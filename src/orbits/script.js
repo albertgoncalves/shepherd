@@ -24,9 +24,9 @@ for (var i = 0; i < N; i++) {
 }
 
 function loop() {
-    var i, j;
+    var i;
     for (i = 0; i < N; i++) {
-        for (j = i + 1; j < N; j++) {
+        for (var j = i + 1; j < N; j++) {
             if (XS[i] < XS[j]) {
                 XS_SPEED[i] += K;
                 XS_SPEED[j] -= K;
@@ -49,10 +49,9 @@ function loop() {
     }
     CTX.clearRect(0, 0, CANVAS.width, CANVAS.height);
     CTX.beginPath();
-    var x, y;
     for (i = 0; i < N; i++) {
-        x = XS[i];
-        y = YS[i];
+        var x = XS[i];
+        var y = YS[i];
         CTX.moveTo(x, y);
         CTX.lineTo(x - (XS_SPEED[i] * L), y - (YS_SPEED[i] * L));
     }

@@ -79,7 +79,7 @@ function intersections(tree, circle, callback) {
 }
 
 function init() {
-    var i;
+    var i, point;
     N = START;
     POINTS = new Array(STOP);
     for (i = 0; i < N; i++) {
@@ -91,7 +91,6 @@ function init() {
     POINTS.sort(function(a, b) {
         return a.angle - b.angle;
     });
-    var point;
     for (i = 0; i < N; i++) {
         point = POINTS[i];
         point.x = (Math.cos(point.angle) * SPREAD) + HALF_WIDTH;
@@ -107,13 +106,13 @@ function init() {
 }
 
 function insert() {
-    var i, x, y, point;
+    var point;
     var k = null;
-    for (i = 0; i < N; i++) {
+    for (var i = 0; i < N; i++) {
         point = POINTS[i];
         if (Math.random() < (LIMIT / N)) {
-            x = point.left.x - point.x;
-            y = point.left.y - point.y;
+            var x = point.left.x - point.x;
+            var y = point.left.y - point.y;
             if (CUTOFF < ((x * x) + (y * y))) {
                 k = i;
                 break;
@@ -138,21 +137,21 @@ function insert() {
 }
 
 function updatePositions() {
-    var i, j, n, x, y, point, neighbor, rejection;
+    var i, n, point;
     for (i = 0; i < N; i++) {
         point = POINTS[i];
-        x = point.left.x + point.right.x;
-        y = point.left.y + point.right.y;
+        var x = point.left.x + point.right.x;
+        var y = point.left.y + point.right.y;
         point.xNext = point.x + (((x / 2) - point.x) / DRAG_ATTRACT);
         point.yNext = point.y + (((y / 2) - point.y) / DRAG_ATTRACT);
         n = point.neighbors.length;
         if (0 < n) {
-            rejection = {
+            var rejection = {
                 x: 0,
                 y: 0,
             };
-            for (j = 0; j < n; j++) {
-                neighbor = point.neighbors[j];
+            for (var j = 0; j < n; j++) {
+                var neighbor = point.neighbors[j];
                 rejection.x += point.x - neighbor.x;
                 rejection.y += point.y - neighbor.y;
             }
@@ -168,11 +167,10 @@ function updatePositions() {
 }
 
 function updateNeighbors() {
-    var point;
     var tree =
         buildTree(POINTS.slice(0, N), 0, 0, CANVAS.width, 0, CANVAS.height);
     for (var i = 0; i < N; i++) {
-        point = POINTS[i];
+        var point = POINTS[i];
         point.neighbors = [];
         intersections(tree, point, function(candidate) {
             var x = point.x - candidate.x;
@@ -187,15 +185,15 @@ function updateNeighbors() {
 }
 
 function draw() {
-    var i, j, n, point, neighbor;
+    var i, point;
     CTX.clearRect(0, 0, CANVAS.width, CANVAS.height);
     {
         CTX.beginPath();
         for (i = 0; i < N; i++) {
             point = POINTS[i];
-            n = point.neighbors.length;
-            for (j = 0; j < n; j++) {
-                neighbor = point.neighbors[j];
+            var n = point.neighbors.length;
+            for (var j = 0; j < n; j++) {
+                var neighbor = point.neighbors[j];
                 CTX.moveTo(point.x, point.y);
                 CTX.lineTo(neighbor.x, neighbor.y);
             }

@@ -55,14 +55,13 @@ function pointOfIntersection(aPoint1, aPoint2, bPoint1, bPoint2) {
 }
 
 function init() {
-    var j, k;
     N = START;
     M = N * 2;
     EDGES = new Array(MEMORY);
     NODES = new Array(MEMORY);
     for (var i = 0; i < N; i++) {
-        j = i * 2;
-        k = j + 1;
+        var j = i * 2;
+        var k = j + 1;
         NODES[j] = {
             x: Math.random() * CANVAS.width,
             y: Math.random() * CANVAS.height,
@@ -81,9 +80,9 @@ function init() {
 }
 
 function insert() {
-    var j, a, b, n, m, candidate, edge, point, points, aNode, bNode;
+    var j, a, b, n, m, edge, point, points, aNode, bNode;
     while (true) {
-        candidate = {
+        var candidate = {
             a: {
                 x: Math.random() * CANVAS.width,
                 y: Math.random() * CANVAS.height,
@@ -205,16 +204,16 @@ function insert() {
 }
 
 function update() {
-    var i, j, n, m, x, y, node, neighbor;
+    var i, node;
     var start = START * 2;
     for (i = start; i < M; i++) {
         node = NODES[i];
-        n = node.neighbors.length;
-        m = 0;
-        x = 0;
-        y = 0;
-        for (j = 0; j < n; j++) {
-            neighbor = NODES[node.neighbors[j]];
+        var n = node.neighbors.length;
+        var m = 0;
+        var x = 0;
+        var y = 0;
+        for (var j = 0; j < n; j++) {
+            var neighbor = NODES[node.neighbors[j]];
             if (CUTOFF < squaredDistance(node, neighbor)) {
                 m += 1;
                 x += node.x - neighbor.x;

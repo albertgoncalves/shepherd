@@ -79,7 +79,7 @@ function ptDivFl(point, float) {
 }
 
 function updateSplines() {
-    var i, j;
+    var i;
     for (i = 0; i < M; i++) {
         DISTANCES[i] = Math.pow(distance(POINTS[i], POINTS[i + 1]), ALPHA);
     }
@@ -107,7 +107,7 @@ function updateSplines() {
         var p1SubP2 = ptSubPt(p1, p2);
         var sA = ptAddPt(ptAddPt(ptMulFl(p1SubP2, 2), m1), m2);
         var sB = ptSubPt(ptSubPt(ptSubPt(ptMulFl(p1SubP2, -3), m1), m1), m2);
-        for (j = 0; j < RESOLUTION; j++) {
+        for (var j = 0; j < RESOLUTION; j++) {
             SPLINES[j + OFFSETS[i]] = ptAddPt(
                 ptAddPt(ptAddPt(ptMulFl(sA, TS[j].t3), ptMulFl(sB, TS[j].t2)),
                         ptMulFl(m1, TS[j].t)),

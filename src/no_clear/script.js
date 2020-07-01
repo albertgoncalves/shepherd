@@ -20,7 +20,7 @@ var RESET = 60 * 12;
 var ELAPSED = RESET + 1;
 
 function loop() {
-    var i, j;
+    var i;
     if (RESET < ELAPSED) {
         for (i = 0; i < N; i++) {
             XS[i] = CANVAS.width * ((i + 0.5) / N);
@@ -33,11 +33,10 @@ function loop() {
     } else {
         ELAPSED += 1;
     }
-    var norm;
     for (i = 0; i < N; i++) {
         SPEEDS_IND[i] += (Math.random() * MAGNITUDE) - CENTER;
-        norm = 0;
-        for (j = 0; j <= i; j++) {
+        var norm = 0;
+        for (var j = 0; j <= i; j++) {
             SPEEDS_AGG[i] += SPEEDS_IND[j];
             norm += 1;
         }

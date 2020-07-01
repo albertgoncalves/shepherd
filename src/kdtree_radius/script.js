@@ -103,7 +103,7 @@ function drawTree(tree) {
 }
 
 function loop() {
-    var i, j;
+    var i;
     if (RESET < ELAPSED) {
         for (i = 0; i < N; i++) {
             POINTS[i] = {
