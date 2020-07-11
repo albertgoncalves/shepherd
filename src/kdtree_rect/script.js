@@ -16,8 +16,6 @@ var N = 75;
 var POINTS = new Array(N);
 var WIDTH = 300;
 var HEIGHT = 225;
-var HALF_WIDTH = WIDTH / 2;
-var HALF_HEIGHT = HEIGHT / 2;
 var RECTANGLE = {
     width: WIDTH,
     height: HEIGHT,

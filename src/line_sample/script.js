@@ -5,8 +5,6 @@ var CTX = CANVAS.getContext("2d");
 CTX.imageSmoothingEnabled = false;
 CTX.fillStyle = "hsla(0, 0%, 90%, 0.035)";
 
-var PI_2 = Math.PI * 2;
-var RADIUS = 7;
 var N = 65;
 var M = 50;
 var FLOAT32_BYTES = N * 4;
