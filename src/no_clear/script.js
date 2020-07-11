@@ -7,11 +7,10 @@ CTX.fillStyle = "hsla(0, 0%, 85%, 0.35)";
 
 var HALF_HEIGHT = CANVAS.height / 2;
 var N = CANVAS.width;
-var FLOAT32_BYTES = N * 4;
-var XS = new Float32Array(new ArrayBuffer(FLOAT32_BYTES));
-var YS = new Float32Array(new ArrayBuffer(FLOAT32_BYTES));
-var SPEEDS_IND = new Float32Array(new ArrayBuffer(FLOAT32_BYTES));
-var SPEEDS_AGG = new Float32Array(new ArrayBuffer(FLOAT32_BYTES));
+var XS = new Float32Array(N);
+var YS = new Float32Array(N);
+var SPEEDS_IND = new Float32Array(N);
+var SPEEDS_AGG = new Float32Array(N);
 var LOWER = CANVAS.height / 10;
 var UPPER = CANVAS.height - LOWER;
 var MAGNITUDE = 0.1;

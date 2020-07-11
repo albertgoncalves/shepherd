@@ -8,11 +8,10 @@ CTX.strokeStyle = COLOR;
 CTX.lineWidth = 4;
 
 var N = 15;
-var FLOAT32_BYTES = N * 4;
-var XS = new Float32Array(new ArrayBuffer(FLOAT32_BYTES));
-var YS = new Float32Array(new ArrayBuffer(FLOAT32_BYTES));
-var XS_SPEED = new Float32Array(new ArrayBuffer(FLOAT32_BYTES));
-var YS_SPEED = new Float32Array(new ArrayBuffer(FLOAT32_BYTES));
+var XS = new Float32Array(N);
+var YS = new Float32Array(N);
+var XS_SPEED = new Float32Array(N);
+var YS_SPEED = new Float32Array(N);
 var K = 0.025;
 var L = 10;
 
