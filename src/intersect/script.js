@@ -1,14 +1,10 @@
 "use strict";
 
-var CANVAS = document.getElementById("canvas");
-var CTX = CANVAS.getContext("2d");
+var CANVAS, CTX;
+
 var WHITE = "hsl(0, 0%, 90%)";
 var CYAN = "hsla(175, 65%, 50%, 0.35)";
 var RED = "hsl(0, 75%, 70%)";
-CTX.imageSmoothingEnabled = false;
-CTX.fillStyle = WHITE;
-CTX.lineWidth = 3;
-
 var PI_2 = Math.PI * 2;
 var RADIUS = 6;
 var N = 10;
@@ -88,9 +84,8 @@ function pointOfIntersection(aEdge, bEdge) {
 }
 
 function loop() {
-    var i, edge;
     if (RESET < ELAPSED) {
-        for (i = 0; i < N; i++) {
+        for (var i = 0; i < N; i++) {
             EDGES[i] = {
                 a: {
                     x: Math.random() * CANVAS.width,
@@ -108,8 +103,8 @@ function loop() {
         };
         ELAPSED = 0;
     } else {
-        for (i = 0; i < N; i++) {
-            edge = EDGES[i];
+        for (var i = 0; i < N; i++) {
+            var edge = EDGES[i];
             edge.a.x += (Math.random() * MAGNITUDE) - CENTER;
             edge.a.y += (Math.random() * MAGNITUDE) - CENTER;
             edge.b.x += (Math.random() * MAGNITUDE) - CENTER;
@@ -122,8 +117,8 @@ function loop() {
         ELAPSED += 1;
     }
     var points = [];
-    for (i = 0; i < N; i++) {
-        edge = EDGES[i];
+    for (var i = 0; i < N; i++) {
+        var edge = EDGES[i];
         var point = pointOfIntersection(CANDIDATE, edge);
         if (point !== null) {
             points.push(point);
@@ -140,7 +135,7 @@ function loop() {
     }
     {
         CTX.beginPath();
-        for (i = 0; i < N; i++) {
+        for (var i = 0; i < N; i++) {
             drawEdge(EDGES[i]);
         }
         CTX.strokeStyle = WHITE;
@@ -155,7 +150,7 @@ function loop() {
     {
         var n = points.length;
         CTX.beginPath();
-        for (i = 0; i < n; i++) {
+        for (var i = 0; i < n; i++) {
             drawArc(points[i]);
         }
         CTX.fillStyle = WHITE;
@@ -164,4 +159,11 @@ function loop() {
     requestAnimationFrame(loop);
 }
 
-window.onload = loop;
+window.onload = function() {
+    CANVAS = document.getElementById("canvas");
+    CTX = CANVAS.getContext("2d");
+    CTX.imageSmoothingEnabled = false;
+    CTX.fillStyle = WHITE;
+    CTX.lineWidth = 3;
+    loop();
+};

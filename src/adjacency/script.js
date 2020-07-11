@@ -1,18 +1,12 @@
 "use strict";
 
-var CANVAS = document.getElementById("canvas");
-var CTX = CANVAS.getContext("2d");
-var COLOR = "hsl(0, 0%, 35%)";
-CTX.imageSmoothingEnabled = false;
-CTX.strokeStyle = COLOR;
-CTX.fillStyle = COLOR;
-CTX.lineWidth = 4;
+var CANVAS, CTX, NODES, N;
 
+var COLOR = "hsl(0, 0%, 35%)";
 var PI_2 = Math.PI * 2;
 var RADIUS = 7;
 var START = 3;
 var STOP = 18;
-var NODES, N;
 var MAGNITUDE = 0.5;
 var CENTER = MAGNITUDE / 2;
 var FRAMES = 60;
@@ -27,12 +21,11 @@ function randomAverage(a, b) {
 }
 
 function loop() {
-    var i, x, y;
     if (RESET < ELAPSED) {
         N = START;
         var n = N - 1;
         NODES = new Array(STOP);
-        for (i = 0; i < N; i++) {
+        for (var i = 0; i < N; i++) {
             NODES[i] = {
                 x: Math.random() * CANVAS.width,
                 y: Math.random() * CANVAS.height,
@@ -42,18 +35,18 @@ function loop() {
         }
         ELAPSED = 0;
     } else {
-        for (i = 0; i < N; i++) {
+        for (var i = 0; i < N; i++) {
             NODES[i].x += (Math.random() * MAGNITUDE) - CENTER;
             NODES[i].y += (Math.random() * MAGNITUDE) - CENTER;
         }
         if ((ELAPSED % FRAMES === 0) && (N < STOP)) {
             var left = 0;
             var value = 0;
-            for (i = 0; i < N; i++) {
+            for (var i = 0; i < N; i++) {
                 var a = NODES[i];
                 var b = NODES[NODES[i].right];
-                x = a.x - b.x;
-                y = a.y - b.y;
+                var x = a.x - b.x;
+                var y = a.y - b.y;
                 var candidate = Math.sqrt((x * x) + (y * y));
                 if (value < candidate) {
                     left = i;
@@ -75,15 +68,15 @@ function loop() {
     }
     CTX.clearRect(0, 0, CANVAS.width, CANVAS.height);
     CTX.beginPath();
-    for (i = 0; i < N; i++) {
+    for (var i = 0; i < N; i++) {
         CTX.moveTo(NODES[i].x, NODES[i].y);
         CTX.lineTo(NODES[NODES[i].left].x, NODES[NODES[i].left].y);
     }
     CTX.stroke();
     CTX.beginPath();
-    for (i = 0; i < N; i++) {
-        x = NODES[i].x;
-        y = NODES[i].y;
+    for (var i = 0; i < N; i++) {
+        var x = NODES[i].x;
+        var y = NODES[i].y;
         CTX.moveTo(x + RADIUS, y);
         CTX.arc(x, y, RADIUS, 0, PI_2);
     }
@@ -91,4 +84,12 @@ function loop() {
     requestAnimationFrame(loop);
 }
 
-window.onload = loop;
+window.onload = function() {
+    CANVAS = document.getElementById("canvas");
+    CTX = CANVAS.getContext("2d");
+    CTX.imageSmoothingEnabled = false;
+    CTX.strokeStyle = COLOR;
+    CTX.fillStyle = COLOR;
+    CTX.lineWidth = 4;
+    loop();
+};

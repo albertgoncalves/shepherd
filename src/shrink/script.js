@@ -1,20 +1,13 @@
 "use strict";
 
-var CANVAS = document.getElementById("canvas");
-var CTX = CANVAS.getContext("2d");
-var COLOR = "hsl(0, 0%, 35%)";
-CTX.imageSmoothingEnabled = false;
-CTX.strokeStyle = COLOR;
-CTX.fillStyle = COLOR;
-CTX.lineWidth = 4;
+var CANVAS, CTX, HALF_WIDTH, HALF_HEIGHT;
 
+var COLOR = "hsl(0, 0%, 35%)";
 var PI_2 = Math.PI * 2;
 var RADIUS = 7;
 var N = 20;
 var M = N - 1;
 var SPREAD = 275;
-var HALF_WIDTH = CANVAS.width / 2;
-var HALF_HEIGHT = CANVAS.height / 2;
 var ANGLES = new Float32Array(N);
 var XS = new Float32Array(N);
 var YS = new Float32Array(N);
@@ -23,13 +16,12 @@ var RESET = 60 * 3;
 var ELAPSED = RESET + 1;
 
 function loop() {
-    var i;
     if (RESET < ELAPSED) {
-        for (i = 0; i < N; i++) {
+        for (var i = 0; i < N; i++) {
             ANGLES[i] = Math.random() * PI_2;
         }
         ANGLES.sort();
-        for (i = 0; i < N; i++) {
+        for (var i = 0; i < N; i++) {
             XS[i] = (Math.cos(ANGLES[i]) * SPREAD) + HALF_WIDTH;
             YS[i] = (Math.sin(ANGLES[i]) * SPREAD) + HALF_HEIGHT;
         }
@@ -39,7 +31,7 @@ function loop() {
     }
     CTX.clearRect(0, 0, CANVAS.width, CANVAS.height);
     CTX.beginPath();
-    for (i = 0; i < N; i++) {
+    for (var i = 0; i < N; i++) {
         var left = i === 0 ? M : i - 1;
         var right = i === M ? 0 : i + 1;
         XS[i] += (((XS[left] + XS[right]) / 2) - XS[i]) / DRAG;
@@ -49,7 +41,7 @@ function loop() {
     }
     CTX.stroke();
     CTX.beginPath();
-    for (i = 0; i < N; i++) {
+    for (var i = 0; i < N; i++) {
         var x = XS[i];
         var y = YS[i];
         CTX.moveTo(x + RADIUS, y);
@@ -59,4 +51,14 @@ function loop() {
     requestAnimationFrame(loop);
 }
 
-window.onload = loop;
+window.onload = function() {
+    CANVAS = document.getElementById("canvas");
+    CTX = CANVAS.getContext("2d");
+    CTX.imageSmoothingEnabled = false;
+    CTX.strokeStyle = COLOR;
+    CTX.fillStyle = COLOR;
+    CTX.lineWidth = 4;
+    HALF_WIDTH = CANVAS.width / 2;
+    HALF_HEIGHT = CANVAS.height / 2;
+    loop();
+};

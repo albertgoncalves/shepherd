@@ -1,14 +1,10 @@
 "use strict";
 
-var CANVAS = document.getElementById("canvas");
-var CTX = CANVAS.getContext("2d");
+var CANVAS, CTX;
+
 var WHITE = "hsl(0, 0%, 90%)";
 var CYAN = "hsla(175, 65%, 50%, 0.35)";
 var RED = "hsl(0, 75%, 70%)";
-CTX.imageSmoothingEnabled = false;
-CTX.strokeStyle = WHITE;
-CTX.lineWidth = 3;
-
 var PI_2 = Math.PI * 2;
 var RADIUS = 8;
 var RADIUS_2 = RADIUS * 2;
@@ -51,13 +47,12 @@ function buildTree(points, axis, xLower, xUpper, yLower, yUpper) {
     };
     var left = points.slice(0, median);
     var right = points.slice(median + 1);
-    var next;
     if (axis === 0) {
-        next = 1;
+        var next = 1;
         tree.left = buildTree(left, next, xLower, point.x, yLower, yUpper);
         tree.right = buildTree(right, next, point.x, xUpper, yLower, yUpper);
     } else if (axis === 1) {
-        next = 0;
+        var next = 0;
         tree.left = buildTree(left, next, xLower, xUpper, yLower, point.y);
         tree.right = buildTree(right, next, xLower, xUpper, point.y, yUpper);
     }
@@ -112,9 +107,8 @@ function drawTree(tree) {
 }
 
 function loop() {
-    var i;
     if (RESET < ELAPSED) {
-        for (i = 0; i < N; i++) {
+        for (var i = 0; i < N; i++) {
             POINTS[i] = {
                 x: Math.random() * CANVAS.width,
                 y: Math.random() * CANVAS.height,
@@ -126,7 +120,7 @@ function loop() {
     } else {
         RECTANGLE.x += (Math.random() * MAGNITUDE) - SCALE;
         RECTANGLE.y += (Math.random() * MAGNITUDE) - SCALE;
-        for (i = 0; i < N; i++) {
+        for (var i = 0; i < N; i++) {
             POINTS[i].x += (Math.random() * MAGNITUDE) - SCALE;
             POINTS[i].y += (Math.random() * MAGNITUDE) - SCALE;
         }
@@ -147,12 +141,11 @@ function loop() {
                      RECTANGLE.width,
                      RECTANGLE.height);
     }
-    var point;
     {
         var n = neighbors.length;
         CTX.beginPath();
-        for (i = 0; i < n; i++) {
-            point = neighbors[i];
+        for (var i = 0; i < n; i++) {
+            var point = neighbors[i];
             CTX.moveTo(point.x + RADIUS_2, point.y);
             CTX.arc(point.x, point.y, RADIUS_2, 0, PI_2);
         }
@@ -161,8 +154,8 @@ function loop() {
     }
     {
         CTX.beginPath();
-        for (i = 0; i < N; i++) {
-            point = POINTS[i];
+        for (var i = 0; i < N; i++) {
+            var point = POINTS[i];
             CTX.moveTo(point.x + RADIUS, point.y);
             CTX.arc(point.x, point.y, RADIUS, 0, PI_2);
         }
@@ -177,4 +170,11 @@ function loop() {
     requestAnimationFrame(loop);
 }
 
-window.onload = loop;
+window.onload = function() {
+    CANVAS = document.getElementById("canvas");
+    CTX = CANVAS.getContext("2d");
+    CTX.imageSmoothingEnabled = false;
+    CTX.strokeStyle = WHITE;
+    CTX.lineWidth = 3;
+    loop();
+};

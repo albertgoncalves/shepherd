@@ -1,13 +1,8 @@
 "use strict";
 
-var CANVAS = document.getElementById("canvas");
-var CTX = CANVAS.getContext("2d");
-var COLOR = "hsl(0, 0%, 35%)";
-CTX.imageSmoothingEnabled = false;
-CTX.strokeStyle = COLOR;
-CTX.fillStyle = COLOR;
-CTX.lineWidth = 4;
+var CANVAS, CTX;
 
+var COLOR = "hsl(0, 0%, 35%)";
 var PI_2 = Math.PI * 2;
 var POINT_RADIUS = 7;
 var WIDTH = 300;
@@ -98,4 +93,12 @@ function loop() {
     requestAnimationFrame(loop);
 }
 
-window.onload = loop;
+window.onload = function() {
+    CANVAS = document.getElementById("canvas");
+    CTX = CANVAS.getContext("2d");
+    CTX.imageSmoothingEnabled = false;
+    CTX.strokeStyle = COLOR;
+    CTX.fillStyle = COLOR;
+    CTX.lineWidth = 4;
+    loop();
+};

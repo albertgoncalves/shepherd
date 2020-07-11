@@ -1,27 +1,15 @@
 "use strict";
 
-var CANVAS = document.getElementById("canvas");
-var CTX = CANVAS.getContext("2d");
-CTX.imageSmoothingEnabled = false;
-CTX.fillStyle = "hsla(0, 0%, 85%, 0.35)";
+var CANVAS, CTX, HALF_HEIGHT, N, LOWER, UPPER, XS, YS, SPEEDS_IND, SPEEDS_AGG;
 
-var HALF_HEIGHT = CANVAS.height / 2;
-var N = CANVAS.width;
-var XS = new Float32Array(N);
-var YS = new Float32Array(N);
-var SPEEDS_IND = new Float32Array(N);
-var SPEEDS_AGG = new Float32Array(N);
-var LOWER = CANVAS.height / 10;
-var UPPER = CANVAS.height - LOWER;
 var MAGNITUDE = 0.1;
 var CENTER = MAGNITUDE / 2;
 var RESET = 60 * 12;
 var ELAPSED = RESET + 1;
 
 function loop() {
-    var i;
     if (RESET < ELAPSED) {
-        for (i = 0; i < N; i++) {
+        for (var i = 0; i < N; i++) {
             XS[i] = CANVAS.width * ((i + 0.5) / N);
             YS[i] = HALF_HEIGHT;
             SPEEDS_IND[i] = 0;
@@ -32,7 +20,7 @@ function loop() {
     } else {
         ELAPSED += 1;
     }
-    for (i = 0; i < N; i++) {
+    for (var i = 0; i < N; i++) {
         SPEEDS_IND[i] += (Math.random() * MAGNITUDE) - CENTER;
         var norm = 0;
         for (var j = 0; j <= i; j++) {
@@ -48,10 +36,24 @@ function loop() {
             SPEEDS_AGG[i] = 0;
         }
     }
-    for (i = 0; i < N; i++) {
+    for (var i = 0; i < N; i++) {
         CTX.fillRect(XS[i], YS[i], 1, 1);
     }
     requestAnimationFrame(loop);
 }
 
-window.onload = loop;
+window.onload = function() {
+    CANVAS = document.getElementById("canvas");
+    CTX = CANVAS.getContext("2d");
+    CTX.imageSmoothingEnabled = false;
+    CTX.fillStyle = "hsla(0, 0%, 85%, 0.35)";
+    HALF_HEIGHT = CANVAS.height / 2;
+    N = CANVAS.width;
+    LOWER = CANVAS.height / 10;
+    UPPER = CANVAS.height - LOWER;
+    XS = new Float32Array(N);
+    YS = new Float32Array(N);
+    SPEEDS_IND = new Float32Array(N);
+    SPEEDS_AGG = new Float32Array(N);
+    loop();
+};

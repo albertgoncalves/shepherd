@@ -1,12 +1,6 @@
 "use strict";
 
-var CANVAS = document.getElementById("canvas");
-var CTX = CANVAS.getContext("2d");
-CTX.imageSmoothingEnabled = false;
-CTX.strokeStyle = "hsl(0, 0%, 35%)";
-CTX.fillStyle = "hsla(175, 65%, 50%, 0.35)";
-CTX.lineWidth = 4;
-CTX.lineCap = "round";
+var CANVAS, CTX;
 
 var PI_2 = Math.PI * 2;
 var RADIUS = 7;
@@ -18,7 +12,6 @@ var MAGNITUDE = 1.5;
 var CENTER = MAGNITUDE / 2;
 var RESET = 300;
 var ELAPSED = RESET + 1;
-
 var ALPHA = 0.15;
 var TENSION = 0;
 var INVERSE_TENSION = 1 - TENSION;
@@ -29,20 +22,6 @@ var Q = P - 1;
 var SPLINES = new Array(P);
 var TS = new Array(RESOLUTION);
 var OFFSETS = new Array(R);
-
-for (var i = 0; i < RESOLUTION; i++) {
-    var t = i / RESOLUTION;
-    var t2 = t * t;
-    TS[i] = {
-        t: t,
-        t2: t2,
-        t3: t2 * t,
-    };
-}
-
-for (var i = 0; i < R; i++) {
-    OFFSETS[i] = i * RESOLUTION;
-}
 
 function distance(pointA, pointB) {
     var x = pointA.x - pointB.x;
@@ -79,11 +58,10 @@ function ptDivFl(point, float) {
 }
 
 function updateSplines() {
-    var i;
-    for (i = 0; i < M; i++) {
+    for (var i = 0; i < M; i++) {
         DISTANCES[i] = Math.pow(distance(POINTS[i], POINTS[i + 1]), ALPHA);
     }
-    for (i = 0; i < R; i++) {
+    for (var i = 0; i < R; i++) {
         var p0 = POINTS[i];
         var p1 = POINTS[i + 1];
         var p2 = POINTS[i + 2];
@@ -117,9 +95,8 @@ function updateSplines() {
 }
 
 function loop() {
-    var i;
     if (RESET < ELAPSED) {
-        for (i = 0; i < N; i++) {
+        for (var i = 0; i < N; i++) {
             POINTS[i] = {
                 x: Math.random() * CANVAS.width,
                 y: Math.random() * CANVAS.height,
@@ -127,7 +104,7 @@ function loop() {
         }
         ELAPSED = 0;
     } else {
-        for (i = 0; i < N; i++) {
+        for (var i = 0; i < N; i++) {
             POINTS[i].x += (Math.random() * MAGNITUDE) - CENTER;
             POINTS[i].y += (Math.random() * MAGNITUDE) - CENTER;
         }
@@ -136,13 +113,13 @@ function loop() {
     updateSplines();
     CTX.clearRect(0, 0, CANVAS.width, CANVAS.height);
     CTX.beginPath();
-    for (i = 0; i < Q; i++) {
+    for (var i = 0; i < Q; i++) {
         CTX.moveTo(SPLINES[i].x, SPLINES[i].y);
         CTX.lineTo(SPLINES[i + 1].x, SPLINES[i + 1].y);
     }
     CTX.stroke();
     CTX.beginPath();
-    for (i = 0; i < N; i++) {
+    for (var i = 0; i < N; i++) {
         var x = POINTS[i].x;
         var y = POINTS[i].y;
         CTX.moveTo(x + RADIUS, y);
@@ -152,4 +129,25 @@ function loop() {
     requestAnimationFrame(loop);
 }
 
-window.onload = loop;
+window.onload = function() {
+    CANVAS = document.getElementById("canvas");
+    CTX = CANVAS.getContext("2d");
+    CTX.imageSmoothingEnabled = false;
+    CTX.strokeStyle = "hsl(0, 0%, 35%)";
+    CTX.fillStyle = "hsla(175, 65%, 50%, 0.35)";
+    CTX.lineWidth = 4;
+    CTX.lineCap = "round";
+    for (var i = 0; i < RESOLUTION; i++) {
+        var t = i / RESOLUTION;
+        var t2 = t * t;
+        TS[i] = {
+            t: t,
+            t2: t2,
+            t3: t2 * t,
+        };
+    }
+    for (var i = 0; i < R; i++) {
+        OFFSETS[i] = i * RESOLUTION;
+    }
+    loop();
+};

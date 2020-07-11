@@ -2,18 +2,12 @@
 
 "use strict";
 
-var CANVAS = document.getElementById("canvas");
-var CTX = CANVAS.getContext("2d");
+var CANVAS, CTX, HALF_WIDTH, HALF_HEIGHT;
+
 var GRAY = "hsl(0, 0%, 35%)";
 var CYAN = "hsl(175, 75%, 50%)";
-CTX.imageSmoothingEnabled = false;
-CTX.fillStyle = GRAY;
-CTX.lineWidth = 2;
-
 var PI_2 = Math.PI * 2;
 var RADIUS = 3;
-var HALF_WIDTH = CANVAS.width / 2;
-var HALF_HEIGHT = CANVAS.height / 2;
 var START = 10;
 var STOP = 200;
 var N = STOP + 1;
@@ -52,13 +46,12 @@ function buildTree(points, axis, xLower, xUpper, yLower, yUpper) {
     };
     var left = points.slice(0, median);
     var right = points.slice(median + 1);
-    var next;
     if (axis === 0) {
-        next = 1;
+        var next = 1;
         tree.left = buildTree(left, next, xLower, point.x, yLower, yUpper);
         tree.right = buildTree(right, next, point.x, xUpper, yLower, yUpper);
     } else if (axis === 1) {
-        next = 0;
+        var next = 0;
         tree.left = buildTree(left, next, xLower, xUpper, yLower, point.y);
         tree.right = buildTree(right, next, xLower, xUpper, point.y, yUpper);
     }
@@ -79,10 +72,9 @@ function intersections(tree, circle, callback) {
 }
 
 function init() {
-    var i, point;
     N = START;
     POINTS = new Array(STOP);
-    for (i = 0; i < N; i++) {
+    for (var i = 0; i < N; i++) {
         POINTS[i] = {
             angle: Math.random() * PI_2,
             neighbors: [],
@@ -91,25 +83,24 @@ function init() {
     POINTS.sort(function(a, b) {
         return a.angle - b.angle;
     });
-    for (i = 0; i < N; i++) {
-        point = POINTS[i];
+    for (var i = 0; i < N; i++) {
+        var point = POINTS[i];
         point.x = (Math.cos(point.angle) * SPREAD) + HALF_WIDTH;
         point.y = (Math.sin(point.angle) * SPREAD) + HALF_HEIGHT;
         point.radius = SEARCH_RADIUS;
     }
     var n = N - 1;
-    for (i = 0; i < N; i++) {
-        point = POINTS[i];
+    for (var i = 0; i < N; i++) {
+        var point = POINTS[i];
         point.left = POINTS[i === 0 ? n : i - 1];
         point.right = POINTS[i === n ? 0 : i + 1];
     }
 }
 
 function insert() {
-    var point;
     var k = null;
     for (var i = 0; i < N; i++) {
-        point = POINTS[i];
+        var point = POINTS[i];
         if (Math.random() < (LIMIT / N)) {
             var x = point.left.x - point.x;
             var y = point.left.y - point.y;
@@ -120,7 +111,7 @@ function insert() {
         }
     }
     if (k !== null) {
-        point = POINTS[k];
+        var point = POINTS[k];
         var insert = {
             x: (point.left.x + point.x) / 2,
             y: (point.left.y + point.y) / 2,
@@ -137,14 +128,13 @@ function insert() {
 }
 
 function updatePositions() {
-    var i, n, point;
-    for (i = 0; i < N; i++) {
-        point = POINTS[i];
+    for (var i = 0; i < N; i++) {
+        var point = POINTS[i];
         var x = point.left.x + point.right.x;
         var y = point.left.y + point.right.y;
         point.xNext = point.x + (((x / 2) - point.x) / DRAG_ATTRACT);
         point.yNext = point.y + (((y / 2) - point.y) / DRAG_ATTRACT);
-        n = point.neighbors.length;
+        var n = point.neighbors.length;
         if (0 < n) {
             var rejection = {
                 x: 0,
@@ -159,8 +149,8 @@ function updatePositions() {
             point.yNext += (rejection.y / n) / DRAG_REJECT;
         }
     }
-    for (i = 0; i < N; i++) {
-        point = POINTS[i];
+    for (var i = 0; i < N; i++) {
+        var point = POINTS[i];
         point.x = point.xNext;
         point.y = point.yNext;
     }
@@ -185,12 +175,11 @@ function updateNeighbors() {
 }
 
 function draw() {
-    var i, point;
     CTX.clearRect(0, 0, CANVAS.width, CANVAS.height);
     {
         CTX.beginPath();
-        for (i = 0; i < N; i++) {
-            point = POINTS[i];
+        for (var i = 0; i < N; i++) {
+            var point = POINTS[i];
             var n = point.neighbors.length;
             for (var j = 0; j < n; j++) {
                 var neighbor = point.neighbors[j];
@@ -203,8 +192,8 @@ function draw() {
     }
     {
         CTX.beginPath();
-        for (i = 0; i < N; i++) {
-            point = POINTS[i];
+        for (var i = 0; i < N; i++) {
+            var point = POINTS[i];
             CTX.moveTo(point.left.x, point.left.y);
             CTX.lineTo(point.x, point.y);
         }
@@ -213,8 +202,8 @@ function draw() {
     }
     {
         CTX.beginPath();
-        for (i = 0; i < N; i++) {
-            point = POINTS[i];
+        for (var i = 0; i < N; i++) {
+            var point = POINTS[i];
             CTX.moveTo(point.x + RADIUS, point.y);
             CTX.arc(point.x, point.y, RADIUS, 0, PI_2);
         }
@@ -234,4 +223,13 @@ function loop() {
     requestAnimationFrame(loop);
 }
 
-window.onload = loop;
+window.onload = function() {
+    CANVAS = document.getElementById("canvas");
+    CTX = CANVAS.getContext("2d");
+    CTX.imageSmoothingEnabled = false;
+    CTX.fillStyle = GRAY;
+    CTX.lineWidth = 2;
+    HALF_WIDTH = CANVAS.width / 2;
+    HALF_HEIGHT = CANVAS.height / 2;
+    loop();
+};

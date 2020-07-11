@@ -1,18 +1,14 @@
 "use strict";
 
-var CANVAS = document.getElementById("canvas");
-var CTX = CANVAS.getContext("2d");
+var CANVAS, CTX, N, M, NODES, EDGES;
+
 var WHITE = "hsl(0, 0%, 90%)";
 var GREEN = "hsl(165, 100%, 75%)";
 var CYAN = "hsla(175, 65%, 50%, 0.35)";
-CTX.imageSmoothingEnabled = false;
-CTX.lineWidth = 2;
-
 var PI_2 = Math.PI * 2;
 var RADIUS = 3;
 var START = 2;
 var STOP = 400;
-var N, M, NODES, EDGES;
 var MEMORY = 800;
 var THRESHOLD = MEMORY - 3;
 var CUTOFF = 100;
@@ -80,8 +76,7 @@ function init() {
 }
 
 function insert() {
-    var j, a, b, n, m, edge, point, points, aNode, bNode;
-    while (true) {
+    for (;;) {
         var candidate = {
             a: {
                 x: Math.random() * CANVAS.width,
@@ -92,13 +87,13 @@ function insert() {
                 y: Math.random() * CANVAS.height,
             },
         };
-        points = [];
+        var points = [];
         for (var i = 0; i < N; i++) {
-            edge = EDGES[i];
-            point = pointOfIntersection(candidate.a,
-                                        candidate.b,
-                                        NODES[edge.a],
-                                        NODES[edge.b]);
+            var edge = EDGES[i];
+            var point = pointOfIntersection(candidate.a,
+                                            candidate.b,
+                                            NODES[edge.a],
+                                            NODES[edge.b]);
             if (point !== null) {
                 points.push({
                     coordinates: point,
@@ -106,25 +101,25 @@ function insert() {
                 });
             }
         }
-        n = points.length;
+        var n = points.length;
         if (n === 1) {
             /* NOTE:
              *  a---b    a--M--b
              *        ->    |
              *              m
              */
-            point = points[0];
-            j = point.index;
-            edge = EDGES[j];
-            m = M + 1; /* NOTE: Index positions into `NODES`. */
-            a = edge.a;
-            b = edge.b;
+            var point = points[0];
+            var j = point.index;
+            var edge = EDGES[j];
+            var m = M + 1; /* NOTE: Index positions into `NODES`. */
+            var a = edge.a;
+            var b = edge.b;
             NODES[M] = point.coordinates;
             NODES[m] = candidate.a;
             NODES[M].neighbors = [a, b, m];
             NODES[m].neighbors = [M];
-            aNode = NODES[a];
-            bNode = NODES[b];
+            var aNode = NODES[a];
+            var bNode = NODES[b];
             aNode.neighbors[aNode.neighbors.indexOf(b)] = M;
             bNode.neighbors[bNode.neighbors.indexOf(a)] = M;
             EDGES[j] = {
@@ -148,30 +143,29 @@ function insert() {
              *        ->    |
              *  c---d    c--m--d
              */
-            var l, k, c, d, aPoint, bPoint, cNode, dNode, aEdge, bEdge;
             points.sort(function(a, b) {
                 return a.coordinates.x - b.coordinates.x;
             });
-            l = Math.floor(Math.random() * (n - 1));
-            aPoint = points[l];
-            bPoint = points[l + 1];
-            j = aPoint.index;
-            k = bPoint.index;
-            aEdge = EDGES[j];
-            bEdge = EDGES[k];
-            m = M + 1; /* NOTE: Index positions into `NODES`. */
-            a = aEdge.a;
-            b = aEdge.b;
-            c = bEdge.a;
-            d = bEdge.b;
+            var l = Math.floor(Math.random() * (n - 1));
+            var aPoint = points[l];
+            var bPoint = points[l + 1];
+            var j = aPoint.index;
+            var k = bPoint.index;
+            var aEdge = EDGES[j];
+            var bEdge = EDGES[k];
+            var m = M + 1; /* NOTE: Index positions into `NODES`. */
+            var a = aEdge.a;
+            var b = aEdge.b;
+            var c = bEdge.a;
+            var d = bEdge.b;
             NODES[M] = aPoint.coordinates;
             NODES[m] = bPoint.coordinates;
             NODES[M].neighbors = [a, b, m];
             NODES[m].neighbors = [c, d, M];
-            aNode = NODES[a];
-            bNode = NODES[b];
-            cNode = NODES[c];
-            dNode = NODES[d];
+            var aNode = NODES[a];
+            var bNode = NODES[b];
+            var cNode = NODES[c];
+            var dNode = NODES[d];
             aNode.neighbors[aNode.neighbors.indexOf(b)] = M;
             bNode.neighbors[bNode.neighbors.indexOf(a)] = M;
             cNode.neighbors[cNode.neighbors.indexOf(d)] = m;
@@ -204,10 +198,9 @@ function insert() {
 }
 
 function update() {
-    var i, node;
     var start = START * 2;
-    for (i = start; i < M; i++) {
-        node = NODES[i];
+    for (var i = start; i < M; i++) {
+        var node = NODES[i];
         var n = node.neighbors.length;
         var m = 0;
         var x = 0;
@@ -228,8 +221,8 @@ function update() {
             node.yNext = node.y;
         }
     }
-    for (i = start; i < M; i++) {
-        node = NODES[i];
+    for (var i = start; i < M; i++) {
+        var node = NODES[i];
         node.x = node.xNext;
         node.y = node.yNext;
     }
@@ -275,20 +268,19 @@ function draw() {
                      rect.width + PAD_2,
                      rect.height + PAD_2);
     }
-    var edge;
     var n = N - 1;
     {
         CTX.beginPath();
         for (var i = 0; i < n; i++) {
-            edge = EDGES[i];
+            var edge = EDGES[i];
             CTX.moveTo(NODES[edge.a].x, NODES[edge.a].y);
             CTX.lineTo(NODES[edge.b].x, NODES[edge.b].y);
         }
         CTX.strokeStyle = WHITE;
         CTX.stroke();
     }
+    var edge = EDGES[n];
     {
-        edge = EDGES[n];
         CTX.beginPath();
         CTX.moveTo(NODES[edge.a].x, NODES[edge.a].y);
         CTX.lineTo(NODES[edge.b].x, NODES[edge.b].y);
@@ -319,4 +311,10 @@ function loop() {
     requestAnimationFrame(loop);
 }
 
-window.onload = loop;
+window.onload = function() {
+    CANVAS = document.getElementById("canvas");
+    CTX = CANVAS.getContext("2d");
+    CTX.imageSmoothingEnabled = false;
+    CTX.lineWidth = 2;
+    loop();
+};

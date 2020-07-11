@@ -1,24 +1,14 @@
 "use strict";
 
-var CANVAS = document.getElementById("canvas");
-var CTX = CANVAS.getContext("2d");
-CTX.imageSmoothingEnabled = false;
-CTX.fillStyle = "hsla(0, 0%, 90%, 0.035)";
+var CANVAS, CTX, HALF_HEIGHT, MAGNITUDE, MAGNITUDE_CENTER;
 
 var N = 65;
 var M = 50;
 var XS = new Float32Array(N);
-var HALF_HEIGHT = CANVAS.height / 2;
-var MAGNITUDE = CANVAS.height;
-var MAGNITUDE_CENTER = MAGNITUDE / 2;
 var ERROR = 0.15;
 var ERROR_CENTER = ERROR / 2;
 var RESET = 600;
 var ELAPSED = RESET + 1;
-
-for (var i = 0; i < N; i++) {
-    XS[i] = CANVAS.width * ((i + 1) / N);
-}
 
 function randomError(offset) {
     return offset + ((Math.random() * ERROR) - ERROR_CENTER);
@@ -63,4 +53,16 @@ function loop() {
     requestAnimationFrame(loop);
 }
 
-window.onload = loop;
+window.onload = function() {
+    CANVAS = document.getElementById("canvas");
+    CTX = CANVAS.getContext("2d");
+    CTX.imageSmoothingEnabled = false;
+    CTX.fillStyle = "hsla(0, 0%, 90%, 0.035)";
+    HALF_HEIGHT = CANVAS.height / 2;
+    MAGNITUDE = CANVAS.height;
+    MAGNITUDE_CENTER = MAGNITUDE / 2;
+    for (var i = 0; i < N; i++) {
+        XS[i] = CANVAS.width * ((i + 1) / N);
+    }
+    loop();
+};
