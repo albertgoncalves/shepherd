@@ -22,6 +22,7 @@
 !intersect/
 !kdtree_radius/
 !kdtree_rect/
+!lerp/
 !line_sample/
 !nearest_neighbor/
 !no_clear/
