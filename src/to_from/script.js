@@ -1,43 +1,48 @@
 "use strict";
 
-var CANVAS, CTX, LOWER, DELTA, RESET;
+var CANVAS, CTX, LOWER, DELTA;
 
 var COLOR = "hsl(0, 0%, 90%)";
 var PI_2 = Math.PI * 2;
 var RADIUS = 6;
 var N = 50;
-var XS = new Float32Array(N);
-var YS_TO = new Float32Array(N);
-var YS_FROM = new Float32Array(N);
-var DELTAS = new Float32Array(N);
-var DRAG = 50;
+var POINTS = {
+    x: new Float32Array(N),
+    yTo: new Float32Array(N),
+    yFrom: new Float32Array(N),
+};
+var SPEED = 0.0175;
 var THRESHOLD = 1;
 
+function lerp(a, b, t) {
+    return a + (t * (b - a));
+}
+
 function loop() {
-    RESET = true;
+    var reset = true;
     for (var i = 0; i < N; ++i) {
-        DELTAS[i] = (YS_TO[i] - YS_FROM[i]);
-        if (RESET && (THRESHOLD < DELTAS[i])) {
-            RESET = false;
+        if (THRESHOLD < (POINTS.yTo[i] - POINTS.yFrom[i])) {
+            reset = false;
+            break;
         }
     }
     CTX.clearRect(0, 0, CANVAS.width, CANVAS.height);
     CTX.beginPath();
     for (var i = 0; i < N; ++i) {
-        if (RESET) {
-            YS_TO[i] = LOWER + (Math.random() * DELTA);
+        if (reset) {
+            POINTS.yTo[i] = LOWER + (Math.random() * DELTA);
         }
-        var x = XS[i];
-        var y = YS_TO[i];
+        var x = POINTS.x[i];
+        var y = POINTS.yTo[i];
         CTX.moveTo(x + RADIUS, y);
         CTX.arc(x, y, RADIUS, 0, PI_2);
     }
     CTX.stroke();
     CTX.beginPath();
     for (var i = 0; i < N; ++i) {
-        YS_FROM[i] += DELTAS[i] / DRAG;
-        var x = XS[i];
-        var y = YS_FROM[i];
+        POINTS.yFrom[i] = lerp(POINTS.yFrom[i], POINTS.yTo[i], SPEED);
+        var x = POINTS.x[i];
+        var y = POINTS.yFrom[i];
         CTX.moveTo(x + RADIUS, y);
         CTX.arc(x, y, RADIUS, 0, PI_2);
     }
@@ -55,10 +60,9 @@ window.onload = function() {
     LOWER = CANVAS.height / 10;
     DELTA = CANVAS.height - (LOWER * 2);
     for (var i = 0; i < N; ++i) {
-        XS[i] = CANVAS.width * ((i + 0.5) / N);
-        YS_TO[i] = LOWER + (Math.random() * DELTA);
-        YS_FROM[i] = LOWER + (Math.random() * DELTA);
-        DELTAS[i] = 0;
+        POINTS.x[i] = CANVAS.width * ((i + 0.5) / N);
+        POINTS.yTo[i] = LOWER + (Math.random() * DELTA);
+        POINTS.yFrom[i] = LOWER + (Math.random() * DELTA);
     }
     loop();
 };
