@@ -5,18 +5,20 @@ var CANVAS, CTX, N, GRID, TABLE;
 var J = 0;
 var I = 0;
 var M = 16;
+var T = 0;
+var RESET_MS = 5000;
 var CIRCLES = new Array(M);
 /* NOTE: Because the grid will capture `CIRCLES` indices in ascending order, we
- * can count on collision detection to occur only between indices in ascending
- * order. If the final object in `CIRCLES` collides with another other object,
- * we can count on that collision being inscribed into that other object's
- * index. For the following arrays, we don't need to reserve a position for
- * that last object; unless there is a bug, that position would always be
+ * can count on collision detection to occur only between ascending pairs of
+ * indices. If the final object in `CIRCLES` collides with another other
+ * object, that collision should have been captured when we iterated the other
+ * object. For the following arrays, we don't need to reserve a position for
+ * that last object; unless there is a bug, that position *should* always be
  * empty.
  */
 var O = M - 1;
-var COLLISIONS = new Array(O);
 var TESTED = new Array(O);
+var COLLISIONS = new Array(O);
 var PI_2 = Math.PI * 2.0;
 var SIZE = Math.floor((Math.random() * 50.0) + 50.0);
 var SCALE = 2.0;
@@ -66,7 +68,44 @@ function getDistanceSquared(a, b) {
     return (x * x) + (y * y);
 }
 
-function loop() {
+function init() {
+    GRID = {
+        x: new Float32Array(N),
+        y: new Float32Array(N),
+        color: new Array(N),
+    };
+    TABLE = new Array(N);
+    for (var i = 0; i < N; ++i) {
+        TABLE[i] = [];
+    }
+    var index = 0;
+    for (var y = 0; y < I; ++y) {
+        for (var x = 0; x < J; ++x) {
+            GRID.x[index] = x * SIZE;
+            GRID.y[index++] = y * SIZE;
+        }
+    }
+    for (var i = 0; i < M; ++i) {
+        CIRCLES[i] = {
+            x: Math.random() * CANVAS.width,
+            y: Math.random() * CANVAS.height,
+            color: colorToHex({
+                red: Math.floor(Math.random() * 256.0),
+                green: Math.floor(Math.random() * 256.0),
+                blue: Math.floor(Math.random() * 256.0),
+                alpha: 64,
+            }),
+            collided: false,
+        };
+        COLLISIONS[i] = [];
+    }
+}
+
+function loop(t) {
+    if (RESET_MS < (t - T)) {
+        init();
+        T = t;
+    }
     for (var i = 0; i < N; ++i) {
         TABLE[i] = [];
     }
@@ -77,8 +116,8 @@ function loop() {
         circle.collided = false;
     }
     for (var i = 0; i < O; ++i) {
-        COLLISIONS[i] = [];
         TESTED[i] = [];
+        COLLISIONS[i] = [];
     }
     CTX.clearRect(0, 0, CANVAS.width, CANVAS.height);
     for (var i = 0; i < M; ++i) {
@@ -155,7 +194,7 @@ function loop() {
             var circle = CIRCLES[i];
             if (!circle.collided) {
                 CTX.moveTo(circle.x + RADIUS, circle.y);
-                CTX.arc(circle.x, circle.y, RADIUS, 0, PI_2);
+                CTX.arc(circle.x, circle.y, RADIUS, 0.0, PI_2);
             }
         }
         CTX.stroke();
@@ -167,7 +206,7 @@ function loop() {
             var circle = CIRCLES[i];
             if (circle.collided) {
                 CTX.moveTo(circle.x + RADIUS, circle.y);
-                CTX.arc(circle.x, circle.y, RADIUS, 0, PI_2);
+                CTX.arc(circle.x, circle.y, RADIUS, 0.0, PI_2);
             }
         }
         CTX.stroke();
@@ -175,51 +214,20 @@ function loop() {
     requestAnimationFrame(loop);
 }
 
-function init() {
-    for (var x = 0; x < CANVAS.width; x += SIZE) {
-        ++J;
-    }
-    for (var y = 0; y < CANVAS.height; y += SIZE) {
-        ++I;
-    }
-    N = J * I;
-    GRID = {
-        x: new Float32Array(N),
-        y: new Float32Array(N),
-        color: new Array(N),
-    };
-    TABLE = new Array(N);
-    for (var i = 0; i < N; ++i) {
-        TABLE[i] = [];
-    }
-    var index = 0;
-    for (var y = 0; y < I; ++y) {
-        for (var x = 0; x < J; ++x) {
-            GRID.x[index] = x * SIZE;
-            GRID.y[index++] = y * SIZE;
-        }
-    }
-    for (var i = 0; i < M; ++i) {
-        CIRCLES[i] = {
-            x: Math.random() * CANVAS.width,
-            y: Math.random() * CANVAS.height,
-            color: colorToHex({
-                red: Math.floor(Math.random() * 256.0),
-                green: Math.floor(Math.random() * 256.0),
-                blue: Math.floor(Math.random() * 256.0),
-                alpha: 64,
-            }),
-            collided: false,
-        };
-        COLLISIONS[i] = [];
-    }
-}
-
 window.onload = function() {
     CANVAS = document.getElementById("canvas");
     CTX = CANVAS.getContext("2d");
     CTX.imageSmoothingEnabled = false;
     CTX.strokeStyle = "hsl(0, 0%, 20%)";
+    {
+        for (var x = 0; x < CANVAS.width; x += SIZE) {
+            ++J;
+        }
+        for (var y = 0; y < CANVAS.height; y += SIZE) {
+            ++I;
+        }
+        N = J * I;
+    }
     init();
-    loop();
+    loop(0);
 };
