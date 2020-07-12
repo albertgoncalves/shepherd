@@ -1,6 +1,6 @@
 "use strict";
 
-var CANVAS, CTX, HALF_HEIGHT, LOWER, UPPER;
+var CANVAS, CTX, LOWER, UPPER;
 
 var COLOR = "hsl(0, 0%, 90%)";
 var PI_2 = Math.PI * 2;
@@ -73,12 +73,12 @@ window.onload = function() {
     CTX.strokeStyle = COLOR;
     CTX.fillStyle = COLOR;
     CTX.lineWidth = 1;
-    HALF_HEIGHT = CANVAS.height / 2.0;
     LOWER = CANVAS.height / 10.0;
     UPPER = CANVAS.height - LOWER;
+    var halfHeight = CANVAS.height / 2.0;
     for (var i = 0; i < N; ++i) {
         POINTS.x[i] = CANVAS.width * ((i + 0.5) / N);
-        POINTS.y[i] = HALF_HEIGHT;
+        POINTS.y[i] = halfHeight;
         POINTS.speed[i] = 0.0;
         POINTS.neighborSpeed[i] = 0.0;
     }
