@@ -58,10 +58,10 @@ function ptDivFl(point, float) {
 }
 
 function updateSplines() {
-    for (var i = 0; i < M; i++) {
+    for (var i = 0; i < M; ++i) {
         DISTANCES[i] = Math.pow(distance(POINTS[i], POINTS[i + 1]), ALPHA);
     }
-    for (var i = 0; i < R; i++) {
+    for (var i = 0; i < R; ++i) {
         var p0 = POINTS[i];
         var p1 = POINTS[i + 1];
         var p2 = POINTS[i + 2];
@@ -85,7 +85,7 @@ function updateSplines() {
         var p1SubP2 = ptSubPt(p1, p2);
         var sA = ptAddPt(ptAddPt(ptMulFl(p1SubP2, 2), m1), m2);
         var sB = ptSubPt(ptSubPt(ptSubPt(ptMulFl(p1SubP2, -3), m1), m1), m2);
-        for (var j = 0; j < RESOLUTION; j++) {
+        for (var j = 0; j < RESOLUTION; ++j) {
             SPLINES[j + OFFSETS[i]] = ptAddPt(
                 ptAddPt(ptAddPt(ptMulFl(sA, TS[j].t3), ptMulFl(sB, TS[j].t2)),
                         ptMulFl(m1, TS[j].t)),
@@ -96,7 +96,7 @@ function updateSplines() {
 
 function loop() {
     if (RESET < ELAPSED) {
-        for (var i = 0; i < N; i++) {
+        for (var i = 0; i < N; ++i) {
             POINTS[i] = {
                 x: Math.random() * CANVAS.width,
                 y: Math.random() * CANVAS.height,
@@ -104,7 +104,7 @@ function loop() {
         }
         ELAPSED = 0;
     } else {
-        for (var i = 0; i < N; i++) {
+        for (var i = 0; i < N; ++i) {
             POINTS[i].x += (Math.random() * MAGNITUDE) - CENTER;
             POINTS[i].y += (Math.random() * MAGNITUDE) - CENTER;
         }
@@ -113,13 +113,13 @@ function loop() {
     updateSplines();
     CTX.clearRect(0, 0, CANVAS.width, CANVAS.height);
     CTX.beginPath();
-    for (var i = 0; i < Q; i++) {
+    for (var i = 0; i < Q; ++i) {
         CTX.moveTo(SPLINES[i].x, SPLINES[i].y);
         CTX.lineTo(SPLINES[i + 1].x, SPLINES[i + 1].y);
     }
     CTX.stroke();
     CTX.beginPath();
-    for (var i = 0; i < N; i++) {
+    for (var i = 0; i < N; ++i) {
         var x = POINTS[i].x;
         var y = POINTS[i].y;
         CTX.moveTo(x + RADIUS, y);
@@ -137,7 +137,7 @@ window.onload = function() {
     CTX.fillStyle = "hsla(175, 65%, 50%, 0.35)";
     CTX.lineWidth = 4;
     CTX.lineCap = "round";
-    for (var i = 0; i < RESOLUTION; i++) {
+    for (var i = 0; i < RESOLUTION; ++i) {
         var t = i / RESOLUTION;
         var t2 = t * t;
         TS[i] = {
@@ -146,7 +146,7 @@ window.onload = function() {
             t3: t2 * t,
         };
     }
-    for (var i = 0; i < R; i++) {
+    for (var i = 0; i < R; ++i) {
         OFFSETS[i] = i * RESOLUTION;
     }
     loop();

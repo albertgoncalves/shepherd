@@ -13,8 +13,8 @@ var ELAPSED = RESET + 1;
 
 function loop() {
     if (RESET < ELAPSED) {
-        for (var i = 0; i < N; i++) {
-            for (var j = 0; j < N; j++) {
+        for (var i = 0; i < N; ++i) {
+            for (var j = 0; j < N; ++j) {
                 var k = j + (i * N);
                 CIRCLES[k].x = DELTA + (SHORT_SIDE * ((i + 0.5) / N));
                 CIRCLES[k].y = SHORT_SIDE * ((j + 0.5) / N);
@@ -30,12 +30,12 @@ function loop() {
     }
     CTX.clearRect(0, 0, CANVAS.width, CANVAS.height);
     CTX.beginPath();
-    for (var i = 0; i < M; i++) {
+    for (var i = 0; i < M; ++i) {
         var circle = CIRCLES[i];
         var x = 0;
         var y = 0;
         var norm = 0;
-        for (var j = 0; j < circle.neighbors.length; j++) {
+        for (var j = 0; j < circle.neighbors.length; ++j) {
             var k = circle.neighbors[j];
             x += CIRCLES[k].x * CIRCLES[k].weight;
             y += CIRCLES[k].y * CIRCLES[k].weight;
@@ -57,14 +57,14 @@ function loop() {
     }
     CTX.fill();
     CTX.beginPath();
-    for (var i = 0; i < N; i++) {
-        for (var j = 1; j < N; j++) {
+    for (var i = 0; i < N; ++i) {
+        for (var j = 1; j < N; ++j) {
             var left = i + ((j - 1) * N);
             var right = i + (j * N);
             CTX.moveTo(CIRCLES[left].x, CIRCLES[left].y);
             CTX.lineTo(CIRCLES[right].x, CIRCLES[right].y);
         }
-        for (var j = 1; j < N; j++) {
+        for (var j = 1; j < N; ++j) {
             var left = (j - 1) + (i * N);
             var right = j + (i * N);
             CTX.moveTo(CIRCLES[left].x, CIRCLES[left].y);
@@ -89,8 +89,8 @@ window.onload = function() {
         SHORT_SIDE = CANVAS.height;
         DELTA = (CANVAS.width - CANVAS.height) / 2;
     }
-    for (var i = 0; i < N; i++) {
-        for (var j = 0; j < N; j++) {
+    for (var i = 0; i < N; ++i) {
+        for (var j = 0; j < N; ++j) {
             var neighbors = [];
             if (j !== 0) {
                 neighbors.push(j - 1 + (i * N));

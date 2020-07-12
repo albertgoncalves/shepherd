@@ -108,7 +108,7 @@ function drawTree(tree) {
 
 function loop() {
     if (RESET < ELAPSED) {
-        for (var i = 0; i < N; i++) {
+        for (var i = 0; i < N; ++i) {
             POINTS[i] = {
                 x: Math.random() * CANVAS.width,
                 y: Math.random() * CANVAS.height,
@@ -120,7 +120,7 @@ function loop() {
     } else {
         RECTANGLE.x += (Math.random() * MAGNITUDE) - SCALE;
         RECTANGLE.y += (Math.random() * MAGNITUDE) - SCALE;
-        for (var i = 0; i < N; i++) {
+        for (var i = 0; i < N; ++i) {
             POINTS[i].x += (Math.random() * MAGNITUDE) - SCALE;
             POINTS[i].y += (Math.random() * MAGNITUDE) - SCALE;
         }
@@ -144,7 +144,7 @@ function loop() {
     {
         var n = neighbors.length;
         CTX.beginPath();
-        for (var i = 0; i < n; i++) {
+        for (var i = 0; i < n; ++i) {
             var point = neighbors[i];
             CTX.moveTo(point.x + RADIUS_2, point.y);
             CTX.arc(point.x, point.y, RADIUS_2, 0, PI_2);
@@ -154,7 +154,7 @@ function loop() {
     }
     {
         CTX.beginPath();
-        for (var i = 0; i < N; i++) {
+        for (var i = 0; i < N; ++i) {
             var point = POINTS[i];
             CTX.moveTo(point.x + RADIUS, point.y);
             CTX.arc(point.x, point.y, RADIUS, 0, PI_2);

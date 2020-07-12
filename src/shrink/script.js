@@ -17,11 +17,11 @@ var ELAPSED = RESET + 1;
 
 function loop() {
     if (RESET < ELAPSED) {
-        for (var i = 0; i < N; i++) {
+        for (var i = 0; i < N; ++i) {
             ANGLES[i] = Math.random() * PI_2;
         }
         ANGLES.sort();
-        for (var i = 0; i < N; i++) {
+        for (var i = 0; i < N; ++i) {
             XS[i] = (Math.cos(ANGLES[i]) * SPREAD) + HALF_WIDTH;
             YS[i] = (Math.sin(ANGLES[i]) * SPREAD) + HALF_HEIGHT;
         }
@@ -31,7 +31,7 @@ function loop() {
     }
     CTX.clearRect(0, 0, CANVAS.width, CANVAS.height);
     CTX.beginPath();
-    for (var i = 0; i < N; i++) {
+    for (var i = 0; i < N; ++i) {
         var left = i === 0 ? M : i - 1;
         var right = i === M ? 0 : i + 1;
         XS[i] += (((XS[left] + XS[right]) / 2) - XS[i]) / DRAG;
@@ -41,7 +41,7 @@ function loop() {
     }
     CTX.stroke();
     CTX.beginPath();
-    for (var i = 0; i < N; i++) {
+    for (var i = 0; i < N; ++i) {
         var x = XS[i];
         var y = YS[i];
         CTX.moveTo(x + RADIUS, y);

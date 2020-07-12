@@ -55,7 +55,7 @@ function init() {
     M = N * 2;
     EDGES = new Array(MEMORY);
     NODES = new Array(MEMORY);
-    for (var i = 0; i < N; i++) {
+    for (var i = 0; i < N; ++i) {
         var j = i * 2;
         var k = j + 1;
         NODES[j] = {
@@ -88,7 +88,7 @@ function insert() {
             },
         };
         var points = [];
-        for (var i = 0; i < N; i++) {
+        for (var i = 0; i < N; ++i) {
             var edge = EDGES[i];
             var point = pointOfIntersection(candidate.a,
                                             candidate.b,
@@ -199,13 +199,13 @@ function insert() {
 
 function update() {
     var start = START * 2;
-    for (var i = start; i < M; i++) {
+    for (var i = start; i < M; ++i) {
         var node = NODES[i];
         var n = node.neighbors.length;
         var m = 0;
         var x = 0;
         var y = 0;
-        for (var j = 0; j < n; j++) {
+        for (var j = 0; j < n; ++j) {
             var neighbor = NODES[node.neighbors[j]];
             if (CUTOFF < squaredDistance(node, neighbor)) {
                 m += 1;
@@ -221,7 +221,7 @@ function update() {
             node.yNext = node.y;
         }
     }
-    for (var i = start; i < M; i++) {
+    for (var i = start; i < M; ++i) {
         var node = NODES[i];
         node.x = node.xNext;
         node.y = node.yNext;
@@ -271,7 +271,7 @@ function draw() {
     var n = N - 1;
     {
         CTX.beginPath();
-        for (var i = 0; i < n; i++) {
+        for (var i = 0; i < n; ++i) {
             var edge = EDGES[i];
             CTX.moveTo(NODES[edge.a].x, NODES[edge.a].y);
             CTX.lineTo(NODES[edge.b].x, NODES[edge.b].y);

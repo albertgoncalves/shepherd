@@ -30,7 +30,7 @@ function angle(aPoint, bPoint, cPoint) {
 
 function loop() {
     if (RESET < ELAPSED) {
-        for (var i = 0; i < N; i++) {
+        for (var i = 0; i < N; ++i) {
             POINTS[i] = {
                 angle: Math.random() * PI_2,
             };
@@ -38,20 +38,20 @@ function loop() {
         POINTS.sort(function(a, b) {
             return a.angle - b.angle;
         });
-        for (var i = 0; i < N; i++) {
+        for (var i = 0; i < N; ++i) {
             var point = POINTS[i];
             point.x = (Math.cos(point.angle) * SPREAD) + HALF_WIDTH;
             point.y = (Math.sin(point.angle) * SPREAD) + HALF_HEIGHT;
         }
         var n = N - 1;
-        for (var i = 0; i < N; i++) {
+        for (var i = 0; i < N; ++i) {
             var point = POINTS[i];
             point.left = POINTS[i === 0 ? n : i - 1];
             point.right = POINTS[i === n ? 0 : i + 1];
         }
         ELAPSED = 0;
     } else {
-        for (var i = 0; i < N; i++) {
+        for (var i = 0; i < N; ++i) {
             var point = POINTS[i];
             point.x += (Math.random() * MAGNITUDE) - SCALE;
             point.y += (Math.random() * MAGNITUDE) - SCALE;
@@ -61,7 +61,7 @@ function loop() {
     CTX.clearRect(0, 0, CANVAS.width, CANVAS.height);
     {
         CTX.beginPath();
-        for (var i = 0; i < N; i++) {
+        for (var i = 0; i < N; ++i) {
             var point = POINTS[i];
             var theta = angle(point, point.left, point.right) * K;
             CTX.moveTo(point.x + theta, point.y);
@@ -72,7 +72,7 @@ function loop() {
     }
     {
         CTX.beginPath();
-        for (var i = 0; i < N; i++) {
+        for (var i = 0; i < N; ++i) {
             var point = POINTS[i];
             CTX.moveTo(point.x + RADIUS, point.y);
             CTX.arc(point.x, point.y, RADIUS, 0, PI_2);
@@ -82,7 +82,7 @@ function loop() {
     }
     {
         CTX.beginPath();
-        for (var i = 0; i < N; i++) {
+        for (var i = 0; i < N; ++i) {
             var point = POINTS[i];
             CTX.moveTo(point.left.x, point.left.y);
             CTX.lineTo(point.x, point.y);

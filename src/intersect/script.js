@@ -85,7 +85,7 @@ function pointOfIntersection(aEdge, bEdge) {
 
 function loop() {
     if (RESET < ELAPSED) {
-        for (var i = 0; i < N; i++) {
+        for (var i = 0; i < N; ++i) {
             EDGES[i] = {
                 a: {
                     x: Math.random() * CANVAS.width,
@@ -103,7 +103,7 @@ function loop() {
         };
         ELAPSED = 0;
     } else {
-        for (var i = 0; i < N; i++) {
+        for (var i = 0; i < N; ++i) {
             var edge = EDGES[i];
             edge.a.x += (Math.random() * MAGNITUDE) - CENTER;
             edge.a.y += (Math.random() * MAGNITUDE) - CENTER;
@@ -117,7 +117,7 @@ function loop() {
         ELAPSED += 1;
     }
     var points = [];
-    for (var i = 0; i < N; i++) {
+    for (var i = 0; i < N; ++i) {
         var edge = EDGES[i];
         var point = pointOfIntersection(CANDIDATE, edge);
         if (point !== null) {
@@ -135,7 +135,7 @@ function loop() {
     }
     {
         CTX.beginPath();
-        for (var i = 0; i < N; i++) {
+        for (var i = 0; i < N; ++i) {
             drawEdge(EDGES[i]);
         }
         CTX.strokeStyle = WHITE;
@@ -150,7 +150,7 @@ function loop() {
     {
         var n = points.length;
         CTX.beginPath();
-        for (var i = 0; i < n; i++) {
+        for (var i = 0; i < n; ++i) {
             drawArc(points[i]);
         }
         CTX.fillStyle = WHITE;

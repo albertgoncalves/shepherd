@@ -9,7 +9,7 @@ var ELAPSED = RESET + 1;
 
 function loop() {
     if (RESET < ELAPSED) {
-        for (var i = 0; i < N; i++) {
+        for (var i = 0; i < N; ++i) {
             XS[i] = CANVAS.width * ((i + 0.5) / N);
             YS[i] = HALF_HEIGHT;
             SPEEDS_IND[i] = 0;
@@ -20,10 +20,10 @@ function loop() {
     } else {
         ELAPSED += 1;
     }
-    for (var i = 0; i < N; i++) {
+    for (var i = 0; i < N; ++i) {
         SPEEDS_IND[i] += (Math.random() * MAGNITUDE) - CENTER;
         var norm = 0;
-        for (var j = 0; j <= i; j++) {
+        for (var j = 0; j <= i; ++j) {
             SPEEDS_AGG[i] += SPEEDS_IND[j];
             norm += 1;
         }
@@ -36,7 +36,7 @@ function loop() {
             SPEEDS_AGG[i] = 0;
         }
     }
-    for (var i = 0; i < N; i++) {
+    for (var i = 0; i < N; ++i) {
         CTX.fillRect(XS[i], YS[i], 1, 1);
     }
     requestAnimationFrame(loop);

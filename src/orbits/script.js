@@ -12,8 +12,8 @@ var K = 0.025;
 var L = 10;
 
 function loop() {
-    for (var i = 0; i < N; i++) {
-        for (var j = i + 1; j < N; j++) {
+    for (var i = 0; i < N; ++i) {
+        for (var j = i + 1; j < N; ++j) {
             if (XS[i] < XS[j]) {
                 XS_SPEED[i] += K;
                 XS_SPEED[j] -= K;
@@ -30,13 +30,13 @@ function loop() {
             }
         }
     }
-    for (var i = 0; i < N; i++) {
+    for (var i = 0; i < N; ++i) {
         XS[i] += XS_SPEED[i];
         YS[i] += YS_SPEED[i];
     }
     CTX.clearRect(0, 0, CANVAS.width, CANVAS.height);
     CTX.beginPath();
-    for (var i = 0; i < N; i++) {
+    for (var i = 0; i < N; ++i) {
         var x = XS[i];
         var y = YS[i];
         CTX.moveTo(x, y);
@@ -51,7 +51,7 @@ window.onload = function() {
     CTX = CANVAS.getContext("2d");
     CTX.imageSmoothingEnabled = false;
     CTX.strokeStyle = COLOR;
-    for (var i = 0; i < N; i++) {
+    for (var i = 0; i < N; ++i) {
         XS[i] = Math.random() * CANVAS.width;
         YS[i] = Math.random() * CANVAS.height;
         XS_SPEED[i] = 0;

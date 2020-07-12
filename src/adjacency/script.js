@@ -25,7 +25,7 @@ function loop() {
         N = START;
         var n = N - 1;
         NODES = new Array(STOP);
-        for (var i = 0; i < N; i++) {
+        for (var i = 0; i < N; ++i) {
             NODES[i] = {
                 x: Math.random() * CANVAS.width,
                 y: Math.random() * CANVAS.height,
@@ -35,14 +35,14 @@ function loop() {
         }
         ELAPSED = 0;
     } else {
-        for (var i = 0; i < N; i++) {
+        for (var i = 0; i < N; ++i) {
             NODES[i].x += (Math.random() * MAGNITUDE) - CENTER;
             NODES[i].y += (Math.random() * MAGNITUDE) - CENTER;
         }
         if ((ELAPSED % FRAMES === 0) && (N < STOP)) {
             var left = 0;
             var value = 0;
-            for (var i = 0; i < N; i++) {
+            for (var i = 0; i < N; ++i) {
                 var a = NODES[i];
                 var b = NODES[NODES[i].right];
                 var x = a.x - b.x;
@@ -68,13 +68,13 @@ function loop() {
     }
     CTX.clearRect(0, 0, CANVAS.width, CANVAS.height);
     CTX.beginPath();
-    for (var i = 0; i < N; i++) {
+    for (var i = 0; i < N; ++i) {
         CTX.moveTo(NODES[i].x, NODES[i].y);
         CTX.lineTo(NODES[NODES[i].left].x, NODES[NODES[i].left].y);
     }
     CTX.stroke();
     CTX.beginPath();
-    for (var i = 0; i < N; i++) {
+    for (var i = 0; i < N; ++i) {
         var x = NODES[i].x;
         var y = NODES[i].y;
         CTX.moveTo(x + RADIUS, y);

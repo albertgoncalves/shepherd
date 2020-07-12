@@ -109,7 +109,7 @@ function loop() {
             x: Math.random() * CANVAS.width,
             y: Math.random() * CANVAS.height,
         };
-        for (var i = 0; i < N; i++) {
+        for (var i = 0; i < N; ++i) {
             POINTS[i] = {
                 x: Math.random() * CANVAS.width,
                 y: Math.random() * CANVAS.height,
@@ -119,7 +119,7 @@ function loop() {
     } else {
         POINT.x += (Math.random() * MAGNITUDE) - SCALE;
         POINT.y += (Math.random() * MAGNITUDE) - SCALE;
-        for (var i = 0; i < N; i++) {
+        for (var i = 0; i < N; ++i) {
             POINTS[i].x += (Math.random() * MAGNITUDE) - SCALE;
             POINTS[i].y += (Math.random() * MAGNITUDE) - SCALE;
         }
@@ -146,7 +146,7 @@ function loop() {
     }
     {
         CTX.beginPath();
-        for (var i = 0; i < N; i++) {
+        for (var i = 0; i < N; ++i) {
             var point = POINTS[i];
             CTX.moveTo(point.x + RADIUS, point.y);
             CTX.arc(point.x, point.y, RADIUS, 0, PI_2);

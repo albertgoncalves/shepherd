@@ -29,11 +29,11 @@ function distance(i, j) {
 
 function loop() {
     if (RESET < ELAPSED) {
-        for (var i = 0; i < N; i++) {
+        for (var i = 0; i < N; ++i) {
             ANGLES[i] = Math.random() * PI_2;
         }
         ANGLES.sort();
-        for (var i = 0; i < N; i++) {
+        for (var i = 0; i < N; ++i) {
             XS[i] = (Math.cos(ANGLES[i]) * SPREAD) + HALF_WIDTH;
             YS[i] = (Math.sin(ANGLES[i]) * SPREAD) + HALF_HEIGHT;
             XS_NEXT[i] = 0;
@@ -44,11 +44,11 @@ function loop() {
     } else {
         ELAPSED += 1;
     }
-    for (var i = 0; i < N; i++) {
+    for (var i = 0; i < N; ++i) {
         XS_NEXT[i] = 0;
         YS_NEXT[i] = 0;
         NORMS[i] = 0;
-        for (var j = i + 1; j < N; j++) {
+        for (var j = i + 1; j < N; ++j) {
             if (distance(i, j) < PROXIMITY) {
                 XS_NEXT[i] += (XS[i] - XS[j]);
                 YS_NEXT[i] += (YS[i] - YS[j]);
@@ -58,7 +58,7 @@ function loop() {
             }
         }
     }
-    for (var i = 0; i < N; i++) {
+    for (var i = 0; i < N; ++i) {
         if (0 < NORMS[i]) {
             XS[i] += (XS_NEXT[i] / NORMS[i]) / DRAG;
             YS[i] += (YS_NEXT[i] / NORMS[i]) / DRAG;
@@ -69,14 +69,14 @@ function loop() {
     }
     CTX.clearRect(0, 0, CANVAS.width, CANVAS.height);
     CTX.beginPath();
-    for (var i = 0; i < N; i++) {
+    for (var i = 0; i < N; ++i) {
         var j = i === 0 ? M : i - 1;
         CTX.moveTo(XS[j], YS[j]);
         CTX.lineTo(XS[i], YS[i]);
     }
     CTX.stroke();
     CTX.beginPath();
-    for (var i = 0; i < N; i++) {
+    for (var i = 0; i < N; ++i) {
         var x = XS[i];
         var y = YS[i];
         CTX.moveTo(x + RADIUS, y);

@@ -33,11 +33,11 @@ function loop() {
     } else {
         ELAPSED += 1;
     }
-    for (var i = 1; i < N; i++) {
+    for (var i = 1; i < N; ++i) {
         var x = XS[i];
         var xPrev = XS[i - 1];
         var offset = (CANVAS.width - x) / CANVAS.width;
-        for (var j = 0; j < M; j++) {
+        for (var j = 0; j < M; ++j) {
             var sample = randomLerp(
                 {
                     x: x + randomOffset(randomError(offset)),
@@ -61,7 +61,7 @@ window.onload = function() {
     HALF_HEIGHT = CANVAS.height / 2;
     MAGNITUDE = CANVAS.height;
     MAGNITUDE_CENTER = MAGNITUDE / 2;
-    for (var i = 0; i < N; i++) {
+    for (var i = 0; i < N; ++i) {
         XS[i] = CANVAS.width * ((i + 1) / N);
     }
     loop();
