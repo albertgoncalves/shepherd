@@ -29,6 +29,7 @@
 !orbits/
 !rect_circle/
 !shrink/
+!spatial_hash/
 !splines/
 !to_from/
 !velocity/
