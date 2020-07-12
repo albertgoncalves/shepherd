@@ -9,9 +9,13 @@ var COLORS = new Array(N);
 var SCALE = 1.75;
 var HALF_SCALE = SCALE / 2.0;
 
+function numberToHex(x) {
+    return x.toString(16).padStart(2, "0");
+}
+
 function colorToHex(color) {
-    return "#" + color.red.toString(16) + color.green.toString(16) +
-        color.blue.toString(16) + color.alpha.toString(16);
+    return "#" + numberToHex(color.red) + numberToHex(color.green) +
+        numberToHex(color.blue) + numberToHex(color.alpha);
 }
 
 function lerp(a, b, t) {
