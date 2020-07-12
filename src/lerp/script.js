@@ -78,18 +78,6 @@ function initCircles() {
 }
 
 function loop() {
-    CTX.clearRect(0, 0, CANVAS.width, CANVAS.height);
-    for (var i = 2; i < N; ++i) {
-        var xLeft = Math.min(CIRCLES[0].x, CIRCLES[1].x);
-        var xRight = Math.max(CIRCLES[0].x, CIRCLES[1].x);
-        var t = (CIRCLES[i].x - xLeft) / (xRight - xLeft);
-        if (t < 0.0) {
-            t = 0.0;
-        } else if (1.0 < t) {
-            t = 1.0;
-        }
-        COLORS[i] = lerpColor(COLORS[0], COLORS[1], t);
-    }
     for (var i = 0; i < N; ++i) {
         var circle = CIRCLES[i];
         circle.x += (Math.random() * SCALE) - HALF_SCALE;
@@ -101,10 +89,22 @@ function loop() {
             break;
         }
     }
+    for (var i = 2; i < N; ++i) {
+        var xLeft = Math.min(CIRCLES[0].x, CIRCLES[1].x);
+        var xRight = Math.max(CIRCLES[0].x, CIRCLES[1].x);
+        var t = (CIRCLES[i].x - xLeft) / (xRight - xLeft);
+        if (t < 0.0) {
+            t = 0.0;
+        } else if (1.0 < t) {
+            t = 1.0;
+        }
+        COLORS[i] = lerpColor(COLORS[0], COLORS[1], t);
+    }
+    CTX.clearRect(0, 0, CANVAS.width, CANVAS.height);
     for (var i = 0; i < N; ++i) {
         var circle = CIRCLES[i];
-        CTX.beginPath();
         CTX.fillStyle = colorToHex(COLORS[i]);
+        CTX.beginPath();
         CTX.moveTo(circle.x + circle.radius, circle.y);
         CTX.arc(circle.x, circle.y, circle.radius, 0, PI_2);
         CTX.fill();
