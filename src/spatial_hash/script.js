@@ -135,7 +135,7 @@ function loop() {
     }
     {
         CTX.lineWidth = 1;
-        CTX.setLineDash([4, 8]);
+        CTX.setLineDash([2, 8]);
         CTX.beginPath();
         for (var x = SIZE; x < CANVAS.width; x += SIZE) {
             CTX.moveTo(x, 0);
@@ -219,7 +219,7 @@ window.onload = function() {
     CANVAS = document.getElementById("canvas");
     CTX = CANVAS.getContext("2d");
     CTX.imageSmoothingEnabled = false;
-    CTX.strokeStyle = "hsl(0, 0%, 90%)";
+    CTX.strokeStyle = "hsl(0, 0%, 20%)";
     init();
     loop();
 };
