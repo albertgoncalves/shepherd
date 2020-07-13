@@ -69,12 +69,6 @@ function getDistanceSquared(a, b) {
 }
 
 function init() {
-    GRID = {
-        x: new Float32Array(N),
-        y: new Float32Array(N),
-        color: new Array(N),
-    };
-    TABLE = new Array(N);
     for (var i = 0; i < N; ++i) {
         TABLE[i] = [];
     }
@@ -99,6 +93,20 @@ function init() {
         };
         COLLISIONS[i] = [];
     }
+}
+
+function testIndices(a, b) {
+    var tested = TESTED[a];
+    for (var l = tested.length - 1; 0 <= l; --l) {
+        if (b === tested[l]) {
+            return;
+        }
+    }
+    var distanceSquared = getDistanceSquared(CIRCLES[a], CIRCLES[b]);
+    if (distanceSquared < RADIUS_2_SQUARED) {
+        COLLISIONS[a].push(b);
+    }
+    tested.push(b);
 }
 
 function loop(t) {
@@ -136,20 +144,7 @@ function loop(t) {
         if (1 < n) {
             for (var j = 0; j < n; ++j) {
                 for (var k = j + 1; k < n; ++k) {
-                    var a = indices[j];
-                    var b = indices[k];
-                    var tested = TESTED[a];
-                    for (var l = tested.length - 1; 0 <= l; --l) {
-                        if (b === tested[l]) {
-                            continue;
-                        }
-                    }
-                    var distanceSquared =
-                        getDistanceSquared(CIRCLES[a], CIRCLES[b]);
-                    if (distanceSquared < RADIUS_2_SQUARED) {
-                        COLLISIONS[a].push(b);
-                    }
-                    tested.push(b);
+                    testIndices(indices[j], indices[k]);
                 }
             }
         }
@@ -227,6 +222,11 @@ window.onload = function() {
             ++I;
         }
         N = J * I;
+        GRID = {
+            x: new Float32Array(N),
+            y: new Float32Array(N),
+        };
+        TABLE = new Array(N);
     }
     init();
     loop(0);
