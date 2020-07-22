@@ -34,9 +34,9 @@ window.onload = function() {
     }
     gl.useProgram(program);
     var data = new Float32Array([
-        -0.85, //     <- x
-        -0.85, //  1  <- y
-        0.0,   // ___ <- ... opacity?
+        -0.85, //     <- `x`
+        -0.85, //  1  <- `y`
+        0.0,   // ___ <- ... `opacity` ?
         0.85,  //
         -0.85, //  2
         0.0,   // ___
