@@ -3,7 +3,6 @@
 !shell.nix
 !.shellhook
 !src/
-!client/
 !.tidyrc
 !.clang-format
 !.jshintrc
@@ -11,9 +10,8 @@
 !*.css
 !js/
 !*.js
-!server/
-!*.go
-!main
+!shader.*
+!codegen
 !adjacency/
 !curvature/
 !expand/
@@ -33,4 +31,5 @@
 !splines/
 !to_from/
 !velocity/
+!webgl_hello_world/
 !webs/

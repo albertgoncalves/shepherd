@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title></title>
+        <meta charset="utf-8">
+        <link rel="stylesheet" href="../../style.css">
+        <link rel="shortcut icon" href="#">
+    </head>
+    <body>
+        <script id="vertex-shader" type="x-shader/x-vertex">
+            attribute vec3 position; varying vec4 color; void main() { gl_Position = vec4(position, 1.0); color = (gl_Position * 0.5) + 0.5; }
+        </script>
+        <script id="fragment-shader" type="x-shader/x-fragment">
+            precision mediump float; varying vec4 color; void main() { gl_FragColor = color; }
+        </script>
+        <div class="center">
+            <a href="../../index.html">back</a>
+        </div>
+        <canvas id="canvas" height="550" width="900" style="background-color: hsl(0, 0%, 90%)"></canvas>
+        <script src="script.js"></script>
+    </body>
+</html>

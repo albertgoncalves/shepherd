@@ -18,6 +18,7 @@ fi
 
 sedtrailing () {
     sed -i 's/[ \t]\+$//' "$1"
+    sed -i '/^$/d' "$1"
 }
 
 export -f sedtrailing
