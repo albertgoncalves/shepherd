@@ -7,15 +7,18 @@
 var GL;
 
 var DATA = new Float32Array([
-    -0.85, //     <- `x`
-    -0.85, //  1  <- `y`
-    0.0,   // ___ <- ... `opacity` ?
-    0.85,  //
-    -0.85, //  2
-    0.0,   // ___
-    0.0,   //
-    0.85,  //  3
-    0.0,   // ___
+    -0.9,
+    -0.9,
+    0.9,
+    -0.9,
+    0.0,
+    0.0,
+    -0.9,
+    0.0,
+    0.9,
+    0.0,
+    0.0,
+    0.9,
 ]);
 var SCALE = 0.0035;
 var HALF_SCALE = SCALE / 2.0;
@@ -35,18 +38,15 @@ function compileShader(shader, source) {
 }
 
 function update() {
-    DATA[0] += (Math.random() * SCALE) - HALF_SCALE;
-    DATA[1] += (Math.random() * SCALE) - HALF_SCALE;
-    DATA[3] += (Math.random() * SCALE) - HALF_SCALE;
-    DATA[4] += (Math.random() * SCALE) - HALF_SCALE;
-    DATA[6] += (Math.random() * SCALE) - HALF_SCALE;
-    DATA[7] += (Math.random() * SCALE) - HALF_SCALE;
+    for (var i = DATA.length - 1; 0 <= i; --i) {
+        DATA[i] += (Math.random() * SCALE) - HALF_SCALE;
+    }
 }
 
 function draw() {
     GL.bufferData(GL.ARRAY_BUFFER, DATA, GL.STATIC_DRAW);
     GL.clear(GL.COLOR_BUFFER_BIT);
-    GL.drawArrays(GL.TRIANGLES, 0, 3);
+    GL.drawArrays(GL.TRIANGLES, 0, 6);
 }
 
 window.onload = function() {
@@ -73,7 +73,7 @@ window.onload = function() {
     var attribute = GL.getAttribLocation(program, "position");
     GL.enableVertexAttribArray(attribute);
     GL.clearColor(0.9, 0.9, 0.9, 1);
-    GL.vertexAttribPointer(attribute, 3, GL.FLOAT, false, 0, 0);
+    GL.vertexAttribPointer(attribute, 2, GL.FLOAT, false, 0, 0);
     function loop() {
         update();
         draw();
