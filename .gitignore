@@ -10,8 +10,7 @@
 !*.css
 !js/
 !*.js
-!shader.*
-!codegen
+!*.png
 !adjacency/
 !curvature/
 !expand/
@@ -29,6 +28,7 @@
 !shrink/
 !spatial_hash/
 !splines/
+!sprites/
 !to_from/
 !velocity/
 !webs/
