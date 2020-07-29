@@ -1,33 +1,42 @@
 "use strict";
 
+var SPRITE_COLS = 6;
+var SPRITE_WIDTH = 24;
+var SPRITE_HEIGHT = 16;
+var SPRITE_OFFSET_IDLE = SPRITE_WIDTH * 3;
+var SPRITE_OFFSET_RUNNING = SPRITE_HEIGHT * 2;
+var KEY_CODE = 74;
+var FRAME_SPEED = 72.0;
+
 function update(sprite, t) {
-    if (sprite.running) {
-        sprite.index = (Math.floor(t / 72) % sprite.cols) * sprite.width;
-    }
+    sprite.index = (Math.floor(t / FRAME_SPEED) % SPRITE_COLS) * SPRITE_WIDTH;
 }
 
-function draw(canvas, ctx, sprite) {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+function draw(ctx, sprite) {
+    ctx.clearRect(sprite.position.x,
+                  sprite.position.y,
+                  SPRITE_WIDTH,
+                  SPRITE_HEIGHT);
     if (sprite.running) {
         ctx.drawImage(sprite.frames,
                       sprite.index,
-                      sprite.offsetRunning,
-                      sprite.width,
-                      sprite.height,
+                      SPRITE_OFFSET_RUNNING,
+                      SPRITE_WIDTH,
+                      SPRITE_HEIGHT,
                       sprite.position.x,
                       sprite.position.y,
-                      sprite.width,
-                      sprite.height);
+                      SPRITE_WIDTH,
+                      SPRITE_HEIGHT);
     } else {
         ctx.drawImage(sprite.frames,
-                      sprite.offsetIdle,
+                      SPRITE_OFFSET_IDLE,
                       0,
-                      sprite.width,
-                      sprite.height,
+                      SPRITE_WIDTH,
+                      SPRITE_HEIGHT,
                       sprite.position.x,
                       sprite.position.y,
-                      sprite.width,
-                      sprite.height);
+                      SPRITE_WIDTH,
+                      SPRITE_HEIGHT);
     }
 }
 
@@ -37,36 +46,26 @@ window.onload = function() {
     ctx.imageSmoothingEnabled = false;
     var sprite = {
         frames: document.getElementById("sprites"),
-        cols: 6,
-        rows: 3,
-        width: 24,
-        height: 16,
-        offsetIdle: undefined,
-        offsetRunning: undefined,
         position: {
-            x: undefined,
-            y: undefined,
+            x: Math.floor((canvas.width / 2) - (SPRITE_WIDTH / 2)),
+            y: Math.floor((canvas.height / 2) - (SPRITE_HEIGHT / 2)),
         },
         running: false,
         index: 0,
     };
-    sprite.offsetIdle = sprite.width * 3;
-    sprite.offsetRunning = sprite.height * 2;
-    sprite.position.x = Math.floor((canvas.width / 2) - (sprite.width / 2));
-    sprite.position.y = Math.floor((canvas.height / 2) - (sprite.height / 2));
     window.addEventListener("keydown", function(event) {
-        if (event.keyCode === 74) {
+        if (event.keyCode === KEY_CODE) {
             sprite.running = true;
         }
     });
     window.addEventListener("keyup", function(event) {
-        if (event.keyCode === 74) {
+        if (event.keyCode === KEY_CODE) {
             sprite.running = false;
         }
     });
     function loop(t) {
         update(sprite, t);
-        draw(canvas, ctx, sprite);
+        draw(ctx, sprite);
         requestAnimationFrame(loop);
     }
     requestAnimationFrame(loop);
