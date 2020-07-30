@@ -12,37 +12,55 @@ var KEY_CODE = {
     j: 74,
     l: 76,
 };
-var FRAME_SPEED = 72.0;
+var FRAME_DRAG = 72.0;
 
-function update(state) {
+function keyDown(state) {
+    return function(event) {
+        switch (event.keyCode) {
+        case KEY_CODE.j: {
+            state.keys.j = true;
+            break;
+        }
+        case KEY_CODE.l: {
+            state.keys.l = true;
+            break;
+        }
+        }
+    };
+}
+
+function keyUp(state) {
+    return function(event) {
+        switch (event.keyCode) {
+        case KEY_CODE.j: {
+            state.keys.j = false;
+            break;
+        }
+        case KEY_CODE.l: {
+            state.keys.l = false;
+            break;
+        }
+        }
+    };
+}
+
+function setSprite(state, t) {
     if (state.keys.j === state.keys.l) {
-        state.sprite.animation.running = false;
-    } else if (state.keys.j) {
-        state.sprite.animation.running = true;
-        state.sprite.animation.left = true;
+        state.sprite.animation.col = SPRITE_COL_IDLE;
+        state.sprite.animation.row = state.sprite.animation.left
+            ? SPRITE_ROW_IDLE_LEFT
+            : SPRITE_ROW_IDLE_RIGHT;
     } else {
-        state.sprite.animation.running = true;
-        state.sprite.animation.left = false;
+        state.sprite.animation.col =
+            (Math.floor(t / FRAME_DRAG) % SPRITE_COLS) * SPRITE_WIDTH;
+        state.sprite.animation.left = state.keys.j;
+        state.sprite.animation.row = state.sprite.animation.left
+            ? SPRITE_ROW_RUNNING_LEFT
+            : SPRITE_ROW_RUNNING_RIGHT;
     }
 }
 
-function draw(ctx, state, t) {
-    if (state.sprite.animation.running) {
-        state.sprite.animation.col =
-            (Math.floor(t / FRAME_SPEED) % SPRITE_COLS) * SPRITE_WIDTH;
-        if (state.sprite.animation.left) {
-            state.sprite.animation.row = SPRITE_ROW_RUNNING_LEFT;
-        } else {
-            state.sprite.animation.row = SPRITE_ROW_RUNNING_RIGHT;
-        }
-    } else {
-        state.sprite.animation.col = SPRITE_COL_IDLE;
-        if (state.sprite.animation.left) {
-            state.sprite.animation.row = SPRITE_ROW_IDLE_LEFT;
-        } else {
-            state.sprite.animation.row = SPRITE_ROW_IDLE_RIGHT;
-        }
-    }
+function draw(ctx, state) {
     ctx.clearRect(state.sprite.position.x,
                   state.sprite.position.y,
                   SPRITE_WIDTH,
@@ -70,7 +88,6 @@ window.onload = function() {
                 y: Math.floor((canvas.height / 2) - (SPRITE_HEIGHT / 2)),
             },
             animation: {
-                running: false,
                 left: true,
                 row: 0,
                 col: 0,
@@ -81,33 +98,11 @@ window.onload = function() {
             l: false,
         },
     };
-    window.addEventListener("keydown", function(event) {
-        switch (event.keyCode) {
-        case KEY_CODE.j: {
-            state.keys.j = true;
-            break;
-        }
-        case KEY_CODE.l: {
-            state.keys.l = true;
-            break;
-        }
-        }
-    });
-    window.addEventListener("keyup", function(event) {
-        switch (event.keyCode) {
-        case KEY_CODE.j: {
-            state.keys.j = false;
-            break;
-        }
-        case KEY_CODE.l: {
-            state.keys.l = false;
-            break;
-        }
-        }
-    });
+    window.addEventListener("keydown", keyDown(state));
+    window.addEventListener("keyup", keyUp(state));
     function loop(t) {
-        update(state);
-        draw(ctx, state, t);
+        setSprite(state, t);
+        draw(ctx, state);
         requestAnimationFrame(loop);
     }
     requestAnimationFrame(loop);

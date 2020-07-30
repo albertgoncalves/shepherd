@@ -1,5 +1,3 @@
-/* jshint -W083 */
-
 "use strict";
 
 var CANVAS, CTX, HALF_WIDTH, HALF_HEIGHT;
