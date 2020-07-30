@@ -76,10 +76,15 @@ function draw(ctx, state) {
                   SPRITE_HEIGHT);
 }
 
-window.onload = function() {
-    var canvas = document.getElementById("canvas");
-    var ctx = canvas.getContext("2d");
-    ctx.imageSmoothingEnabled = false;
+function loop(ctx, state) {
+    return function(t) {
+        setSprite(state, t);
+        draw(ctx, state);
+        requestAnimationFrame(loop(ctx, state));
+    };
+}
+
+function getState(canvas) {
     var state = {
         sprite: {
             frames: document.getElementById("sprites"),
@@ -93,18 +98,34 @@ window.onload = function() {
                 col: 0,
             },
         },
+        background: {
+            x: 0,
+            y: undefined,
+            width: canvas.width,
+            height: undefined,
+        },
         keys: {
             j: false,
             l: false,
         },
     };
+    state.background.y = state.sprite.position.y + SPRITE_HEIGHT;
+    state.background.height = canvas.height - state.background.y;
+    return state;
+}
+
+window.onload = function() {
+    var canvas = document.getElementById("canvas");
+    var ctx = canvas.getContext("2d");
+    ctx.imageSmoothingEnabled = false;
+    ctx.fillStyle = "hsl(0, 0%, 80%)";
+    var state = getState(canvas);
     window.addEventListener("keydown", keyDown(state));
     window.addEventListener("keyup", keyUp(state));
-    function loop(t) {
-        setSprite(state, t);
-        draw(ctx, state);
-        requestAnimationFrame(loop);
-    }
-    requestAnimationFrame(loop);
+    ctx.fillRect(state.background.x,
+                 state.background.y,
+                 state.background.width,
+                 state.background.height);
+    requestAnimationFrame(loop(ctx, state));
     console.log("Done!");
 };
