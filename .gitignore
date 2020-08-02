@@ -2,6 +2,7 @@
 !.gitignore
 !shell.nix
 !.shellhook
+!README.md
 !src/
 !.tidyrc
 !.clang-format
@@ -11,6 +12,7 @@
 !js/
 !*.js
 !*.png
+!*.xcf
 !adjacency/
 !curvature/
 !expand/
