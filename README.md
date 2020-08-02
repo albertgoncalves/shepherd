@@ -9,8 +9,6 @@ Needed things
 
 Attribution
 ---
-```
-    src/sprites/sprites.png
-    src/sprites/sprites.xcf
-```
-[opengameart.org/cat-sprites](https://opengameart.org/content/cat-sprites) [@Shepardskin](https://twitter.com/Shepardskin)
+| Source | Author | Assets |
+| --- | --- | --- |
+| [opengameart.org/cat-sprites](https://opengameart.org/content/cat-sprites) | [@Shepardskin](https://twitter.com/Shepardskin) | `src/sprites/sprites.png`, `src/sprites/sprites.xcf` |
