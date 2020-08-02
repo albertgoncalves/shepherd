@@ -116,6 +116,8 @@ function getState(canvas) {
 
 window.onload = function() {
     var canvas = document.getElementById("canvas");
+    canvas.setAttribute("tabindex", "0");
+    canvas.focus();
     var ctx = canvas.getContext("2d");
     ctx.imageSmoothingEnabled = false;
     ctx.fillStyle = "hsl(0, 0%, 80%)";
