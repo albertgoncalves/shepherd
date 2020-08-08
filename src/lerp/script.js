@@ -1,6 +1,7 @@
 "use strict";
 
-var CANVAS, CTX;
+var CANVAS;
+var CTX;
 
 var PI_2 = Math.PI * 2.0;
 var N = 5;
