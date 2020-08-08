@@ -1,6 +1,13 @@
 "use strict";
 
-var CANVAS, CTX, SIZE, J, I, N, GRID, TABLE;
+var CANVAS;
+var CTX;
+var SIZE;
+var J;
+var I;
+var N;
+var GRID;
+var TABLE;
 
 var T = 0;
 var RESET_MS = 5000;
