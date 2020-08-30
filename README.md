@@ -4,7 +4,7 @@ Collection of [canvas](https://developer.mozilla.org/en-US/docs/Web/API/Canvas_A
 
 Needed things
 ---
-*   [Nix](https://nixos.org/nix/)
+*   [Nix](https://nixos.org/download.html)
 *   [Disabled cache](https://stackoverflow.com/questions/5690269/disabling-chrome-cache-for-website-development)
 
 Attribution
