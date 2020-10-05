@@ -15,7 +15,7 @@ var KEY_CODE = {
 var FRAME_DRAG = 72.0;
 
 function keyDown(state) {
-    return function(event) {
+    function f(event) {
         switch (event.keyCode) {
         case KEY_CODE.j: {
             state.keys.j = true;
@@ -26,11 +26,12 @@ function keyDown(state) {
             break;
         }
         }
-    };
+    }
+    return f;
 }
 
 function keyUp(state) {
-    return function(event) {
+    function f(event) {
         switch (event.keyCode) {
         case KEY_CODE.j: {
             state.keys.j = false;
@@ -41,7 +42,8 @@ function keyUp(state) {
             break;
         }
         }
-    };
+    }
+    return f;
 }
 
 function setSprite(state, t) {
@@ -77,11 +79,12 @@ function draw(ctx, state) {
 }
 
 function loop(ctx, state) {
-    return function(t) {
+    function f(t) {
         setSprite(state, t);
         draw(ctx, state);
         requestAnimationFrame(loop(ctx, state));
-    };
+    }
+    return f;
 }
 
 function getState(canvas) {
@@ -114,7 +117,7 @@ function getState(canvas) {
     return state;
 }
 
-window.onload = function() {
+function main() {
     var canvas = document.getElementById("canvas");
     canvas.setAttribute("tabindex", "0");
     canvas.focus();
@@ -130,4 +133,6 @@ window.onload = function() {
                  state.background.height);
     requestAnimationFrame(loop(ctx, state));
     console.log("Done!");
-};
+}
+
+window.onload = main;
