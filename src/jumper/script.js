@@ -8,8 +8,8 @@ var KEY_CODE = {
 
 var RECT_WIDTH = 40;
 var RECT_HEIGHT = 40;
-var RECT_X_RESET = 50;
-var RECT_Y_RESET = -RECT_HEIGHT;
+var RECT_LEFT_RESET = 50;
+var RECT_TOP_RESET = -RECT_HEIGHT;
 
 var EPSILON = 0.01;
 
@@ -126,8 +126,8 @@ function resetRect(state) {
     state.rect = {
         width: RECT_WIDTH,
         height: RECT_HEIGHT,
-        left: RECT_X_RESET,
-        top: RECT_Y_RESET,
+        left: RECT_LEFT_RESET,
+        top: RECT_TOP_RESET,
         right: null,
         bottom: null,
         xSpeed: 0.0,
