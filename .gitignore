@@ -19,6 +19,7 @@
 !grid/
 !growth/
 !intersect/
+!jumper/
 !kdtree_radius/
 !kdtree_rect/
 !lerp/
