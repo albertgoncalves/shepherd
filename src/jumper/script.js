@@ -148,7 +148,7 @@ function intersectLeft(rect, xSpeed, edge) {
         left: rect.left,
         top: rect.top,
         right: rect.left - xSpeed,
-        bottom: rect.bottom - LINE_WIDTH_HALF,
+        bottom: rect.bottom,
     });
 }
 
@@ -157,7 +157,7 @@ function intersectRight(rect, xSpeed, edge) {
         left: rect.right - xSpeed,
         top: rect.top,
         right: rect.right,
-        bottom: rect.bottom - LINE_WIDTH_HALF,
+        bottom: rect.bottom,
     });
 }
 
@@ -243,14 +243,14 @@ function setRectY(state) {
         for (var i = EDGES.length - 1; 0 <= i; --i) {
             var edge = {
                 left: EDGES[i].left,
-                top: EDGES[i].y - LINE_WIDTH_HALF,
+                top: EDGES[i].y,
                 right: EDGES[i].right,
-                bottom: EDGES[i].y + LINE_WIDTH_HALF,
+                bottom: EDGES[i].y + LINE_WIDTH,
             };
             if (intersectAbove(state.rect, state.rect.ySpeed, edge)) {
                 state.rect.ySpeed = 0;
-                state.rect.top = EDGES[i].y;
-                state.rect.bottom = EDGES[i].y + state.rect.height;
+                state.rect.top = EDGES[i].y + LINE_WIDTH;
+                state.rect.bottom = state.rect.top + state.rect.height;
                 break;
             }
         }
@@ -258,9 +258,9 @@ function setRectY(state) {
         for (var i = EDGES.length - 1; 0 <= i; --i) {
             var edge = {
                 left: EDGES[i].left,
-                top: EDGES[i].y - LINE_WIDTH_HALF,
+                top: EDGES[i].y,
                 right: EDGES[i].right,
-                bottom: EDGES[i].y + LINE_WIDTH_HALF,
+                bottom: EDGES[i].y + LINE_WIDTH,
             };
             if (intersectBelow(state.rect, state.rect.ySpeed, edge)) {
                 state.rect.ySpeed = 0;
@@ -296,8 +296,9 @@ function draw(ctx, state) {
                  state.rect.height);
     ctx.beginPath();
     for (var i = EDGES.length - 1; 0 <= i; --i) {
-        ctx.moveTo(EDGES[i].left, EDGES[i].y);
-        ctx.lineTo(EDGES[i].right, EDGES[i].y);
+        var y = EDGES[i].y + LINE_WIDTH_HALF;
+        ctx.moveTo(EDGES[i].left, y);
+        ctx.lineTo(EDGES[i].right, y);
     }
     ctx.stroke();
 }
