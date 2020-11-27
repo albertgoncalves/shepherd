@@ -12,18 +12,21 @@ var RECT_X_RESET = 50;
 var RECT_Y_RESET = -RECT_HEIGHT;
 
 var EPSILON = 0.01;
-var RUN = 0.35;
-var DRAG = 0.945;
-var FRICTION = 0.935;
+
 var JUMP = 4.25;
-var GRAVITY = 0.075;
+var GRAVITY = 0.08;
+
+var RUN = 0.35;
+var DRAG = 0.94;
+var FRICTION = 0.93;
+var BOUNCE = -0.75;
 
 var LINE_WIDTH = 4.0;
 var LINE_WIDTH_HALF = LINE_WIDTH / 2.0;
 
 var MILLISECONDS = 1000.0;
 var FRAME_DURATION = (1.0 / 60.0) * MILLISECONDS;
-var FRAME_UPDATE_COUNT = 3.75;
+var FRAME_UPDATE_COUNT = 3.5;
 var FRAME_STEP = FRAME_DURATION / FRAME_UPDATE_COUNT;
 
 var EDGES = [
@@ -45,7 +48,7 @@ var EDGES = [
     {
         left: 300,
         right: 350,
-        y: 350,
+        y: 375,
     },
     {
         left: 400,
@@ -66,6 +69,16 @@ var EDGES = [
         left: 650,
         right: 700,
         y: 475,
+    },
+    {
+        left: 775,
+        right: 875,
+        y: 175,
+    },
+    {
+        left: 825,
+        right: 875,
+        y: 100,
     },
 ];
 
@@ -192,7 +205,7 @@ function setRectX(state) {
                 bottom: EDGES[i].y,
             };
             if (intersectLeft(state.rect, state.rect.xSpeed, edge)) {
-                state.rect.xSpeed *= -1;
+                state.rect.xSpeed *= BOUNCE;
                 state.rect.left = EDGES[i].right;
                 state.rect.right = EDGES[i].right + state.rect.width;
                 break;
@@ -207,7 +220,7 @@ function setRectX(state) {
                 bottom: EDGES[i].y,
             };
             if (intersectRight(state.rect, state.rect.xSpeed, edge)) {
-                state.rect.xSpeed *= -1;
+                state.rect.xSpeed *= BOUNCE;
                 state.rect.left = EDGES[i].left - state.rect.width;
                 state.rect.right = EDGES[i].left;
                 break;
