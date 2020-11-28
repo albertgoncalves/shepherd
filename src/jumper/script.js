@@ -9,25 +9,29 @@ var KEY_CODE = {
     l: 76,
 };
 
+var LINE_WIDTH = 4;
+var LINE_WIDTH_HALF = LINE_WIDTH / 2;
+
 var RECT_WIDTH = 40;
 var RECT_WIDTH_HALF = RECT_WIDTH / 2;
 var RECT_HEIGHT = 40;
-var RECT_LEFT_RESET = 50;
-var RECT_TOP_RESET = -RECT_HEIGHT;
+var RECT_LEFT_RESET = 830;
+var RECT_TOP_RESET = 300;
 
-var EPSILON = 0.01;
+var CAMERA_TOP = 0.3;
+var CAMERA_BOTTOM = 0.7;
+var CAMERA_SPEED = 0.0075;
+var CAMERA_EPSILON = 0.175;
 
 var JUMP = 4.15;
-var GRAVITY = 0.0735;
+var GRAVITY = 0.0745;
 
 var RUN = 0.25;
-var TOP_SPEED = 2.5;
+var RUN_MAX = 2.5;
 var DRAG = 0.9425;
-var FRICTION = 0.9225;
+var FRICTION = 0.9025;
 var BOUNCE = -0.5;
-
-var LINE_WIDTH = 4;
-var LINE_WIDTH_HALF = LINE_WIDTH / 2;
+var RUN_STOP = 0.0075;
 
 var MILLISECONDS = 1000;
 
@@ -95,6 +99,36 @@ var EDGES = [
         left: 825,
         right: 875,
         y: 500,
+    },
+    {
+        left: 600,
+        right: 675,
+        y: 5,
+    },
+    {
+        left: 425,
+        right: 600,
+        y: -40,
+    },
+    {
+        left: 300,
+        right: 375,
+        y: -60,
+    },
+    {
+        left: 150,
+        right: 250,
+        y: -100,
+    },
+    {
+        left: 25,
+        right: 75,
+        y: -130,
+    },
+    {
+        left: 150,
+        right: 250,
+        y: -225,
     },
 ];
 
@@ -197,26 +231,25 @@ function intersectAbove(rect, ySpeed, edge) {
 
 function setRectX(state) {
     if (state.keys.right) {
-        if (state.rect.xSpeed < TOP_SPEED) {
+        if (state.rect.xSpeed < RUN_MAX) {
             state.rect.xSpeed += RUN;
         } else {
-            state.rect.xSpeed = TOP_SPEED;
+            state.rect.xSpeed = RUN_MAX;
         }
     }
     if (state.keys.left) {
-        if (-TOP_SPEED < state.rect.xSpeed) {
+        if (-RUN_MAX < state.rect.xSpeed) {
             state.rect.xSpeed -= RUN;
         } else {
-            state.rect.xSpeed = -TOP_SPEED;
+            state.rect.xSpeed = -RUN_MAX;
         }
     }
-    if (state.rect.ySpeed === 0) {
+    if ((-RUN_STOP < state.rect.xSpeed) && (state.rect.xSpeed < RUN_STOP)) {
+        state.rect.xSpeed = 0;
+    } else if (state.rect.ySpeed === 0) {
         state.rect.xSpeed *= FRICTION;
     } else {
         state.rect.xSpeed *= DRAG;
-    }
-    if ((-EPSILON < state.rect.xSpeed) && (state.rect.xSpeed < EPSILON)) {
-        state.rect.xSpeed = 0;
     }
     state.rect.left += state.rect.xSpeed;
     state.rect.right += state.rect.xSpeed;
@@ -297,31 +330,77 @@ function setRectY(state) {
             }
         }
     }
-    if (state.canvas.height < state.rect.top) {
-        resetRect(state);
+}
+
+function setCamera(state) {
+    // NOTE: Remember: down is positive, up is negative.
+    var cameraTop = (state.canvas.height * CAMERA_TOP) + state.cameraTop;
+    var deltaTop = cameraTop - state.rect.top;
+    if (0 < deltaTop) {
+        if (deltaTop < CAMERA_EPSILON) {
+            state.cameraTop -= deltaTop;
+        } else {
+            state.cameraTop -= deltaTop * CAMERA_SPEED;
+        }
+        return;
+    }
+    var cameraBottom = (state.canvas.height * CAMERA_BOTTOM) + state.cameraTop;
+    var deltaBottom = state.rect.bottom - cameraBottom;
+    if (0 < deltaBottom) {
+        if (deltaBottom < CAMERA_EPSILON) {
+            state.cameraTop += deltaBottom;
+        } else {
+            state.cameraTop += deltaBottom * CAMERA_SPEED;
+        }
     }
 }
 
 function update(state) {
     state.frame.delta += state.frame.time - state.frame.prev;
     while (FRAME_STEP < state.frame.delta) {
-        setRectY(state);
-        setRectX(state);
         state.frame.delta -= FRAME_STEP;
+        setRectY(state);
+        if ((state.canvas.height + state.cameraTop) < state.rect.top) {
+            resetRect(state);
+            state.cameraTop = state.canvas.height * CAMERA_TOP;
+            continue;
+        }
+        setRectX(state);
+        setCamera(state);
     }
     state.frame.prev = state.frame.time;
 }
 
 function draw(ctx, state) {
     ctx.clearRect(0, 0, state.canvas.width, state.canvas.height);
-    ctx.fillRect(state.rect.left, state.rect.top, RECT_WIDTH, RECT_HEIGHT);
-    ctx.beginPath();
-    for (var i = EDGES.length - 1; 0 <= i; --i) {
-        var y = EDGES[i].y + LINE_WIDTH_HALF;
-        ctx.moveTo(EDGES[i].left, y);
-        ctx.lineTo(EDGES[i].right, y);
+    {
+        ctx.strokeStyle = "hsla(0, 0%, 90%, 0.1)";
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(0, state.canvas.height * CAMERA_TOP);
+        ctx.lineTo(state.canvas.width, state.canvas.height * CAMERA_TOP);
+        ctx.moveTo(0, state.canvas.height * CAMERA_BOTTOM);
+        ctx.lineTo(state.canvas.width, state.canvas.height * CAMERA_BOTTOM);
+        ctx.stroke();
     }
-    ctx.stroke();
+    ctx.fillRect(state.rect.left,
+                 state.rect.top - state.cameraTop,
+                 RECT_WIDTH,
+                 RECT_HEIGHT);
+    {
+        ctx.strokeStyle = "hsl(0, 0%, 90%)";
+        ctx.lineWidth = LINE_WIDTH;
+        ctx.beginPath();
+        for (var i = EDGES.length - 1; 0 <= i; --i) {
+            var y = (EDGES[i].y + LINE_WIDTH_HALF) - state.cameraTop;
+            if ((y < 0) || (state.canvas.height < y)) {
+                continue;
+            }
+            ctx.moveTo(EDGES[i].left, y);
+            ctx.lineTo(EDGES[i].right, y);
+        }
+        ctx.stroke();
+    }
 }
 
 function setDebug(state) {
@@ -329,16 +408,17 @@ function setDebug(state) {
     var elapsed = state.frame.time - state.debug.time;
     if (MILLISECONDS < elapsed) {
         var fps = ((state.debug.count / elapsed) * MILLISECONDS).toFixed(2);
-        var rect = {
-            x: (state.rect.left + RECT_WIDTH_HALF).toFixed(2),
-            y: state.rect.bottom.toFixed(2),
-        };
         state.debug.element.innerHTML = "<strong>" + fps + "</strong> fps" +
             "<br>" +
             "<strong>" + state.debug.count + "</strong> frames / " +
             "<strong>" + elapsed.toFixed(2) + "</strong> ms" +
             "<br>" +
-            "<em>" + JSON.stringify(rect) + "</em>";
+            "<em>" + JSON.stringify({
+                rectCenter: (state.rect.left + RECT_WIDTH_HALF).toFixed(2),
+                rectBottom: state.rect.bottom.toFixed(2),
+                cameraTop: state.cameraTop.toFixed(2),
+            }) +
+            "</em>";
         state.debug.time = state.frame.time;
         state.debug.count = 0;
     }
@@ -358,11 +438,9 @@ window.onload = function() {
     var canvas = document.getElementById("canvas");
     canvas.setAttribute("tabindex", "0");
     canvas.focus();
-    var ctx = canvas.getContext("2d");
+    var ctx = canvas.getContext("2d", {alpha: false});
     ctx.imageSmoothingEnabled = false;
     ctx.fillStyle = "rgb(200, 40, 80)";
-    ctx.strokeStyle = "hsl(0, 0%, 90%)";
-    ctx.lineWidth = LINE_WIDTH;
     var state = {
         canvas: canvas,
         frame: {
@@ -375,6 +453,7 @@ window.onload = function() {
             time: performance.now(),
             count: 0,
         },
+        cameraTop: 0,
         keys: {
             up: false,
             left: false,
