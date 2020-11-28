@@ -10,6 +10,7 @@ var KEY_CODE = {
 };
 
 var RECT_WIDTH = 40;
+var RECT_WIDTH_HALF = RECT_WIDTH / 2;
 var RECT_HEIGHT = 40;
 var RECT_LEFT_RESET = 50;
 var RECT_TOP_RESET = -RECT_HEIGHT;
@@ -25,13 +26,13 @@ var DRAG = 0.9425;
 var FRICTION = 0.9225;
 var BOUNCE = -0.5;
 
-var LINE_WIDTH = 4.0;
-var LINE_WIDTH_HALF = LINE_WIDTH / 2.0;
+var LINE_WIDTH = 4;
+var LINE_WIDTH_HALF = LINE_WIDTH / 2;
 
-var MILLISECONDS = 1000.0;
+var MILLISECONDS = 1000;
 
 var FRAME_UPDATE_COUNT = 4.175;
-var FRAME_DURATION = (1.0 / 60.0) * MILLISECONDS;
+var FRAME_DURATION = (1 / 60) * MILLISECONDS;
 var FRAME_STEP = FRAME_DURATION / FRAME_UPDATE_COUNT;
 
 var EDGES = [
@@ -143,14 +144,12 @@ function keyUp(state) {
 
 function resetRect(state) {
     state.rect = {
-        width: RECT_WIDTH,
-        height: RECT_HEIGHT,
         left: RECT_LEFT_RESET,
         top: RECT_TOP_RESET,
         right: RECT_LEFT_RESET + RECT_WIDTH,
         bottom: RECT_TOP_RESET + RECT_HEIGHT,
-        xSpeed: 0.0,
-        ySpeed: 0.0,
+        xSpeed: 0,
+        ySpeed: 0,
         canJump: false,
     };
 }
@@ -217,7 +216,7 @@ function setRectX(state) {
         state.rect.xSpeed *= DRAG;
     }
     if ((-EPSILON < state.rect.xSpeed) && (state.rect.xSpeed < EPSILON)) {
-        state.rect.xSpeed = 0.0;
+        state.rect.xSpeed = 0;
     }
     state.rect.left += state.rect.xSpeed;
     state.rect.right += state.rect.xSpeed;
@@ -232,7 +231,7 @@ function setRectX(state) {
             if (intersectLeft(state.rect, state.rect.xSpeed, edge)) {
                 state.rect.xSpeed *= BOUNCE;
                 state.rect.left = EDGES[i].right;
-                state.rect.right = EDGES[i].right + state.rect.width;
+                state.rect.right = EDGES[i].right + RECT_WIDTH;
                 break;
             }
         }
@@ -246,7 +245,7 @@ function setRectX(state) {
             };
             if (intersectRight(state.rect, state.rect.xSpeed, edge)) {
                 state.rect.xSpeed *= BOUNCE;
-                state.rect.left = EDGES[i].left - state.rect.width;
+                state.rect.left = EDGES[i].left - RECT_WIDTH;
                 state.rect.right = EDGES[i].left;
                 break;
             }
@@ -275,7 +274,7 @@ function setRectY(state) {
             if (intersectAbove(state.rect, state.rect.ySpeed, edge)) {
                 state.rect.ySpeed = 0;
                 state.rect.top = EDGES[i].y + LINE_WIDTH;
-                state.rect.bottom = state.rect.top + state.rect.height;
+                state.rect.bottom = state.rect.top + RECT_HEIGHT;
                 break;
             }
         }
@@ -289,7 +288,7 @@ function setRectY(state) {
             };
             if (intersectBelow(state.rect, state.rect.ySpeed, edge)) {
                 state.rect.ySpeed = 0;
-                state.rect.top = EDGES[i].y - state.rect.height;
+                state.rect.top = EDGES[i].y - RECT_HEIGHT;
                 state.rect.bottom = EDGES[i].y;
                 if (!state.keys.up) {
                     state.rect.canJump = true;
@@ -315,10 +314,7 @@ function update(state) {
 
 function draw(ctx, state) {
     ctx.clearRect(0, 0, state.canvas.width, state.canvas.height);
-    ctx.fillRect(state.rect.left,
-                 state.rect.top,
-                 state.rect.width,
-                 state.rect.height);
+    ctx.fillRect(state.rect.left, state.rect.top, RECT_WIDTH, RECT_HEIGHT);
     ctx.beginPath();
     for (var i = EDGES.length - 1; 0 <= i; --i) {
         var y = EDGES[i].y + LINE_WIDTH_HALF;
@@ -328,20 +324,23 @@ function draw(ctx, state) {
     ctx.stroke();
 }
 
-function setFps(state) {
-    ++state.fps.count;
-    var elapsed = state.frame.time - state.fps.time;
+function setDebug(state) {
+    ++state.debug.count;
+    var elapsed = state.frame.time - state.debug.time;
     if (MILLISECONDS < elapsed) {
-        var fps = ((state.fps.count / elapsed) * MILLISECONDS).toFixed(2);
-        state.fps.element.innerHTML = "<strong>" + fps + "</strong> fps" +
+        var fps = ((state.debug.count / elapsed) * MILLISECONDS).toFixed(2);
+        var rect = {
+            x: (state.rect.left + RECT_WIDTH_HALF).toFixed(2),
+            y: state.rect.bottom.toFixed(2),
+        };
+        state.debug.element.innerHTML = "<strong>" + fps + "</strong> fps" +
             "<br>" +
-            "<strong>" + state.fps.count + "</strong> frames / " +
+            "<strong>" + state.debug.count + "</strong> frames / " +
             "<strong>" + elapsed.toFixed(2) + "</strong> ms" +
             "<br>" +
-            "<em>" + state.fps.ticks + "</em>";
-        state.fps.time = state.frame.time;
-        state.fps.count = 0;
-        ++state.fps.ticks;
+            "<em>" + JSON.stringify(rect) + "</em>";
+        state.debug.time = state.frame.time;
+        state.debug.count = 0;
     }
 }
 
@@ -350,7 +349,7 @@ function loop(ctx, state) {
         state.frame.time = t;
         update(state);
         draw(ctx, state);
-        setFps(state);
+        setDebug(state);
         requestAnimationFrame(loop(ctx, state));
     };
 }
@@ -371,11 +370,10 @@ window.onload = function() {
             prev: performance.now(),
             delta: 0,
         },
-        fps: {
-            element: document.getElementById("fps"),
-            count: 0,
-            ticks: 0,
+        debug: {
+            element: document.getElementById("debug"),
             time: performance.now(),
+            count: 0,
         },
         keys: {
             up: false,
