@@ -304,11 +304,11 @@ function setRectY(state) {
 }
 
 function update(state) {
-    var elapsed = state.frame.time - state.frame.prev;
-    while (FRAME_STEP < elapsed) {
+    state.frame.delta += state.frame.time - state.frame.prev;
+    while (FRAME_STEP < state.frame.delta) {
         setRectY(state);
         setRectX(state);
-        elapsed -= FRAME_STEP;
+        state.frame.delta -= FRAME_STEP;
     }
     state.frame.prev = state.frame.time;
 }
@@ -369,6 +369,7 @@ window.onload = function() {
         frame: {
             time: performance.now(),
             prev: performance.now(),
+            delta: 0,
         },
         fps: {
             element: document.getElementById("fps"),
