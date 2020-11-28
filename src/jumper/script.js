@@ -98,7 +98,7 @@ var EDGES = [
 ];
 
 function keyDown(state) {
-    function f(event) {
+    return function(event) {
         switch (event.keyCode) {
         case KEY_CODE.w:
         case KEY_CODE.i: {
@@ -116,12 +116,11 @@ function keyDown(state) {
             break;
         }
         }
-    }
-    return f;
+    };
 }
 
 function keyUp(state) {
-    function f(event) {
+    return function(event) {
         switch (event.keyCode) {
         case KEY_CODE.w:
         case KEY_CODE.i: {
@@ -139,8 +138,7 @@ function keyUp(state) {
             break;
         }
         }
-    }
-    return f;
+    };
 }
 
 function resetRect(state) {
@@ -348,14 +346,13 @@ function setFps(state) {
 }
 
 function loop(ctx, state) {
-    function f(t) {
+    return function(t) {
         state.frame.time = t;
         update(state);
         draw(ctx, state);
         setFps(state);
         requestAnimationFrame(loop(ctx, state));
-    }
-    return f;
+    };
 }
 
 window.onload = function() {
