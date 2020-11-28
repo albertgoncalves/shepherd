@@ -4,6 +4,9 @@ var KEY_CODE = {
     w: 87,
     a: 65,
     d: 68,
+    i: 73,
+    j: 74,
+    l: 76,
 };
 
 var RECT_WIDTH = 40;
@@ -13,20 +16,22 @@ var RECT_TOP_RESET = -RECT_HEIGHT;
 
 var EPSILON = 0.01;
 
-var JUMP = 4.25;
-var GRAVITY = 0.07;
+var JUMP = 4.15;
+var GRAVITY = 0.0735;
 
-var RUN = 0.35;
-var DRAG = 0.935;
-var FRICTION = 0.925;
-var BOUNCE = -0.75;
+var RUN = 0.25;
+var TOP_SPEED = 2.5;
+var DRAG = 0.9425;
+var FRICTION = 0.9225;
+var BOUNCE = -0.5;
 
 var LINE_WIDTH = 4.0;
 var LINE_WIDTH_HALF = LINE_WIDTH / 2.0;
 
 var MILLISECONDS = 1000.0;
+
+var FRAME_UPDATE_COUNT = 4.175;
 var FRAME_DURATION = (1.0 / 60.0) * MILLISECONDS;
-var FRAME_UPDATE_COUNT = 4;
 var FRAME_STEP = FRAME_DURATION / FRAME_UPDATE_COUNT;
 
 var EDGES = [
@@ -51,6 +56,11 @@ var EDGES = [
         y: 375,
     },
     {
+        left: 250,
+        right: 350,
+        y: 125,
+    },
+    {
         left: 400,
         right: 700,
         y: 225,
@@ -61,8 +71,8 @@ var EDGES = [
         y: 475,
     },
     {
-        left: 400,
-        right: 700,
+        left: 450,
+        right: 650,
         y: 500,
     },
     {
@@ -80,21 +90,29 @@ var EDGES = [
         right: 875,
         y: 100,
     },
+    {
+        left: 825,
+        right: 875,
+        y: 500,
+    },
 ];
 
 function keyDown(state) {
     function f(event) {
         switch (event.keyCode) {
-        case KEY_CODE.w: {
-            state.keys.w = true;
+        case KEY_CODE.w:
+        case KEY_CODE.i: {
+            state.keys.up = true;
             break;
         }
-        case KEY_CODE.a: {
-            state.keys.a = true;
+        case KEY_CODE.a:
+        case KEY_CODE.j: {
+            state.keys.left = true;
             break;
         }
-        case KEY_CODE.d: {
-            state.keys.d = true;
+        case KEY_CODE.d:
+        case KEY_CODE.l: {
+            state.keys.right = true;
             break;
         }
         }
@@ -105,16 +123,19 @@ function keyDown(state) {
 function keyUp(state) {
     function f(event) {
         switch (event.keyCode) {
-        case KEY_CODE.w: {
-            state.keys.w = false;
+        case KEY_CODE.w:
+        case KEY_CODE.i: {
+            state.keys.up = false;
             break;
         }
-        case KEY_CODE.a: {
-            state.keys.a = false;
+        case KEY_CODE.a:
+        case KEY_CODE.j: {
+            state.keys.left = false;
             break;
         }
-        case KEY_CODE.d: {
-            state.keys.d = false;
+        case KEY_CODE.d:
+        case KEY_CODE.l: {
+            state.keys.right = false;
             break;
         }
         }
@@ -128,14 +149,12 @@ function resetRect(state) {
         height: RECT_HEIGHT,
         left: RECT_LEFT_RESET,
         top: RECT_TOP_RESET,
-        right: null,
-        bottom: null,
+        right: RECT_LEFT_RESET + RECT_WIDTH,
+        bottom: RECT_TOP_RESET + RECT_HEIGHT,
         xSpeed: 0.0,
         ySpeed: 0.0,
         canJump: false,
     };
-    state.rect.right = state.rect.left + state.rect.width;
-    state.rect.bottom = state.rect.top + state.rect.height;
 }
 
 function intersectRectRect(a, b) {
@@ -180,11 +199,19 @@ function intersectAbove(rect, ySpeed, edge) {
 }
 
 function setRectX(state) {
-    if (state.keys.d) {
-        state.rect.xSpeed += RUN;
+    if (state.keys.right) {
+        if (state.rect.xSpeed < TOP_SPEED) {
+            state.rect.xSpeed += RUN;
+        } else {
+            state.rect.xSpeed = TOP_SPEED;
+        }
     }
-    if (state.keys.a) {
-        state.rect.xSpeed -= RUN;
+    if (state.keys.left) {
+        if (-TOP_SPEED < state.rect.xSpeed) {
+            state.rect.xSpeed -= RUN;
+        } else {
+            state.rect.xSpeed = -TOP_SPEED;
+        }
     }
     if (state.rect.ySpeed === 0) {
         state.rect.xSpeed *= FRICTION;
@@ -230,7 +257,7 @@ function setRectX(state) {
 }
 
 function setRectY(state) {
-    if (state.rect.canJump && state.keys.w) {
+    if (state.rect.canJump && state.keys.up) {
         state.rect.ySpeed -= JUMP;
     }
     if (state.rect.ySpeed !== 0) {
@@ -266,30 +293,30 @@ function setRectY(state) {
                 state.rect.ySpeed = 0;
                 state.rect.top = EDGES[i].y - state.rect.height;
                 state.rect.bottom = EDGES[i].y;
-                if (!state.keys.w) {
+                if (!state.keys.up) {
                     state.rect.canJump = true;
                 }
                 break;
             }
         }
     }
-    if (state.height < state.rect.top) {
+    if (state.canvas.height < state.rect.top) {
         resetRect(state);
     }
 }
 
 function update(state) {
-    var elapsed = state.time - state.prevTime;
+    var elapsed = state.frame.time - state.frame.prev;
     while (FRAME_STEP < elapsed) {
         setRectY(state);
         setRectX(state);
         elapsed -= FRAME_STEP;
     }
-    state.prevTime = state.time;
+    state.frame.prev = state.frame.time;
 }
 
 function draw(ctx, state) {
-    ctx.clearRect(0, 0, state.width, state.height);
+    ctx.clearRect(0, 0, state.canvas.width, state.canvas.height);
     ctx.fillRect(state.rect.left,
                  state.rect.top,
                  state.rect.width,
@@ -303,11 +330,29 @@ function draw(ctx, state) {
     ctx.stroke();
 }
 
+function setFps(state) {
+    ++state.fps.count;
+    var elapsed = state.frame.time - state.fps.time;
+    if (MILLISECONDS < elapsed) {
+        var fps = ((state.fps.count / elapsed) * MILLISECONDS).toFixed(2);
+        state.fps.element.innerHTML = "<strong>" + fps + "</strong> fps" +
+            "<br>" +
+            "<strong>" + state.fps.count + "</strong> frames / " +
+            "<strong>" + elapsed.toFixed(2) + "</strong> ms" +
+            "<br>" +
+            "<em>" + state.fps.ticks + "</em>";
+        state.fps.time = state.frame.time;
+        state.fps.count = 0;
+        ++state.fps.ticks;
+    }
+}
+
 function loop(ctx, state) {
     function f(t) {
-        state.time = t;
+        state.frame.time = t;
         update(state);
         draw(ctx, state);
+        setFps(state);
         requestAnimationFrame(loop(ctx, state));
     }
     return f;
@@ -323,15 +368,21 @@ window.onload = function() {
     ctx.strokeStyle = "hsl(0, 0%, 90%)";
     ctx.lineWidth = LINE_WIDTH;
     var state = {
-        time: performance.now(),
-        prevTime: performance.now(),
-        width: canvas.width,
-        height: canvas.height,
+        canvas: canvas,
+        frame: {
+            time: performance.now(),
+            prev: performance.now(),
+        },
+        fps: {
+            element: document.getElementById("fps"),
+            count: 0,
+            ticks: 0,
+            time: performance.now(),
+        },
         keys: {
-            w: false,
-            s: false,
-            a: false,
-            d: false,
+            up: false,
+            left: false,
+            right: false,
         },
         rect: null,
     };
