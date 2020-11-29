@@ -15,13 +15,14 @@ var LINE_WIDTH_HALF = LINE_WIDTH / 2;
 var RECT_WIDTH = 40;
 var RECT_WIDTH_HALF = RECT_WIDTH / 2;
 var RECT_HEIGHT = 40;
-var RECT_LEFT_RESET = 830;
-var RECT_TOP_RESET = 300;
 
-var CAMERA_TOP = 0.3;
-var CAMERA_BOTTOM = 0.7;
-var CAMERA_SPEED = 0.0075;
-var CAMERA_EPSILON = 0.175;
+var RESET_RECT_LEFT = 830;
+var RESET_RECT_BOTTOM = 200;
+
+var CAMERA_TOP = 0.6;
+var CAMERA_BOTTOM = 0.25;
+var CAMERA_SPEED = 0.01;
+var CAMERA_EPSILON = 0.125;
 
 var JUMP = 4.15;
 var GRAVITY = 0.0745;
@@ -35,11 +36,16 @@ var RUN_STOP = 0.0075;
 
 var MILLISECONDS = 1000;
 
-var FRAME_UPDATE_COUNT = 4.175;
+var FRAME_UPDATE_COUNT = 4.15;
 var FRAME_DURATION = (1 / 60) * MILLISECONDS;
 var FRAME_STEP = FRAME_DURATION / FRAME_UPDATE_COUNT;
 
 var EDGES = [
+    {
+        left: 825,
+        right: 875,
+        y: 50,
+    },
     {
         left: 10,
         right: 200,
@@ -48,87 +54,82 @@ var EDGES = [
     {
         left: 10,
         right: 200,
-        y: 400,
+        y: 150,
     },
     {
         left: 250,
         right: 350,
-        y: 450,
+        y: 100,
     },
     {
         left: 300,
         right: 350,
-        y: 375,
+        y: 175,
     },
     {
         left: 250,
         right: 350,
-        y: 125,
+        y: 425,
     },
     {
         left: 400,
         right: 700,
-        y: 225,
+        y: 325,
     },
     {
         left: 400,
         right: 450,
-        y: 475,
-    },
-    {
-        left: 450,
-        right: 650,
-        y: 500,
+        y: 75,
     },
     {
         left: 650,
         right: 700,
-        y: 475,
+        y: 75,
+    },
+    {
+        left: 450,
+        right: 650,
+        y: 50,
     },
     {
         left: 775,
         right: 875,
-        y: 175,
+        y: 375,
     },
     {
         left: 825,
         right: 875,
-        y: 100,
-    },
-    {
-        left: 825,
-        right: 875,
-        y: 500,
+        y: 450,
     },
     {
         left: 600,
         right: 675,
-        y: 5,
+        y: 545,
     },
     {
         left: 425,
         right: 600,
-        y: -40,
+        y: 590,
     },
     {
         left: 300,
         right: 375,
-        y: -60,
+        y: 610,
     },
     {
         left: 150,
         right: 250,
-        y: -100,
+        y: 650,
     },
     {
         left: 25,
         right: 75,
-        y: -130,
+        y: 680,
     },
     {
         left: 150,
         right: 250,
-        y: -225,
+        y: 775,
     },
 ];
 
@@ -178,10 +179,10 @@ function keyUp(state) {
 
 function resetRect(state) {
     state.rect = {
-        left: RECT_LEFT_RESET,
-        top: RECT_TOP_RESET,
-        right: RECT_LEFT_RESET + RECT_WIDTH,
-        bottom: RECT_TOP_RESET + RECT_HEIGHT,
+        left: RESET_RECT_LEFT,
+        top: RESET_RECT_BOTTOM + RECT_HEIGHT,
+        right: RESET_RECT_LEFT + RECT_WIDTH,
+        bottom: RESET_RECT_BOTTOM,
         xSpeed: 0,
         ySpeed: 0,
         canJump: false,
@@ -189,8 +190,8 @@ function resetRect(state) {
 }
 
 function intersectRectRect(a, b) {
-    return (a.left < b.right) && (b.left < a.right) && (a.top < b.bottom) &&
-        (b.top < a.bottom);
+    return (a.left < b.right) && (b.left < a.right) && (a.bottom < b.top) &&
+        (b.bottom < a.top);
 }
 
 function intersectLeft(rect, xSpeed, edge) {
@@ -252,7 +253,7 @@ function setRectX(state) {
         state.rect.xSpeed *= DRAG;
     }
     state.rect.left += state.rect.xSpeed;
-    state.rect.right += state.rect.xSpeed;
+    state.rect.right = state.rect.left + RECT_WIDTH;
     if (state.rect.xSpeed < 0) {
         for (var i = EDGES.length - 1; 0 <= i; --i) {
             var edge = {
@@ -288,40 +289,40 @@ function setRectX(state) {
 
 function setRectY(state) {
     if (state.rect.canJump && state.keys.up) {
-        state.rect.ySpeed -= JUMP;
+        state.rect.ySpeed += JUMP;
     }
     if (state.rect.ySpeed !== 0) {
         state.rect.canJump = false;
     }
-    state.rect.ySpeed += GRAVITY;
-    state.rect.top += state.rect.ySpeed;
+    state.rect.ySpeed -= GRAVITY;
     state.rect.bottom += state.rect.ySpeed;
-    if (state.rect.ySpeed < 0) {
+    state.rect.top = state.rect.bottom + RECT_HEIGHT;
+    if (0 < state.rect.ySpeed) {
         for (var i = EDGES.length - 1; 0 <= i; --i) {
             var edge = {
                 left: EDGES[i].left,
                 top: EDGES[i].y,
                 right: EDGES[i].right,
-                bottom: EDGES[i].y + LINE_WIDTH,
+                bottom: EDGES[i].y - LINE_WIDTH,
             };
             if (intersectAbove(state.rect, state.rect.ySpeed, edge)) {
                 state.rect.ySpeed = 0;
-                state.rect.top = EDGES[i].y + LINE_WIDTH;
-                state.rect.bottom = state.rect.top + RECT_HEIGHT;
+                state.rect.top = EDGES[i].y - LINE_WIDTH;
+                state.rect.bottom = state.rect.top - RECT_HEIGHT;
                 break;
             }
         }
-    } else if (0 < state.rect.ySpeed) {
+    } else if (state.rect.ySpeed < 0) {
         for (var i = EDGES.length - 1; 0 <= i; --i) {
             var edge = {
                 left: EDGES[i].left,
                 top: EDGES[i].y,
                 right: EDGES[i].right,
-                bottom: EDGES[i].y + LINE_WIDTH,
+                bottom: EDGES[i].y - LINE_WIDTH,
             };
             if (intersectBelow(state.rect, state.rect.ySpeed, edge)) {
                 state.rect.ySpeed = 0;
-                state.rect.top = EDGES[i].y - RECT_HEIGHT;
+                state.rect.top = EDGES[i].y + RECT_HEIGHT;
                 state.rect.bottom = EDGES[i].y;
                 if (!state.keys.up) {
                     state.rect.canJump = true;
@@ -333,24 +334,24 @@ function setRectY(state) {
 }
 
 function setCamera(state) {
-    // NOTE: Remember: down is positive, up is negative.
-    var cameraTop = (state.canvas.height * CAMERA_TOP) + state.cameraTop;
-    var deltaTop = cameraTop - state.rect.top;
+    var cameraTop = (state.canvas.height * CAMERA_TOP) + state.cameraBottom;
+    var deltaTop = state.rect.top - cameraTop;
     if (0 < deltaTop) {
         if (deltaTop < CAMERA_EPSILON) {
-            state.cameraTop -= deltaTop;
+            state.cameraBottom += deltaTop;
         } else {
-            state.cameraTop -= deltaTop * CAMERA_SPEED;
+            state.cameraBottom += deltaTop * CAMERA_SPEED;
         }
         return;
     }
-    var cameraBottom = (state.canvas.height * CAMERA_BOTTOM) + state.cameraTop;
-    var deltaBottom = state.rect.bottom - cameraBottom;
+    var cameraBottom =
+        (state.canvas.height * CAMERA_BOTTOM) + state.cameraBottom;
+    var deltaBottom = cameraBottom - state.rect.bottom;
     if (0 < deltaBottom) {
         if (deltaBottom < CAMERA_EPSILON) {
-            state.cameraTop += deltaBottom;
+            state.cameraBottom -= deltaBottom;
         } else {
-            state.cameraTop += deltaBottom * CAMERA_SPEED;
+            state.cameraBottom -= deltaBottom * CAMERA_SPEED;
         }
     }
 }
@@ -360,9 +361,9 @@ function update(state) {
     while (FRAME_STEP < state.frame.delta) {
         state.frame.delta -= FRAME_STEP;
         setRectY(state);
-        if ((state.canvas.height + state.cameraTop) < state.rect.top) {
+        if (state.rect.top < Math.min(state.cameraBottom, 0)) {
             resetRect(state);
-            state.cameraTop = state.canvas.height * CAMERA_TOP;
+            state.cameraBottom = 0;
             continue;
         }
         setRectX(state);
@@ -377,14 +378,16 @@ function draw(ctx, state) {
         ctx.strokeStyle = "hsla(0, 0%, 90%, 0.1)";
         ctx.lineWidth = 2;
         ctx.beginPath();
-        ctx.moveTo(0, state.canvas.height * CAMERA_TOP);
-        ctx.lineTo(state.canvas.width, state.canvas.height * CAMERA_TOP);
-        ctx.moveTo(0, state.canvas.height * CAMERA_BOTTOM);
-        ctx.lineTo(state.canvas.width, state.canvas.height * CAMERA_BOTTOM);
+        var cameraTop = state.canvas.height * (1 - CAMERA_TOP);
+        ctx.moveTo(0, cameraTop);
+        ctx.lineTo(state.canvas.width, cameraTop);
+        var cameraBottom = state.canvas.height * (1 - CAMERA_BOTTOM);
+        ctx.moveTo(0, cameraBottom);
+        ctx.lineTo(state.canvas.width, cameraBottom);
         ctx.stroke();
     }
     ctx.fillRect(state.rect.left,
-                 state.rect.top - state.cameraTop,
+                 state.canvas.height - (state.rect.top - state.cameraBottom),
                  RECT_WIDTH,
                  RECT_HEIGHT);
     {
@@ -392,7 +395,8 @@ function draw(ctx, state) {
         ctx.lineWidth = LINE_WIDTH;
         ctx.beginPath();
         for (var i = EDGES.length - 1; 0 <= i; --i) {
-            var y = (EDGES[i].y + LINE_WIDTH_HALF) - state.cameraTop;
+            var y = state.canvas.height -
+                ((EDGES[i].y - LINE_WIDTH_HALF) - state.cameraBottom);
             if ((y < 0) || (state.canvas.height < y)) {
                 continue;
             }
@@ -416,7 +420,7 @@ function setDebug(state) {
             "<em>" + JSON.stringify({
                 rectCenter: (state.rect.left + RECT_WIDTH_HALF).toFixed(2),
                 rectBottom: state.rect.bottom.toFixed(2),
-                cameraTop: state.cameraTop.toFixed(2),
+                cameraBottom: state.cameraBottom.toFixed(2),
             }) +
             "</em>";
         state.debug.time = state.frame.time;
@@ -453,7 +457,7 @@ window.onload = function() {
             time: performance.now(),
             count: 0,
         },
-        cameraTop: 0,
+        cameraBottom: 0,
         keys: {
             up: false,
             left: false,
