@@ -291,10 +291,8 @@ function setRectY(state) {
     if (state.rect.canJump && state.keys.up) {
         state.rect.ySpeed += JUMP;
     }
-    if (state.rect.ySpeed !== 0) {
-        state.rect.canJump = false;
-    }
     state.rect.ySpeed -= GRAVITY;
+    state.rect.canJump = false;
     state.rect.bottom += state.rect.ySpeed;
     state.rect.top = state.rect.bottom + RECT_HEIGHT;
     if (0 < state.rect.ySpeed) {
