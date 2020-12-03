@@ -26,6 +26,8 @@ var CAMERA_EPSILON = 0.125;
 
 var JUMP = 4.15;
 var GRAVITY = 0.0745;
+var PRE_GRAVITY = 0.0005;
+var HANG_TIME = 100; // NOTE: Milliseconds!
 
 var RUN = 0.25;
 var RUN_MAX = 2.5;
@@ -186,6 +188,7 @@ function resetRect(state) {
         xSpeed: 0,
         ySpeed: 0,
         canJump: false,
+        lastLanded: null,
     };
 }
 
@@ -287,12 +290,19 @@ function setRectX(state) {
     }
 }
 
-function setRectY(state) {
+function setRectY(state, now) {
     if (state.rect.canJump && state.keys.up) {
         state.rect.ySpeed += JUMP;
+        state.rect.lastLanded = null;
     }
-    state.rect.ySpeed -= GRAVITY;
-    state.rect.canJump = false;
+    if ((state.rect.lastLanded === null) ||
+        (HANG_TIME < (now - state.rect.lastLanded)))
+    {
+        state.rect.ySpeed -= GRAVITY;
+        state.rect.canJump = false;
+    } else {
+        state.rect.ySpeed -= PRE_GRAVITY;
+    }
     state.rect.bottom += state.rect.ySpeed;
     state.rect.top = state.rect.bottom + RECT_HEIGHT;
     if (0 < state.rect.ySpeed) {
@@ -322,6 +332,7 @@ function setRectY(state) {
                 state.rect.ySpeed = 0;
                 state.rect.top = EDGES[i].y + RECT_HEIGHT;
                 state.rect.bottom = EDGES[i].y;
+                state.rect.lastLanded = now;
                 if (!state.keys.up) {
                     state.rect.canJump = true;
                 }
@@ -354,11 +365,11 @@ function setCamera(state) {
     }
 }
 
-function update(state) {
+function update(state, now) {
     state.frame.delta += state.frame.time - state.frame.prev;
     while (FRAME_STEP < state.frame.delta) {
         state.frame.delta -= FRAME_STEP;
-        setRectY(state);
+        setRectY(state, now);
         if (state.rect.top < Math.min(state.cameraBottom, 0)) {
             resetRect(state);
             state.cameraBottom = 0;
@@ -427,9 +438,9 @@ function setDebug(state) {
 }
 
 function loop(ctx, state) {
-    return function(t) {
-        state.frame.time = t;
-        update(state);
+    return function(now) {
+        state.frame.time = now;
+        update(state, now);
         draw(ctx, state);
         setDebug(state);
         requestAnimationFrame(loop(ctx, state));
