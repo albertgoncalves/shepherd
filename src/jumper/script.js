@@ -451,7 +451,7 @@ window.onload = function() {
     var canvas = document.getElementById("canvas");
     canvas.setAttribute("tabindex", "0");
     canvas.focus();
-    var ctx = canvas.getContext("2d", {alpha: false});
+    var ctx = canvas.getContext("2d", {alpha: true});
     ctx.imageSmoothingEnabled = false;
     ctx.fillStyle = "rgb(200, 40, 80)";
     var state = {
