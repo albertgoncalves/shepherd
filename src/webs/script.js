@@ -108,13 +108,12 @@ function insert() {
              *        ->    |
              *              m
              */
-            var point = points[0];
-            var j = point.index;
+            var j = points[0].index;
             var edge = EDGES[j];
             var m = M + 1; /* NOTE: Index positions into `NODES`. */
             var a = edge.a;
             var b = edge.b;
-            NODES[M] = point.coordinates;
+            NODES[M] = points[0].coordinates;
             NODES[m] = candidate.a;
             NODES[M].neighbors = [a, b, m];
             NODES[m].neighbors = [M];
@@ -235,12 +234,16 @@ function boundingBox(edge) {
     if (aEdge.x < bEdge.x) {
         rect = {
             x: aEdge.x,
+            y: 0,
             width: bEdge.x - aEdge.x,
+            height: 0,
         };
     } else {
         rect = {
             x: bEdge.x,
+            y: 0,
             width: aEdge.x - bEdge.x,
+            height: 0,
         };
     }
     if (aEdge.y < bEdge.y) {

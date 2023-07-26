@@ -75,10 +75,8 @@ function loop() {
     CTX.stroke();
     CTX.beginPath();
     for (var i = 0; i < N; ++i) {
-        var x = NODES[i].x;
-        var y = NODES[i].y;
-        CTX.moveTo(x + RADIUS, y);
-        CTX.arc(x, y, RADIUS, 0, PI_2);
+        CTX.moveTo(NODES[i].x + RADIUS, NODES[i].y);
+        CTX.arc(NODES[i].x, NODES[i].y, RADIUS, 0, PI_2);
     }
     CTX.fill();
     requestAnimationFrame(loop);

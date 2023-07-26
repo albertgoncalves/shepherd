@@ -88,12 +88,13 @@ function loop(ctx, state) {
 }
 
 function getState(canvas) {
-    var state = {
+    var y = Math.floor((canvas.height / 2) - (SPRITE_HEIGHT / 2));
+    return {
         sprite: {
             frames: document.getElementById("sprites"),
             position: {
                 x: Math.floor((canvas.width / 2) - (SPRITE_WIDTH / 2)),
-                y: Math.floor((canvas.height / 2) - (SPRITE_HEIGHT / 2)),
+                y: y,
             },
             animation: {
                 left: true,
@@ -103,18 +104,15 @@ function getState(canvas) {
         },
         background: {
             x: 0,
-            y: undefined,
+            y: y + SPRITE_HEIGHT,
             width: canvas.width,
-            height: undefined,
+            height: canvas.height - y,
         },
         keys: {
             j: false,
             l: false,
         },
     };
-    state.background.y = state.sprite.position.y + SPRITE_HEIGHT;
-    state.background.height = canvas.height - state.background.y;
-    return state;
 }
 
 function main() {

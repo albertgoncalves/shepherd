@@ -144,12 +144,11 @@ function update() {
         INDICES[i] = indices;
     }
     for (var i = 0; i < N; ++i) {
-        var indices = TABLE[i];
-        var n = indices.length;
+        var n = TABLE[i].length;
         if (1 < n) {
             for (var j = 0; j < n; ++j) {
                 for (var k = j + 1; k < n; ++k) {
-                    testIndices(indices[j], indices[k]);
+                    testIndices(TABLE[i][j], TABLE[i][k]);
                 }
             }
         }

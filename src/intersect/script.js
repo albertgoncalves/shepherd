@@ -40,12 +40,16 @@ function boundingBox(edge) {
     if (edge.a.x < edge.b.x) {
         rect = {
             x: edge.a.x,
+            y: 0,
             width: edge.b.x - edge.a.x,
+            height: 0,
         };
     } else {
         rect = {
             x: edge.b.x,
+            y: 0,
             width: edge.a.x - edge.b.x,
+            height: 0,
         };
     }
     if (edge.a.y < edge.b.y) {
