@@ -1,13 +1,11 @@
 with import <nixpkgs> {};
-llvmPackages_10.stdenv.mkDerivation {
-    name = "_";
+mkShell.override { stdenv = llvmPackages_15.stdenv; } {
     buildInputs = [
         gimp
         glibcLocales
-        htmlTidy
-        nodejs
-        parallel
-        python3
+        html-tidy
+        nodePackages.jshint
+        nodePackages.typescript
         python3Packages.flake8
         shellcheck
     ];
