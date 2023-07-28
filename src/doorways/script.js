@@ -9,17 +9,17 @@ var LINE_CAP = "square";
 
 var POINT_RADIUS = 4;
 
-var BUFFER = 80;
+var BUFFER = 85;
 var K = 3;
 
-var GAP = 50;
+var GAP = 40;
 
 var INTERVAL = 1750;
 
 var X = 50;
 var Y = 50;
 
-if (BUFFER <= GAP) {
+if ((BUFFER / 2) <= GAP) {
     throw new Error();
 }
 
@@ -151,10 +151,13 @@ function generate(canvas) {
 
         var k = BUFFER / l;
         var t = ((1 - k) * Math.random()) + (k / 2);
+        var m = GAP / l;
+
+        if ((t < m) || (1 < (t + m))) {
+            throw new Error();
+        }
 
         state.points.push([lerp(x0, x1, t), lerp(y0, y1, t)]);
-
-        var m = GAP / l;
 
         state.lines.push(
             [[x0, y0], [lerp(x0, x1, t - m), lerp(y0, y1, t - m)]]);
