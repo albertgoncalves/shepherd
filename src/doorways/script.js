@@ -3,7 +3,7 @@
 var TAU = Math.PI * 2;
 
 var COLOR_DARK = "hsl(0, 0%, 35%)";
-var COLOR_LIGHT = "hsl(0, 0%, 70%)";
+var COLOR_LIGHT = "hsla(0, 0%, 60%, 0.75)";
 
 var LINE_WIDTH = 3.25;
 var LINE_CAP = "square";
@@ -195,6 +195,15 @@ function generate(canvas) {
         var x1 = lines[i][1][0];
         var y1 = lines[i][1][1];
 
+        var flag;
+        if (x0 === x1) {
+            flag = false;
+        } else if (y0 === y1) {
+            flag = true;
+        } else {
+            throw new Error();
+        }
+
         var l = len(x0, y0, x1, y1);
 
         if (l < (BUFFER * 2)) {
@@ -217,7 +226,10 @@ function generate(canvas) {
         walls.push([[lerp(x0, x1, t + m), lerp(y0, y1, t + m)], [x1, y1]]);
 
         for (var j = 2; j < lines[i].length; ++j) {
-            paths.push([point, lines[i][j]]);
+            var link =
+                flag ? [point[0], lines[i][j][1]] : [lines[i][j][0], point[1]];
+            paths.push([point, link]);
+            paths.push([link, lines[i][j]]);
         }
     }
 
@@ -240,12 +252,12 @@ function draw(canvas, context, state) {
     context.stroke();
 
     context.strokeStyle = COLOR_LIGHT;
-    context.beginPath();
     for (var i = 0; i < state.paths.length; ++i) {
+        context.beginPath();
         context.moveTo(state.paths[i][0][0], state.paths[i][0][1]);
         context.lineTo(state.paths[i][1][0], state.paths[i][1][1]);
+        context.stroke();
     }
-    context.stroke();
 
     context.beginPath();
     for (var i = 0; i < state.points.length; ++i) {
