@@ -2,7 +2,8 @@
 
 var TAU = Math.PI * 2;
 
-var COLOR = "hsl(0, 0%, 35%)";
+var COLOR_DARK = "hsl(0, 0%, 35%)";
+var COLOR_LIGHT = "hsl(0, 0%, 70%)";
 
 var LINE_WIDTH = 3.25;
 var LINE_CAP = "square";
@@ -23,8 +24,9 @@ if ((BUFFER / 2) <= GAP) {
     throw new Error();
 }
 
-function split(lines, x, y, w, h, flag) {
+function split(lines, points, x, y, w, h, flag) {
     if (Math.min(w, h) <= (BUFFER * K)) {
+        points.push([x + (w / 2), y + (h / 2)]);
         return;
     }
 
@@ -33,15 +35,15 @@ function split(lines, x, y, w, h, flag) {
         var xK = x + k;
 
         lines.push([[xK, y], [xK, y + h]]);
-        split(lines, x, y, k, h, false);
-        split(lines, xK, y, w - k, h, false);
+        split(lines, points, x, y, k, h, false);
+        split(lines, points, xK, y, w - k, h, false);
     } else {
         var k = Math.min(Math.max(Math.random() * h, BUFFER), h - BUFFER);
         var yK = y + k;
 
         lines.push([[x, yK], [x + w, yK]]);
-        split(lines, x, y, w, k, true);
-        split(lines, x, yK, w, h - k, true);
+        split(lines, points, x, y, w, k, true);
+        split(lines, points, x, yK, w, h - k, true);
     }
 }
 
@@ -73,9 +75,35 @@ function subtract(a, b) {
     return a - b;
 }
 
+function intersects(a, b) {
+    var x0 = a[0][0] - a[1][0];
+    var y0 = a[0][1] - a[1][1];
+
+    var x1 = a[0][0] - b[0][0];
+    var y1 = a[0][1] - b[0][1];
+
+    var x2 = b[0][0] - b[1][0];
+    var y2 = b[0][1] - b[1][1];
+
+    var denominator = (x0 * y2) - (y0 * x2);
+    if (denominator !== 0) {
+        var t = ((x1 * y2) - (y1 * x2)) / denominator;
+        var u = -((x0 * y1) - (y0 * x1)) / denominator;
+        return (0 <= t) && (t <= 1) && (0 <= u) && (u <= 1);
+    }
+    return false;
+}
+
 function generate(canvas) {
     var lines = [];
-    split(lines, X, Y, canvas.width - (X * 2), canvas.height - (Y * 2), true);
+    var points = [];
+    split(lines,
+          points,
+          X,
+          Y,
+          canvas.width - (X * 2),
+          canvas.height - (Y * 2),
+          true);
 
     var xs = {};
     var ys = {};
@@ -132,10 +160,35 @@ function generate(canvas) {
         }
     }
 
-    var state = {
-        lines: [],
-        points: [],
-    };
+    var point;
+    for (var i = 0; i < lines.length; ++i) {
+        for (var j = 0; j < points.length; ++j) {
+            point = [
+                lerp(lines[i][0][0], lines[i][1][0], 0.5),
+                lerp(lines[i][0][1], lines[i][1][1], 0.5),
+            ];
+            var line = [
+                point,
+                points[j],
+            ];
+            var ok = true;
+            for (var k = 0; k < lines.length; ++k) {
+                if (i === k) {
+                    continue;
+                }
+                if (intersects(line, lines[k])) {
+                    ok = false;
+                    break;
+                }
+            }
+            if (ok) {
+                lines[i].push(points[j]);
+            }
+        }
+    }
+
+    var walls = [];
+    var paths = [];
     for (var i = 0; i < lines.length; ++i) {
         var x0 = lines[i][0][0];
         var y0 = lines[i][0][1];
@@ -145,7 +198,7 @@ function generate(canvas) {
         var l = len(x0, y0, x1, y1);
 
         if (l < (BUFFER * 2)) {
-            state.lines.push(lines[i]);
+            walls.push(lines[i]);
             continue;
         }
 
@@ -157,23 +210,40 @@ function generate(canvas) {
             throw new Error();
         }
 
-        state.points.push([lerp(x0, x1, t), lerp(y0, y1, t)]);
+        point = [lerp(x0, x1, t), lerp(y0, y1, t)];
+        points.push(point);
 
-        state.lines.push(
-            [[x0, y0], [lerp(x0, x1, t - m), lerp(y0, y1, t - m)]]);
-        state.lines.push(
-            [[lerp(x0, x1, t + m), lerp(y0, y1, t + m)], [x1, y1]]);
+        walls.push([[x0, y0], [lerp(x0, x1, t - m), lerp(y0, y1, t - m)]]);
+        walls.push([[lerp(x0, x1, t + m), lerp(y0, y1, t + m)], [x1, y1]]);
+
+        for (var j = 2; j < lines[i].length; ++j) {
+            paths.push([point, lines[i][j]]);
+        }
     }
-    return state;
+
+    return {
+        walls: walls,
+        paths: paths,
+        points: points,
+    };
 }
 
 function draw(canvas, context, state) {
     context.clearRect(0, 0, canvas.width, canvas.height);
 
+    context.strokeStyle = COLOR_DARK;
     context.beginPath();
-    for (var i = 0; i < state.lines.length; ++i) {
-        context.moveTo(state.lines[i][0][0], state.lines[i][0][1]);
-        context.lineTo(state.lines[i][1][0], state.lines[i][1][1]);
+    for (var i = 0; i < state.walls.length; ++i) {
+        context.moveTo(state.walls[i][0][0], state.walls[i][0][1]);
+        context.lineTo(state.walls[i][1][0], state.walls[i][1][1]);
+    }
+    context.stroke();
+
+    context.strokeStyle = COLOR_LIGHT;
+    context.beginPath();
+    for (var i = 0; i < state.paths.length; ++i) {
+        context.moveTo(state.paths[i][0][0], state.paths[i][0][1]);
+        context.lineTo(state.paths[i][1][0], state.paths[i][1][1]);
     }
     context.stroke();
 
@@ -198,8 +268,7 @@ window.onload = function() {
     context.imageSmoothingEnabled = false;
     context.lineWidth = LINE_WIDTH;
     context.lineCap = LINE_CAP;
-    context.strokeStyle = COLOR;
-    context.fillStyle = COLOR;
+    context.fillStyle = COLOR_DARK;
 
     draw(canvas, context, generate(canvas));
 
