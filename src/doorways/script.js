@@ -2,63 +2,96 @@
 
 var TAU = Math.PI * 2;
 
-var COLOR_DARK = "hsl(0, 0%, 35%)";
-var COLOR_LIGHT = "hsla(0, 0%, 60%, 0.75)";
+var COLORS = [
+    "hsl(0, 0%, 35%)",
+    "hsl(0, 0%, 78.5%)",
+    "hsla(0, 0%, 82.5%, 0.75)",
+];
 
-var LINE_WIDTH = 3.25;
+var LINE_WIDTH = 3;
 var LINE_CAP = "square";
 
 var POINT_RADIUS = 4;
 
-var BUFFER = 85;
-var K = 3;
+var THRESHOLD_SPLIT = 80;
+var THRESHOLD_WALL = THRESHOLD_SPLIT * 1.15;
 
-var GAP = 40;
+var INTERVAL = 10000;
 
-var INTERVAL = 1750;
+var X = 10;
+var Y = 10;
 
-var X = 50;
-var Y = 50;
-
-if ((BUFFER / 2) <= GAP) {
-    throw new Error();
+function subtract(a, b) {
+    return a - b;
 }
 
 function split(lines, points, x, y, w, h, flag) {
-    if (Math.min(w, h) <= (BUFFER * K)) {
+    if (Math.min(w, h) <= (THRESHOLD_SPLIT * 2)) {
         points.push([x + (w / 2), y + (h / 2)]);
         return;
     }
 
+    var start, end;
+    var splits = [];
     if (flag) {
-        var k = Math.min(Math.max(Math.random() * w, BUFFER), w - BUFFER);
+        var k =
+            Math.min(Math.max(Math.round(Math.random() * w), THRESHOLD_SPLIT),
+                     w - THRESHOLD_SPLIT);
         var xK = x + k;
-
-        lines.push([[xK, y], [xK, y + h]]);
         split(lines, points, x, y, k, h, false);
         split(lines, points, xK, y, w - k, h, false);
-    } else {
-        var k = Math.min(Math.max(Math.random() * h, BUFFER), h - BUFFER);
-        var yK = y + k;
 
-        lines.push([[x, yK], [x + w, yK]]);
+        start = y;
+        end = y + h;
+        for (var i = 0; i < lines.length; ++i) {
+            if ((lines[i][0][1] !== lines[i][1][1]) ||
+                ((lines[i][0][0] !== xK) && (lines[i][1][0] !== xK)))
+            {
+                continue;
+            }
+            var yS = lines[i][0][1];
+            if ((yS <= start) || (end <= yS) || (0 <= splits.indexOf(yS))) {
+                continue;
+            }
+            splits.push(yS);
+        }
+        splits.push(start);
+        splits.sort(subtract);
+        splits.push(end);
+
+        for (var i = 1; i < splits.length; ++i) {
+            lines.push([[xK, splits[i - 1]], [xK, splits[i]]]);
+        }
+    } else {
+        var k =
+            Math.min(Math.max(Math.round(Math.random() * h), THRESHOLD_SPLIT),
+                     h - THRESHOLD_SPLIT);
+        var yK = y + k;
         split(lines, points, x, y, w, k, true);
         split(lines, points, x, yK, w, h - k, true);
-    }
-}
 
-function setIfNotFound(object, key, value) {
-    if (object.hasOwnProperty(key)) {
-        return;
-    }
-    object[key] = value;
-}
+        start = x;
+        end = x + w;
+        for (var i = 0; i < lines.length; ++i) {
+            if ((lines[i][0][0] !== lines[i][1][0]) ||
+                ((lines[i][0][1] !== yK) && (lines[i][1][1] !== yK)))
+            {
+                continue;
+            }
+            var xS = lines[i][0][0];
+            if ((xS <= start) || (end <= xS) || (0 <= splits.indexOf(xS))) {
+                continue;
+            }
+            splits.push(lines[i][0][0]);
+        }
+        splits.push(start);
+        splits.sort(subtract);
+        splits.push(end);
 
-function pushIfNotFound(array, element) {
-    if (0 <= array.indexOf(element)) {
-        return;
+        for (var i = 1; i < splits.length; ++i) {
+            lines.push([[splits[i - 1], yK], [splits[i], yK]]);
+        }
     }
-    array.push(element);
 }
 
 function lerp(a, b, t) {
@@ -69,10 +102,6 @@ function len(x0, y0, x1, y1) {
     var x2 = x1 - x0;
     var y2 = y1 - y0;
     return Math.sqrt((x2 * x2) + (y2 * y2));
-}
-
-function subtract(a, b) {
-    return a - b;
 }
 
 function intersects(a, b) {
@@ -104,61 +133,6 @@ function generate(canvas) {
           canvas.width - (X * 2),
           canvas.height - (Y * 2),
           true);
-
-    var xs = {};
-    var ys = {};
-    for (var i = 0; i < lines.length; ++i) {
-        var x0 = lines[i][0][0];
-        var y0 = lines[i][0][1];
-        var x1 = lines[i][1][0];
-        var y1 = lines[i][1][1];
-
-        setIfNotFound(xs, x0, []);
-        setIfNotFound(xs, x1, []);
-        setIfNotFound(ys, y0, []);
-        setIfNotFound(ys, y1, []);
-
-        pushIfNotFound(xs[x0], y0);
-        pushIfNotFound(xs[x0], y1);
-        pushIfNotFound(xs[x1], y0);
-        pushIfNotFound(xs[x1], y1);
-        pushIfNotFound(ys[y0], x0);
-        pushIfNotFound(ys[y0], x1);
-        pushIfNotFound(ys[y1], x0);
-        pushIfNotFound(ys[y1], x1);
-    }
-
-    for (var i = 0; i < Object.keys(xs).length; ++i) {
-        xs[Object.keys(xs)[i]].sort(subtract);
-    }
-    for (var i = 0; i < Object.keys(ys).length; ++i) {
-        ys[Object.keys(ys)[i]].sort(subtract);
-    }
-
-    lines = [];
-    var vs, n;
-    for (var i = 0; i < Object.keys(xs).length; ++i) {
-        vs = xs[Object.keys(xs)[i]];
-        n = vs.length - 1;
-        if (n === 0) {
-            continue;
-        }
-        var x = Number(Object.keys(xs)[i]);
-        for (var j = 0; j < n; ++j) {
-            lines.push([[x, vs[j]], [x, vs[j + 1]]]);
-        }
-    }
-    for (var i = 0; i < Object.keys(ys).length; ++i) {
-        vs = ys[Object.keys(ys)[i]];
-        n = vs.length - 1;
-        if (n === 0) {
-            continue;
-        }
-        var y = Number(Object.keys(ys)[i]);
-        for (var j = 0; j < n; ++j) {
-            lines.push([[vs[j], y], [vs[j + 1], y]]);
-        }
-    }
 
     var point;
     for (var i = 0; i < lines.length; ++i) {
@@ -206,18 +180,14 @@ function generate(canvas) {
 
         var l = len(x0, y0, x1, y1);
 
-        if (l < (BUFFER * 2)) {
+        if (l < THRESHOLD_WALL) {
             walls.push(lines[i]);
             continue;
         }
 
-        var k = BUFFER / l;
+        var k = THRESHOLD_SPLIT / l;
         var t = ((1 - k) * Math.random()) + (k / 2);
-        var m = GAP / l;
-
-        if ((t < m) || (1 < (t + m))) {
-            throw new Error();
-        }
+        var m = k / 2;
 
         point = [lerp(x0, x1, t), lerp(y0, y1, t)];
         points.push(point);
@@ -226,10 +196,7 @@ function generate(canvas) {
         walls.push([[lerp(x0, x1, t + m), lerp(y0, y1, t + m)], [x1, y1]]);
 
         for (var j = 2; j < lines[i].length; ++j) {
-            var link =
-                flag ? [point[0], lines[i][j][1]] : [lines[i][j][0], point[1]];
-            paths.push([point, link]);
-            paths.push([link, lines[i][j]]);
+            paths.push([point, lines[i][j]]);
         }
     }
 
@@ -243,7 +210,7 @@ function generate(canvas) {
 function draw(canvas, context, state) {
     context.clearRect(0, 0, canvas.width, canvas.height);
 
-    context.strokeStyle = COLOR_DARK;
+    context.strokeStyle = COLORS[0];
     context.beginPath();
     for (var i = 0; i < state.walls.length; ++i) {
         context.moveTo(state.walls[i][0][0], state.walls[i][0][1]);
@@ -251,13 +218,13 @@ function draw(canvas, context, state) {
     }
     context.stroke();
 
-    context.strokeStyle = COLOR_LIGHT;
+    context.strokeStyle = COLORS[2];
+    context.beginPath();
     for (var i = 0; i < state.paths.length; ++i) {
-        context.beginPath();
         context.moveTo(state.paths[i][0][0], state.paths[i][0][1]);
         context.lineTo(state.paths[i][1][0], state.paths[i][1][1]);
-        context.stroke();
     }
+    context.stroke();
 
     context.beginPath();
     for (var i = 0; i < state.points.length; ++i) {
@@ -271,6 +238,16 @@ function draw(canvas, context, state) {
     context.fill();
 }
 
+function check(state) {
+    for (var i = 0; i < state.paths.length; ++i) {
+        for (var j = 0; j < state.walls.length; ++j) {
+            if (intersects(state.paths[i], state.walls[j])) {
+                throw new Error();
+            }
+        }
+    }
+}
+
 window.onload = function() {
     var canvas = document.getElementById("canvas");
     if (canvas === null) {
@@ -280,14 +257,18 @@ window.onload = function() {
     context.imageSmoothingEnabled = false;
     context.lineWidth = LINE_WIDTH;
     context.lineCap = LINE_CAP;
-    context.fillStyle = COLOR_DARK;
+    context.fillStyle = COLORS[1];
 
-    draw(canvas, context, generate(canvas));
+    var state = generate(canvas);
+    draw(canvas, context, state);
+    check(state);
 
     var prev = performance.now();
     var loop = function(now) {
         if (INTERVAL <= (now - prev)) {
-            draw(canvas, context, generate(canvas));
+            state = generate(canvas);
+            draw(canvas, context, state);
+            check(state);
             prev = now;
         }
         window.requestAnimationFrame(loop);
