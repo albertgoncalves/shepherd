@@ -123,7 +123,7 @@ function intersects(a, b) {
     return false;
 }
 
-function generate(canvas) {
+function init(canvas) {
     var lines = [];
     var points = [];
     split(lines,
@@ -162,7 +162,7 @@ function generate(canvas) {
     }
 
     var walls = [];
-    var paths = [];
+    var links = [];
     for (var i = 0; i < lines.length; ++i) {
         var x0 = lines[i][0][0];
         var y0 = lines[i][0][1];
@@ -195,16 +195,32 @@ function generate(canvas) {
         walls.push([[x0, y0], [lerp(x0, x1, t - m), lerp(y0, y1, t - m)]]);
         walls.push([[lerp(x0, x1, t + m), lerp(y0, y1, t + m)], [x1, y1]]);
 
-        for (var j = 2; j < lines[i].length; ++j) {
-            paths.push([point, lines[i][j]]);
-        }
+        links.push([lines[i], point, flag]);
     }
-
     return {
         walls: walls,
-        paths: paths,
+        links: links,
         points: points,
     };
+}
+
+function update(state, flag) {
+    state.paths = [];
+    for (var i = 0; i < state.links.length; ++i) {
+        var line = state.links[i][0];
+        var point = state.links[i][1];
+
+        for (var j = 2; j < line.length; ++j) {
+            if (flag) {
+                var link = state.links[i][2] ? [point[0], line[j][1]]
+                                             : [line[j][0], point[1]];
+                state.paths.push([point, link]);
+                state.paths.push([link, line[j]]);
+            } else {
+                state.paths.push([point, line[j]]);
+            }
+        }
+    }
 }
 
 function draw(canvas, context, state) {
@@ -259,14 +275,27 @@ window.onload = function() {
     context.lineCap = LINE_CAP;
     context.fillStyle = COLORS[1];
 
-    var state = generate(canvas);
+    var flag = document.getElementById("flag");
+    if (flag === null) {
+        throw new Error();
+    }
+
+    var state = init(canvas);
+    update(state, flag.checked);
     draw(canvas, context, state);
     check(state);
+
+    flag.addEventListener("change", function() {
+        update(state, this.checked);
+        draw(canvas, context, state);
+        check(state);
+    });
 
     var prev = performance.now();
     var loop = function(now) {
         if (INTERVAL <= (now - prev)) {
-            state = generate(canvas);
+            state = init(canvas);
+            update(state, flag.checked);
             draw(canvas, context, state);
             check(state);
             prev = now;
