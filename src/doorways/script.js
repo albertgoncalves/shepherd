@@ -27,7 +27,7 @@ function subtract(a, b) {
 
 function split(lines, points, x, y, w, h, flag) {
     if (Math.min(w, h) <= (THRESHOLD_SPLIT * 2)) {
-        points.push([x + (w / 2), y + (h / 2)]);
+        points.push({x: x + (w / 2), y: y + (h / 2)});
         return;
     }
 
@@ -44,12 +44,12 @@ function split(lines, points, x, y, w, h, flag) {
         start = y;
         end = y + h;
         for (var i = 0; i < lines.length; ++i) {
-            if ((lines[i][0][1] !== lines[i][1][1]) ||
-                ((lines[i][0][0] !== xK) && (lines[i][1][0] !== xK)))
+            if ((lines[i].a.y !== lines[i].b.y) ||
+                ((lines[i].a.x !== xK) && (lines[i].b.x !== xK)))
             {
                 continue;
             }
-            var yS = lines[i][0][1];
+            var yS = lines[i].a.y;
             if ((yS <= start) || (end <= yS) || (0 <= splits.indexOf(yS))) {
                 continue;
             }
@@ -60,7 +60,10 @@ function split(lines, points, x, y, w, h, flag) {
         splits.push(end);
 
         for (var i = 1; i < splits.length; ++i) {
-            lines.push([[xK, splits[i - 1]], [xK, splits[i]]]);
+            lines.push({
+                a: {x: xK, y: splits[i - 1]},
+                b: {x: xK, y: splits[i]},
+            });
         }
     } else {
         var k =
@@ -73,23 +76,26 @@ function split(lines, points, x, y, w, h, flag) {
         start = x;
         end = x + w;
         for (var i = 0; i < lines.length; ++i) {
-            if ((lines[i][0][0] !== lines[i][1][0]) ||
-                ((lines[i][0][1] !== yK) && (lines[i][1][1] !== yK)))
+            if ((lines[i].a.x !== lines[i].b.x) ||
+                ((lines[i].a.y !== yK) && (lines[i].b.y !== yK)))
             {
                 continue;
             }
-            var xS = lines[i][0][0];
+            var xS = lines[i].a.x;
             if ((xS <= start) || (end <= xS) || (0 <= splits.indexOf(xS))) {
                 continue;
             }
-            splits.push(lines[i][0][0]);
+            splits.push(xS);
         }
         splits.push(start);
         splits.sort(subtract);
         splits.push(end);
 
         for (var i = 1; i < splits.length; ++i) {
-            lines.push([[splits[i - 1], yK], [splits[i], yK]]);
+            lines.push({
+                a: {x: splits[i - 1], y: yK},
+                b: {x: splits[i], y: yK},
+            });
         }
     }
 }
@@ -105,14 +111,14 @@ function len(x0, y0, x1, y1) {
 }
 
 function intersects(a, b) {
-    var x0 = a[0][0] - a[1][0];
-    var y0 = a[0][1] - a[1][1];
+    var x0 = a.a.x - a.b.x;
+    var y0 = a.a.y - a.b.y;
 
-    var x1 = a[0][0] - b[0][0];
-    var y1 = a[0][1] - b[0][1];
+    var x1 = a.a.x - b.a.x;
+    var y1 = a.a.y - b.a.y;
 
-    var x2 = b[0][0] - b[1][0];
-    var y2 = b[0][1] - b[1][1];
+    var x2 = b.a.x - b.b.x;
+    var y2 = b.a.y - b.b.y;
 
     var denominator = (x0 * y2) - (y0 * x2);
     if (denominator !== 0) {
@@ -136,15 +142,13 @@ function init(canvas) {
 
     var point;
     for (var i = 0; i < lines.length; ++i) {
+        lines[i].neighbors = [];
         for (var j = 0; j < points.length; ++j) {
-            point = [
-                lerp(lines[i][0][0], lines[i][1][0], 0.5),
-                lerp(lines[i][0][1], lines[i][1][1], 0.5),
-            ];
-            var line = [
-                point,
-                points[j],
-            ];
+            point = {
+                x: lerp(lines[i].a.x, lines[i].b.x, 0.5),
+                y: lerp(lines[i].a.y, lines[i].b.y, 0.5),
+            };
+            var line = {a: point, b: points[j]};
             var ok = true;
             for (var k = 0; k < lines.length; ++k) {
                 if (i === k) {
@@ -156,7 +160,7 @@ function init(canvas) {
                 }
             }
             if (ok) {
-                lines[i].push(points[j]);
+                lines[i].neighbors.push(points[j]);
             }
         }
     }
@@ -164,10 +168,10 @@ function init(canvas) {
     var walls = [];
     var links = [];
     for (var i = 0; i < lines.length; ++i) {
-        var x0 = lines[i][0][0];
-        var y0 = lines[i][0][1];
-        var x1 = lines[i][1][0];
-        var y1 = lines[i][1][1];
+        var x0 = lines[i].a.x;
+        var y0 = lines[i].a.y;
+        var x1 = lines[i].b.x;
+        var y1 = lines[i].b.y;
 
         var flag;
         if (x0 === x1) {
@@ -189,13 +193,23 @@ function init(canvas) {
         var t = ((1 - k) * Math.random()) + (k / 2);
         var m = k / 2;
 
-        point = [lerp(x0, x1, t), lerp(y0, y1, t)];
+        point = {x: lerp(x0, x1, t), y: lerp(y0, y1, t)};
         points.push(point);
 
-        walls.push([[x0, y0], [lerp(x0, x1, t - m), lerp(y0, y1, t - m)]]);
-        walls.push([[lerp(x0, x1, t + m), lerp(y0, y1, t + m)], [x1, y1]]);
+        walls.push({
+            a: {x: x0, y: y0},
+            b: {x: lerp(x0, x1, t - m), y: lerp(y0, y1, t - m)},
+        });
+        walls.push({
+            a: {x: lerp(x0, x1, t + m), y: lerp(y0, y1, t + m)},
+            b: {x: x1, y: y1},
+        });
 
-        links.push([lines[i], point, flag]);
+        links.push({
+            point: point,
+            neighbors: lines[i].neighbors,
+            flag: flag,
+        });
     }
     return {
         walls: walls,
@@ -207,17 +221,18 @@ function init(canvas) {
 function update(state, flag) {
     state.paths = [];
     for (var i = 0; i < state.links.length; ++i) {
-        var line = state.links[i][0];
-        var point = state.links[i][1];
+        var neighbors = state.links[i].neighbors;
+        var point = state.links[i].point;
 
-        for (var j = 2; j < line.length; ++j) {
+        for (var j = 0; j < neighbors.length; ++j) {
             if (flag) {
-                var link = state.links[i][2] ? [point[0], line[j][1]]
-                                             : [line[j][0], point[1]];
-                state.paths.push([point, link]);
-                state.paths.push([link, line[j]]);
+                var link = state.links[i].flag
+                    ? {x: point.x, y: neighbors[j].y}
+                    : {x: neighbors[j].x, y: point.y};
+                state.paths.push({a: point, b: link});
+                state.paths.push({a: link, b: neighbors[j]});
             } else {
-                state.paths.push([point, line[j]]);
+                state.paths.push({a: point, b: neighbors[j]});
             }
         }
     }
@@ -229,24 +244,24 @@ function draw(canvas, context, state) {
     context.strokeStyle = COLORS[0];
     context.beginPath();
     for (var i = 0; i < state.walls.length; ++i) {
-        context.moveTo(state.walls[i][0][0], state.walls[i][0][1]);
-        context.lineTo(state.walls[i][1][0], state.walls[i][1][1]);
+        context.moveTo(state.walls[i].a.x, state.walls[i].a.y);
+        context.lineTo(state.walls[i].b.x, state.walls[i].b.y);
     }
     context.stroke();
 
     context.strokeStyle = COLORS[2];
     context.beginPath();
     for (var i = 0; i < state.paths.length; ++i) {
-        context.moveTo(state.paths[i][0][0], state.paths[i][0][1]);
-        context.lineTo(state.paths[i][1][0], state.paths[i][1][1]);
+        context.moveTo(state.paths[i].a.x, state.paths[i].a.y);
+        context.lineTo(state.paths[i].b.x, state.paths[i].b.y);
     }
     context.stroke();
 
     context.beginPath();
     for (var i = 0; i < state.points.length; ++i) {
-        context.moveTo(state.points[i][0], state.points[i][1]);
-        context.arc(state.points[i][0],
-                    state.points[i][1],
+        context.moveTo(state.points[i].x, state.points[i].y);
+        context.arc(state.points[i].x,
+                    state.points[i].y,
                     POINT_RADIUS,
                     0,
                     TAU);
