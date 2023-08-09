@@ -11,7 +11,7 @@ var COLORS = [
 var LINE_WIDTH = 3;
 var LINE_CAP = "square";
 
-var POINT_RADIUS = 4;
+var POINT_RADIUS = 2;
 
 var THRESHOLD_SPLIT = 80;
 var THRESHOLD_WALL = THRESHOLD_SPLIT * 1.15;
@@ -219,10 +219,12 @@ function init(canvas) {
 }
 
 function update(state, flag) {
+    var neighbors, point;
+
     state.paths = [];
     for (var i = 0; i < state.links.length; ++i) {
-        var neighbors = state.links[i].neighbors;
-        var point = state.links[i].point;
+        neighbors = state.links[i].neighbors;
+        point = state.links[i].point;
 
         for (var j = 0; j < neighbors.length; ++j) {
             if (flag) {
@@ -233,6 +235,31 @@ function update(state, flag) {
                 state.paths.push({a: link, b: neighbors[j]});
             } else {
                 state.paths.push({a: point, b: neighbors[j]});
+            }
+        }
+    }
+
+    state.graph = [];
+    for (var i = 0; i < state.links.length; ++i) {
+        neighbors = state.links[i].neighbors;
+        point = state.links[i].point;
+
+        state.graph.push([]);
+
+        for (var j = 0; j < neighbors.length; ++j) {
+            for (var k = 0; k < state.links.length; ++k) {
+                if (i === k) {
+                    continue;
+                }
+                // NOTE: We're lucky we're passing a pointer around. If we were
+                // making a copy of the object `indexOf` wouldn't work here.
+                if (state.links[k].neighbors.indexOf(neighbors[j]) < 0) {
+                    continue;
+                }
+                state.graph[i].push({
+                    through: neighbors[j],
+                    destination: k,
+                });
             }
         }
     }
@@ -258,11 +285,12 @@ function draw(canvas, context, state) {
     context.stroke();
 
     context.beginPath();
-    for (var i = 0; i < state.points.length; ++i) {
-        context.moveTo(state.points[i].x, state.points[i].y);
-        context.arc(state.points[i].x,
-                    state.points[i].y,
-                    POINT_RADIUS,
+    for (var i = 0; i < state.links.length; ++i) {
+        var size = state.graph[i].length;
+        context.moveTo(state.links[i].point.x, state.links[i].point.y);
+        context.arc(state.links[i].point.x,
+                    state.links[i].point.y,
+                    (POINT_RADIUS * size) + 2,
                     0,
                     TAU);
     }
