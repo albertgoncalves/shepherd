@@ -8,18 +8,26 @@ var COLORS = [
     "hsla(0, 0%, 82.5%, 0.75)",
 ];
 
+var GRAPH_ALPHA = 0.1;
+var GRAPH_WIDTH = 5;
+
 var LINE_WIDTH = 3;
 var LINE_CAP = "square";
 
-var POINT_RADIUS = 2;
+var POINT_RADIUS_SCALE = 2;
+var POINT_RADIUS_MIN = 3;
 
-var THRESHOLD_SPLIT = 80;
+var THRESHOLD_SPLIT = 150;
 var THRESHOLD_WALL = THRESHOLD_SPLIT * 1.15;
 
-var INTERVAL = 10000;
+var INTERVAL = 1000000;
 
 var X = 10;
 var Y = 10;
+
+function randomInteger(k) {
+    return Math.floor(Math.random() * k);
+}
 
 function subtract(a, b) {
     return a - b;
@@ -239,13 +247,12 @@ function update(state, flag) {
         }
     }
 
-    state.graph = [];
+    state.graph = new Array(state.links.length);
     for (var i = 0; i < state.links.length; ++i) {
         neighbors = state.links[i].neighbors;
         point = state.links[i].point;
 
-        state.graph.push([]);
-
+        state.graph[i] = [];
         for (var j = 0; j < neighbors.length; ++j) {
             for (var k = 0; k < state.links.length; ++k) {
                 if (i === k) {
@@ -263,10 +270,42 @@ function update(state, flag) {
             }
         }
     }
+
+    state.matrix = new Array(state.links.length);
+    for (var i = 0; i < state.links.length; ++i) {
+        neighbors = state.links[i].neighbors;
+        state.matrix[i] = new Array(state.links.length).fill(false);
+
+        for (var j = 0; j < neighbors.length; ++j) {
+            for (var k = 0; k < i; ++k) {
+                // NOTE: Same issue as above.
+                if (state.links[k].neighbors.indexOf(neighbors[j]) < 0) {
+                    continue;
+                }
+                state.matrix[i][k] = true;
+            }
+        }
+    }
+}
+
+function randomColor(alpha) {
+    if (alpha < 0.0) {
+        throw new Error();
+    }
+    if (1.0 < alpha) {
+        throw new Error();
+    }
+    var r = Math.floor(randomInteger(256)).toString();
+    var g = Math.floor(randomInteger(256)).toString();
+    var b = Math.floor(randomInteger(256)).toString();
+    var a = alpha.toString();
+    return "rgba(" + r + ", " + g + ", " + b + ", " + a + ")";
 }
 
 function draw(canvas, context, state) {
     context.clearRect(0, 0, canvas.width, canvas.height);
+
+    context.lineWidth = LINE_WIDTH;
 
     context.strokeStyle = COLORS[0];
     context.beginPath();
@@ -284,13 +323,36 @@ function draw(canvas, context, state) {
     }
     context.stroke();
 
+    context.lineWidth = GRAPH_WIDTH;
+
+    for (var i = 0; i < state.matrix.length; ++i) {
+        context.strokeStyle = randomColor(GRAPH_ALPHA);
+        context.beginPath();
+        for (var j = 0; j < i; ++j) {
+            if (!state.matrix[i][j]) {
+                continue;
+            }
+            for (var k = 0; k < state.graph[i].length; ++k) {
+                if (state.graph[i][k].destination !== j) {
+                    continue;
+                }
+                var through = state.graph[i][k].through;
+                context.moveTo(state.links[i].point.x, state.links[i].point.y);
+                context.lineTo(through.x, through.y);
+                context.lineTo(state.links[j].point.x, state.links[j].point.y);
+                break;
+            }
+        }
+        context.stroke();
+    }
+
     context.beginPath();
     for (var i = 0; i < state.links.length; ++i) {
         var size = state.graph[i].length;
         context.moveTo(state.links[i].point.x, state.links[i].point.y);
         context.arc(state.links[i].point.x,
                     state.links[i].point.y,
-                    (POINT_RADIUS * size) + 2,
+                    (POINT_RADIUS_SCALE * size) + POINT_RADIUS_MIN,
                     0,
                     TAU);
     }
@@ -314,7 +376,6 @@ window.onload = function() {
     }
     var context = canvas.getContext("2d");
     context.imageSmoothingEnabled = false;
-    context.lineWidth = LINE_WIDTH;
     context.lineCap = LINE_CAP;
     context.fillStyle = COLORS[1];
 
